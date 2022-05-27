@@ -1821,14 +1821,14 @@ static asynStatus int64Read(void *drvPvt,asynUser *pasynUser, epicsInt64 *value)
 
 	switch (pasynUser->reason) {
 
-		case auxAI_64:
+		case aux64AI:
 			st=irio_getAuxAI_64(&pdrvPvt->drvPvt, addr,value,&irio_status);
 			if (st==IRIO_success){
 				errlogSevPrintf(errlogInfo,"[%s-%d][%s]auxAI_64 (addr=%d) value: %d \n",__func__,__LINE__,pdrvPvt->portName,addr,*value);
 			}
 			break;
 
-		case auxAO:
+		case aux64AO:
 			st=irio_getAuxAO_64(&pdrvPvt->drvPvt, addr,value,&irio_status);
 			if (st==IRIO_success){
 				errlogSevPrintf(errlogInfo,"[%s-%d][%s]auxAO_64 (addr=%d) value: %d \n",__func__,__LINE__,pdrvPvt->portName,addr,*value);
@@ -1895,7 +1895,7 @@ static asynStatus int64Write(void *drvPvt,asynUser *pasynUser, epicsInt64 value)
 	switch (pasynUser->reason) {
 
 
-	case auxAO_64:
+	case aux64AO:
 
 		st=irio_setAuxAO_64(&pdrvPvt->drvPvt, addr, value,&irio_status);
 		if (st==IRIO_success){

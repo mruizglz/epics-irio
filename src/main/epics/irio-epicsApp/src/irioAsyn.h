@@ -128,11 +128,13 @@
 #define CLCONFIG_COMMANDS			10
 #define UART_COMMANDS				6
 #define USER_DEFINED_CONVERSION_FACTOR  1
+#define AUX64AI_COMMANDS             	1
+#define AUX64AO_COMMANDS             	1
 
 
 #define MAX_IRIO_COMMANDS    (SR_CMDS+ DEBUG_COMMANDS+GROUPENABLE_COMMANDS+ STARTSTOP_COMMANDS+\
 								CHANNELS_COMMANDS+ DECIMATIONFACTOR_COMMANDS+OTHER_COMMANDS + AO_COMMANDS + DO_COMMANDS + DI_COMMANDS+ AI_COMMANDS+ \
-								AUXAI_COMMANDS+ +AUXAO_COMMANDS+ AUXDI_COMMANDS+ AUXDO_COMMANDS+ CLCONFIG_COMMANDS + UART_COMMANDS + USER_DEFINED_CONVERSION_FACTOR)
+								AUXAI_COMMANDS+ +AUXAO_COMMANDS+ AUXDI_COMMANDS+ AUXDO_COMMANDS+ CLCONFIG_COMMANDS + UART_COMMANDS + USER_DEFINED_CONVERSION_FACTOR+ AUX64AI_COMMANDS+AUX64AO_COMMANDS)
 ///@}
 
 #define MIN(a,b) ((a<b) ? a: b)
@@ -307,8 +309,8 @@ typedef enum  {
 	UARTFrammingError,
 	UARTOverrunError,
 	UserDefinedConversionFactor,
-	auxAI_64,
-	auxAO_64
+	aux64AI,
+	aux64AO
 }Tirio_commands;
 
 /**
@@ -373,7 +375,9 @@ static TirioCommandStruct commands[MAX_IRIO_COMMANDS] = {
 	{UARTBreakIndicator,"UARTBreakIndicator"},
 	{UARTFrammingError,"UARTFrammingError"},
 	{UARTOverrunError,"UARTOverrunError"},
-	{UserDefinedConversionFactor,"UserDefinedConversionFactor"}
+	{UserDefinedConversionFactor,"UserDefinedConversionFactor"},
+	{aux64AI, "aux64AI"},
+	{aux64AO,"aux64AO"}
 };
 
 /**
@@ -637,7 +641,7 @@ static asynInt32 AInt32 = {
 
 
 
-/********************************************** asynInt32 **********************************************/
+/********************************************** asynInt64 **********************************************/
 
 /**
  * int64Write: Method to write epicsInt32 values
@@ -660,9 +664,9 @@ static asynStatus int64Write(void *drvPvt, asynUser *pasynUser, epicsInt64 value
 static asynStatus int64Read(void *drvPvt, asynUser *pasynUser, epicsInt64 *value);
 
 /**
- * asynInt32 interface: Communicates with the device via 32 bit integers
+ * asynInt32 interface: Communicates with the device via 64 bit integers
  */
-static asynInt32 AInt64 = {
+static asynInt64 AInt64 = {
         int64Write,
         int64Read,
         NULL,

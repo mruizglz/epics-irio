@@ -1,7 +1,7 @@
-record (ao, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-auxAO_64$(CHIDX)"){
+record (ao, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-aux64AO$(CHIDX)"){
 	field(DESC,"Analog Output aux channel $(CHIDX) value")
 	field(DTYP,"asynInt64")
-	field(OUT,"@asyn(RIO_$(MODULEIDX),$(CHIDX))auxAO_64")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(CHIDX))aux64AO")
 	field(PREC,"0")
 	field(HOPR,"$(HOPR)")
 	field(LOPR,"$(LOPR)")
