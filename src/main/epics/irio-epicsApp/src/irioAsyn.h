@@ -306,7 +306,9 @@ typedef enum  {
 	UARTBreakIndicator,
 	UARTFrammingError,
 	UARTOverrunError,
-	UserDefinedConversionFactor
+	UserDefinedConversionFactor,
+	auxAI_64,
+	auxAO_64
 }Tirio_commands;
 
 /**
@@ -490,6 +492,7 @@ typedef struct irioPvt
         asynInterface	AsynOctet;			//!< Asyn asynOctet interface
         asynInterface   AsynInt8Array;		//!< Asyn asynInt8Array interface
         asynInterface   AsynInt32;			//!< Asyn asynInt32 interface
+        asynInterface   AsynInt64;			//!< Asyn asynInt64 interface
         asynInterface   AsynInt32Array;		//!< Asyn asynInt32Array interface
         asynInterface   AsynFloat64;		//!< Asyn asynFloat64 interface
         asynInterface   AsynFloat32Array;	//!< Asyn asynFloat32Array interface
@@ -498,6 +501,7 @@ typedef struct irioPvt
         void *asynOctetInterruptPvt;			//!< Asyn asynOctet interrupt source
         void *asynInt8ArrayInterruptPvt;		//!< Asyn asynInt8Array interrupt source
         void *asynInt32InterruptPvt;			//!< Asyn asynInt32 interrupt source
+        void *asynInt64InterruptPvt;			//!< Asyn asynInt32 interrupt source
         void *asynInt32ArrayInterruptPvt;		//!< Asyn asynInt32Array interrupt source
         void *asynFloat32ArrayInterruptPvt;		//!< Asyn asynFloat32Array interrupt source
         void *asynFloat64InterruptPvt;			//!< Asyn asynFloat64 interrupt source
@@ -626,6 +630,41 @@ static asynStatus int32Read(void *drvPvt, asynUser *pasynUser, epicsInt32 *value
 static asynInt32 AInt32 = {
         int32Write,
         int32Read,
+        NULL,
+        NULL,
+        NULL,
+};
+
+
+
+/********************************************** asynInt32 **********************************************/
+
+/**
+ * int64Write: Method to write epicsInt32 values
+ *
+ * @param[in] drvPvt		Struct pointer that includes all resources to manage a RIO device
+ * @param[in] pasynUser		Pointer to asynUser, struct that contains generic information and is the "handle" for calling most methods.
+ * @param[in] value			Value to write
+ * @return asynStatus
+ */
+static asynStatus int64Write(void *drvPvt, asynUser *pasynUser, epicsInt64 value);
+
+/**
+ * int64Read: Method to read epicsInt32 values
+ *
+ * @param[in]  drvPvt		Struct pointer that includes all resources to manage a RIO device
+ * @param[in] pasynUser		Pointer to asynUser, struct that contains generic information and is the "handle" for calling most methods.
+ * @param[out] value		Value read
+ * @return asynStatus
+ */
+static asynStatus int64Read(void *drvPvt, asynUser *pasynUser, epicsInt64 *value);
+
+/**
+ * asynInt32 interface: Communicates with the device via 32 bit integers
+ */
+static asynInt32 AInt64 = {
+        int64Write,
+        int64Read,
         NULL,
         NULL,
         NULL,

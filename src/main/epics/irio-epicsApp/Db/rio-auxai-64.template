@@ -1,0 +1,10 @@
+record (ai, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-auxAI_64$(CHIDX)"){
+	field(DESC,"Analog Input aux_64 channel $(CHIDX) value")
+	field(DTYP,"asynInt64")
+	field(INP,"@asyn(RIO_$(MODULEIDX),$(CHIDX))auxAI_64")
+	field(SCAN,".1 second")
+	field(PREC,"0")
+	field(PINI,"YES")
+}
+
+

@@ -264,6 +264,13 @@ int nirioinit(const char *namePort,const char *DevSerial,const char *PXInirioMod
 	pdrvPvt->AsynInt32.interfaceType = asynInt32Type;
 	pdrvPvt->AsynInt32.pinterface = (void *)&AInt32;
 	pdrvPvt->AsynInt32.drvPvt = pdrvPvt;
+
+	/* int 64*/
+
+	pdrvPvt->AsynInt64.interfaceType = asynInt64Type;
+	pdrvPvt->AsynInt64.pinterface = (void *)&AInt64;
+	pdrvPvt->AsynInt64.drvPvt = pdrvPvt;
+
 	/* Int32Array */
 	pdrvPvt->AsynInt32Array.interfaceType = asynInt32ArrayType;
 	pdrvPvt->AsynInt32Array.pinterface = (void *)&AInt32Array;
@@ -276,6 +283,8 @@ int nirioinit(const char *namePort,const char *DevSerial,const char *PXInirioMod
 	pdrvPvt->AsynFloat32Array.interfaceType = asynFloat32ArrayType;
 	pdrvPvt->AsynFloat32Array.pinterface = (void *)&asynFloat32Array_structure;
 	pdrvPvt->AsynFloat32Array.drvPvt = pdrvPvt;
+
+
 
 	/* register Common interface */
 	status = pasynManager->registerInterface(pdrvPvt->portName, &pdrvPvt->common);
@@ -309,6 +318,13 @@ int nirioinit(const char *namePort,const char *DevSerial,const char *PXInirioMod
 	status = pasynInt32Base->initialize(pdrvPvt->portName, &pdrvPvt->AsynInt32);
 	if (status != asynSuccess) {
 		asynPrint(pasynUser,ASYN_TRACE_ERROR,"[%s-%d][%s]irioInit registerInterface failed for asynInt32 interface.\n",__func__,__LINE__,pdrvPvt->portName);
+		return asynError;
+	}
+
+	/* register AsynInt64 */
+	status = pasynInt64Base->initialize(pdrvPvt->portName, &pdrvPvt->AsynInt64);
+	if (status != asynSuccess) {
+		asynPrint(pasynUser,ASYN_TRACE_ERROR,"[%s-%d][%s]irioInit registerInterface failed for asynInt64 interface.\n",__func__,__LINE__,pdrvPvt->portName);
 		return asynError;
 	}
 
@@ -351,6 +367,13 @@ int nirioinit(const char *namePort,const char *DevSerial,const char *PXInirioMod
 	if (status != asynSuccess) {
 		asynPrint(pasynUser,ASYN_TRACE_ERROR,"[%s-%d][%s]irioInit registerInterruptSource asynInt32InterruptPvt failed\n",__func__,__LINE__,pdrvPvt->portName);
     	return asynError;
+	}
+
+	/* Register Int64 interrupt sources */
+	status = pasynManager->registerInterruptSource(pdrvPvt->portName, &pdrvPvt->AsynInt64, &pdrvPvt->asynInt64InterruptPvt);
+	if (status != asynSuccess) {
+		asynPrint(pasynUser,ASYN_TRACE_ERROR,"[%s-%d][%s]irioInit registerInterruptSource asynInt64InterruptPvt failed\n",__func__,__LINE__,pdrvPvt->portName);
+		return asynError;
 	}
 
 	/* Register Int32Array interrupt sources */
@@ -912,7 +935,7 @@ static asynStatus octetWrite(void *drvPvt,asynUser *pasynUser, const char *data,
 				char* msg = malloc(40*sizeof(char));
 				int len=0;
 				usleep(100000);
-				irio_getCLuart(&pdrvPvt->drvPvt,msg,&len,&irio_status);
+				irio_getCLuart(&pdrvPvt->drvPvt,40,msg,&len,&irio_status);
 				msg[len]='\0';
 				char* aux = pdrvPvt->UARTReceivedMsg;
 				pdrvPvt->UARTReceivedMsg=msg;
@@ -1747,6 +1770,149 @@ static asynStatus int32Write(void *drvPvt,asynUser *pasynUser, epicsInt32 value)
 	return status_func(pdrvPvt,&irio_status);
 }
 
+
+/**
+ * int64 asyndriver interface
+ *
+ *
+ * @param *drvPvt pointer to device structure
+ * @param pasynUser pointer to asynuser.
+ * @param value [out] pointer to read value int64 data type
+ * @return asynStatus
+ */
+static asynStatus int64Read(void *drvPvt,asynUser *pasynUser, epicsInt64 *value)
+{
+
+	irio_pvt_t *pdrvPvt = (irio_pvt_t *) drvPvt;
+	int addr;
+	asynStatus asyn_status;
+	int64_t aux=0;
+	TIRIOStatusCode st=IRIO_success;
+	TStatus irio_status;
+	irio_initStatus(&irio_status);
+
+	if(pdrvPvt->epicsExiting==1 && pdrvPvt->flag_exit==0){
+		pdrvPvt->flag_exit=1;
+    	errlogSevPrintf(errlogInfo,"[%s-%d][%s]Reading from int32Read interface at IOC exit\n",__func__,__LINE__,pdrvPvt->portName);
+		return asynSuccess;
+	}
+	if(pdrvPvt->epicsExiting==1 && pdrvPvt->flag_exit==1){
+		return asynSuccess;
+	}
+
+	if(pasynUser->reason!=riodevice_status){
+		if(pdrvPvt->driverInitialized==0 && pdrvPvt->flag_close==0){
+			pdrvPvt->flag_close=1;
+			*value=0;
+	    	errlogSevPrintf(errlogInfo,"[%s-%d][%s]Reading from int64Read interface with driver closed\n",__func__,__LINE__,pdrvPvt->portName);
+			return asynSuccess;
+		}
+		if(pdrvPvt->driverInitialized==0 && pdrvPvt->flag_close==1){
+			*value=0;
+			return asynSuccess;
+		}
+	}
+
+	asyn_status = pasynManager->getAddr(pasynUser,&addr);
+	if(asyn_status!=asynSuccess){
+		irio_mergeStatus(&irio_status,Generic_Warning,0,"[%s-%d][%s]Error getAddr connect. Asyn_Status: '%d'.\n",__func__,__LINE__,pdrvPvt->portName,pasynUser->reason,asyn_status);
+		return status_func(pdrvPvt,&irio_status);
+	}
+
+	switch (pasynUser->reason) {
+
+		case auxAI_64:
+			st=irio_getAuxAI_64(&pdrvPvt->drvPvt, addr,value,&irio_status);
+			if (st==IRIO_success){
+				errlogSevPrintf(errlogInfo,"[%s-%d][%s]auxAI_64 (addr=%d) value: %d \n",__func__,__LINE__,pdrvPvt->portName,addr,*value);
+			}
+			break;
+
+		case auxAO:
+			st=irio_getAuxAO_64(&pdrvPvt->drvPvt, addr,value,&irio_status);
+			if (st==IRIO_success){
+				errlogSevPrintf(errlogInfo,"[%s-%d][%s]auxAO_64 (addr=%d) value: %d \n",__func__,__LINE__,pdrvPvt->portName,addr,*value);
+			}
+			break;
+
+		default:
+			irio_mergeStatus(&irio_status,FeatureNotImplemented_Error,0,"[%s-%d][%s]Reason:(%d) NOT FOUND\n",__func__,__LINE__,pdrvPvt->portName,pasynUser->reason);
+			break;
+	}
+
+	return status_func(pdrvPvt,&irio_status);
+}
+
+
+/**
+*	asyn interface int32Write is used to write in the RIO FPGA Device
+*	This function gives support to the next reasons:
+*		SR[15-0]
+*		GroupEnable[15-0]
+*		debug
+*		DAQStartStop
+*		WFFrequency[1-0]
+*		AOEnable[1-0]
+*		AOEnable[1-0]
+*		SignalType[1-0]
+*		DF[15-0]
+*		DO[95-0]
+*/
+static asynStatus int64Write(void *drvPvt,asynUser *pasynUser, epicsInt64 value) {
+
+	irio_pvt_t *pdrvPvt = (irio_pvt_t *) drvPvt;
+	int addr;
+	TIRIOStatusCode st=IRIO_success;
+	TStatus irio_status;
+	irio_initStatus(&irio_status);
+	asynStatus asyn_status;
+	int i=0,j=0;
+
+	if(pdrvPvt->epicsExiting==1 && pdrvPvt->flag_exit==0){
+		pdrvPvt->flag_exit=1;
+    	errlogSevPrintf(errlogInfo,"[%s-%d][%s]Trying to write in int64Write interface at IOC exit\n",__func__,__LINE__,pdrvPvt->portName);
+		return asynSuccess;
+	}
+	if(pdrvPvt->epicsExiting==1 && pdrvPvt->flag_exit==1){
+		return asynSuccess;
+	}
+
+	if(pdrvPvt->driverInitialized==0 && pdrvPvt->flag_close==0){
+		pdrvPvt->flag_close=1;
+    	errlogSevPrintf(errlogInfo,"[%s-%d][%s]Trying to write in int64Write interface with driver closed\n",__func__,__LINE__,pdrvPvt->portName);
+		return asynSuccess;
+	}
+	if(pdrvPvt->driverInitialized==0 && pdrvPvt->flag_close==1){
+		return asynSuccess;
+	}
+
+	asyn_status = pasynManager->getAddr(pasynUser,&addr);
+	if(asyn_status!=asynSuccess){
+		irio_mergeStatus(&irio_status,Generic_Warning,0,"[%s-%d][%s]Error getAddr connect. Asyn_Status: '%d'.\n",__func__,__LINE__,pdrvPvt->portName,pasynUser->reason,asyn_status);
+		return status_func(pdrvPvt,&irio_status);
+	}
+
+	switch (pasynUser->reason) {
+
+
+	case auxAO_64:
+
+		st=irio_setAuxAO_64(&pdrvPvt->drvPvt, addr, value,&irio_status);
+		if (st==IRIO_success){
+			errlogSevPrintf(errlogInfo,"[%s-%d][%s]auxAO_64 (addr=%d) value: %d \n",__func__,__LINE__,pdrvPvt->portName,addr,value);
+		}
+		break;
+
+
+	default:
+		irio_mergeStatus(&irio_status,FeatureNotImplemented_Error,0,"[%s-%d][%s]Reason:(%d) NOT FOUND\n",__func__,__LINE__,pdrvPvt->portName,pasynUser->reason);
+		break;
+	}
+	return status_func(pdrvPvt,&irio_status);
+}
+
+
+
 /**
 *	asyn interface float64Write is used to write in the RIO FPGA Device
 *	This function gives support to the next reasons:
@@ -1913,6 +2079,7 @@ static asynStatus float64Read(void *drvPvt,asynUser *pasynUser, epicsFloat64 *va
 	}
 
 	int32_t vaux;
+
 	switch (pasynUser->reason) {
 
 		case SGAmp:
