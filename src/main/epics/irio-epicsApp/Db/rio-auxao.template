@@ -1,0 +1,12 @@
+record (ao, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-auxAO$(CHIDX)"){
+	field(DESC,"Analog Output aux channel $(CHIDX) value")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(CHIDX))auxAO")
+	field(PREC,"0")
+	field(HOPR,"$(HOPR)")
+	field(LOPR,"$(LOPR)")
+	field(DRVH,"$(DRVH)")
+	field(DRVL,"$(DRVL)")
+	field(PINI,"NO")
+}
+

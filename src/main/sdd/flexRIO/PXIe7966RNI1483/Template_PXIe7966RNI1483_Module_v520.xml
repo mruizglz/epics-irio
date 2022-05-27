@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns="http://www.iter.org/CODAC/PlantSystemIandC/2014-2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="7966RNI1483_module" description="7966RNI1483 module template."  usesSubstitutionFiles="true"  version="520"  userCanInstanciate="true" xsi:schemaLocation="http://www.iter.org/CODAC/PlantSystemIandC/2014-2 ../xsd/PlantSystemIandC.xsd">
+	<applicableToControlUnit>PCF</applicableToControlUnit>
+	<applicableToIOBoard>7966RNI1483</applicableToIOBoard>
+	<location>rio-module.template</location>
+	<EPICSDBDName>irioAsyn.dbd</EPICSDBDName>
+	<EPICSLibraryName>irio-epics</EPICSLibraryName>
+<!--FPGASTART-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-FPGASTART"
+                          description="FPGA Start."
+                          createdAt="2014-12-05T17:37:14.146Z"
+                          modifiedAt="2014-12-05T17:37:14.146Z">
+      <direction>configuration</direction>
+      <kind>discrete two-state</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-FPGASTART" type="bo"
+                           createdAt="2014-12-05T17:37:14.146Z"
+                           modifiedAt="2014-12-05T17:37:14.146Z">
+            <EPICSField name="DESC" value="FPGA Start."/>
+            <EPICSField name="DTYP" value="asynInt32"/>
+            <EPICSField name="OUT" value="@asyn(RIO_$(MODULEIDX),0) FPGAStart"/>
+	    	<EPICSField name="PINI" value="NO"/>
+	    	<EPICSField name="ZNAM" value="OFF"/>
+	    	<EPICSField name="ONAM" value="ON"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+<!--EPICSVERSION-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-EPICSVERSION"
+                          description="Epics-irio driver version"
+                          createdAt="2014-12-05T17:37:14.146Z"
+                          modifiedAt="2014-12-05T17:37:14.146Z">
+      <direction>state</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-EPICSVERSION" type="stringin"
+                           createdAt="2014-12-05T17:37:14.146Z"
+                           modifiedAt="2014-12-05T17:37:14.146Z">
+            <EPICSField name="DESC" value="Epics-irio driver version"/>
+            <EPICSField name="DTYP" value="asynOctetRead"/>
+            <EPICSField name="INP" value="@asyn(RIO_$(MODULEIDX),0) epics_version"/>
+	    	<EPICSField name="PINI" value="YES"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+<!--DEVICETEMP-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DEVICETEMP"
+                          description="FPGA Temperature."
+                          createdAt="2014-12-05T17:37:14.146Z"
+                          modifiedAt="2014-12-05T17:37:14.146Z">
+      <direction>state</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DEVICETEMP" type="ai"
+                           createdAt="2014-12-05T17:37:14.146Z"
+                           modifiedAt="2014-12-05T17:37:14.146Z">
+            <EPICSField name="DESC" value="FPGA Temperature."/>
+            <EPICSField name="DTYP" value="asynFloat64"/>
+            <EPICSField name="INP" value="@asyn(RIO_$(MODULEIDX),0) DeviceTemp"/>
+	    	<EPICSField name="SCAN" value="1 second"/>
+            <EPICSField name="PREC" value="2"/>
+	    	<EPICSField name="PINI" value="YES"/>
+	    	<EPICSField name="LINR" value="NO CONVERSION"/>
+	    	<EPICSField name="EGU" value="C Degrees"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+<!--DAQSTARTSTOP-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DAQSTARTSTOP"
+                          description="Controls DAQ Start/Stop."
+                          createdAt="2014-12-05T17:37:14.146Z"
+                          modifiedAt="2014-12-05T17:37:14.146Z">
+      <direction>configuration</direction>
+      <kind>discrete two-state</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DAQSTARTSTOP" type="bo"
+                           createdAt="2014-12-05T17:37:14.146Z"
+                           modifiedAt="2014-12-05T17:37:14.146Z">
+            <EPICSField name="DESC" value="Controls DAQ Start/Stop."/>
+            <EPICSField name="DTYP" value="asynInt32"/>
+            <EPICSField name="OUT" value="@asyn(RIO_$(MODULEIDX),0) DAQStartStop"/>
+	    	<EPICSField name="PINI" value="NO"/>
+	    	<EPICSField name="ZNAM" value="OFF"/>
+	    	<EPICSField name="ONAM" value="ON"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+<!--DEBUGMODE-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DEBUGMODE"
+                          description="Controls FPGA DebugMode."
+                          createdAt="2014-12-05T17:37:14.146Z"
+                          modifiedAt="2014-12-05T17:37:14.146Z">
+      <direction>configuration</direction>
+      <kind>discrete two-state</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DEBUGMODE" type="bo"
+                           createdAt="2014-12-05T17:37:14.146Z"
+                           modifiedAt="2014-12-05T17:37:14.146Z">
+            <EPICSField name="DESC" value="Controls FPGA DebugMode."/>
+            <EPICSField name="DTYP" value="asynInt32"/>
+            <EPICSField name="OUT" value="@asyn(RIO_$(MODULEIDX),0) debug"/>
+	    	<EPICSField name="PINI" value="NO"/>
+	    	<EPICSField name="ZNAM" value="OFF"/>
+	    	<EPICSField name="ONAM" value="ON"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+<!--DEVQUALITYSTATUS-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DEVQUALITYSTATUS"
+			  description="Info of errors in acquisition process"
+                          createdAt="2014-12-05T17:37:14.168Z"
+                          modifiedAt="2014-12-05T17:37:14.168Z">
+      <direction>state</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DEVQUALITYSTATUS" type="ai"
+                           createdAt="2014-12-05T17:37:14.168Z"
+                           modifiedAt="2014-12-05T17:37:14.168Z">
+            <EPICSField name="DESC" value="Info of errors in acquisition process"/>
+            <EPICSField name="DTYP" value="asynInt32"/>
+            <EPICSField name="INP" value="@asyn(RIO_$(MODULEIDX),0) DevQualityStatus"/>
+            <EPICSField name="SCAN" value="1 second"/>
+            <EPICSField name="PINI" value="YES"/>       
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+<!--FPGAVIVERSION-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-FPGAVIVERSION"
+                          description="Bitfile version"
+                          createdAt="2014-12-05T17:37:14.146Z"
+                          modifiedAt="2014-12-05T17:37:14.146Z">
+      <direction>state</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-FPGAVIVERSION" type="stringin"
+                           createdAt="2014-12-05T17:37:14.146Z"
+                           modifiedAt="2014-12-05T17:37:14.146Z">
+            <EPICSField name="DESC" value="Bitfile version"/>
+            <EPICSField name="DTYP" value="asynOctetRead"/>
+            <EPICSField name="INP" value="@asyn(RIO_$(MODULEIDX),0) VIversion"/>
+	    	<EPICSField name="PINI" value="YES"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+   <!--DRIVERVERSION-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DRIVERVERSION"
+                          description="IRIO driver version"
+                          createdAt="2014-12-05T17:37:14.146Z"
+                          modifiedAt="2014-12-05T17:37:14.146Z">
+      <direction>state</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DRIVERVERSION" type="stringin"
+                           createdAt="2014-12-05T17:37:14.146Z"
+                           modifiedAt="2014-12-05T17:37:14.146Z">
+            <EPICSField name="DESC" value="IRIO driver version"/>
+            <EPICSField name="DTYP" value="asynOctetRead"/>
+            <EPICSField name="INP" value="@asyn(RIO_$(MODULEIDX),0) driver_version"/>
+	    	<EPICSField name="PINI" value="YES"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+   <!--DEVICENAME-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DEVICENAME"
+                          description="RIO device name"
+                          createdAt="2014-12-05T17:37:14.146Z"
+                          modifiedAt="2014-12-05T17:37:14.146Z">
+      <direction>state</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DEVICENAME" type="stringin"
+                           createdAt="2014-12-05T17:37:14.146Z"
+                           modifiedAt="2014-12-05T17:37:14.146Z">
+            <EPICSField name="DESC" value="RIO device name"/>
+            <EPICSField name="DTYP" value="asynOctetRead"/>
+            <EPICSField name="INP" value="@asyn(RIO_$(MODULEIDX),0) device_name"/>
+	    	<EPICSField name="PINI" value="YES"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+   <!--SERIALNUMBER-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SERIALNUMBER"
+                          description="RIO device serial number"
+                          createdAt="2014-12-05T17:37:14.146Z"
+                          modifiedAt="2014-12-05T17:37:14.146Z">
+      <direction>state</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SERIALNUMBER" type="stringin"
+                           createdAt="2014-12-05T17:37:14.146Z"
+                           modifiedAt="2014-12-05T17:37:14.146Z">
+            <EPICSField name="DESC" value="RIO device serial number"/>
+            <EPICSField name="DTYP" value="asynOctetRead"/>
+            <EPICSField name="INP" value="@asyn(RIO_$(MODULEIDX),0) device_serial_number"/>
+	    	<EPICSField name="PINI" value="YES"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+   <!--FPGASTATUS-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-FPGASTATUS"
+                          description="RIO device FPGA status"
+                          createdAt="2014-12-05T17:37:14.146Z"
+                          modifiedAt="2014-12-05T17:37:14.146Z">
+      <direction>state</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-FPGASTATUS" type="stringin"
+                           createdAt="2014-12-05T17:37:14.146Z"
+                           modifiedAt="2014-12-05T17:37:14.146Z">
+            <EPICSField name="DESC" value="RIO device FPGA status"/>
+            <EPICSField name="DTYP" value="asynOctetRead"/>
+            <EPICSField name="INP" value="@asyn(RIO_$(MODULEIDX),0) FPGAStatus"/>
+	    	<EPICSField name="PINI" value="YES"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+   <!--INFOSTATUS-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-STATUS-STR"
+                          description="RIO device status INFO"
+                          createdAt="2014-12-05T17:37:14.146Z"
+                          modifiedAt="2014-12-05T17:37:14.146Z">
+      <direction>state</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-STATUS-STR" type="stringin"
+                           createdAt="2014-12-05T17:37:14.146Z"
+                           modifiedAt="2014-12-05T17:37:14.146Z">
+            <EPICSField name="DESC" value="RIO device status INFO"/>
+            <EPICSField name="DTYP" value="asynOctetRead"/>
+            <EPICSField name="INP" value="@asyn(RIO_$(MODULEIDX),0) InfoStatus"/>
+	    	<EPICSField name="SCAN" value="I/O Intr"/>
+	    	<EPICSField name="PINI" value="YES"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+<!--RIO_DEVICE_STATUS-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-STATUS"
+                          description="$(BOARDTYPE).$(BOARDTYPEIDX) Board Status"
+                          createdAt="2014-12-05T17:37:14.048Z"
+                          modifiedAt="2014-12-05T17:37:14.048Z">
+      <direction>state</direction>
+      <kind>discrete multi-state</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-STATUS" type="mbbi"
+                           createdAt="2014-12-05T17:37:14.048Z"
+                           modifiedAt="2014-12-05T17:37:14.048Z">
+            <EPICSField name="DESC" value="$(BOARDTYPE).$(BOARDTYPEIDX) Board Status"/>
+            <EPICSField name="DTYP" value="asynInt32"/>
+            <EPICSField name="INP" value="@asyn(RIO_$(MODULEIDX),0) riodevice_status"/>
+            <EPICSField name="SCAN" value="I/O Intr"/>
+            <EPICSField name="ZRVL" value="0"/>
+            <EPICSField name="ZRST" value="Ok"/>
+            <EPICSField name="ZRSV" value="NO_ALARM"/>
+            <EPICSField name="ONVL" value="1"/>
+            <EPICSField name="ONST" value="Initializing"/>
+            <EPICSField name="ONSV" value="MINOR"/>
+            <EPICSField name="TWVL" value="2"/>
+            <EPICSField name="TWST" value="Resetting"/>
+            <EPICSField name="TWSV" value="MINOR"/>
+            <EPICSField name="THVL" value="3"/>      
+            <EPICSField name="THST" value="Hardware error"/>      
+            <EPICSField name="THSV" value="MAJOR"/>                  
+            <EPICSField name="FRVL" value="4"/> 
+            <EPICSField name="FRST" value="No Board"/> 
+            <EPICSField name="FRSV" value="MAJOR"/>   
+            <EPICSField name="FVVL" value="5"/> 
+            <EPICSField name="FVST" value="StatConf error"/> 
+            <EPICSField name="FVSV" value="MAJOR"/> 
+            <EPICSField name="SXVL" value="6"/> 
+            <EPICSField name="SXST" value="DynConf error"/> 
+            <EPICSField name="SXSV" value="MAJOR"/> 
+            <EPICSField name="SVVL" value="7"/> 
+            <EPICSField name="SVST" value="Configured"/> 
+            <EPICSField name="SVSV" value="NO_ALARM"/>     
+            <EPICSField name="EIVL" value="8"/> 
+            <EPICSField name="EIST" value="HW_config_error"/> 
+            <EPICSField name="EISV" value="MAJOR"/>
+            <EPICSField name="PINI" value="YES"/>
+            <EPICSField name="VAL" value="4"/>                           
+		 </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+<!--MACROS-->
+   <macroGroup ID="USER">
+		<macro name="BOARDTYPE" description="Board type" value="1483"/>
+   </macroGroup>
+</template>

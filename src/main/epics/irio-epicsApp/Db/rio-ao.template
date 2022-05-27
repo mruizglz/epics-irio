@@ -1,0 +1,20 @@
+record (ao, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-AO$(CHIDX)"){
+	field(DESC,"Analog Output channel $(CHIDX) value")
+	field(DTYP,"asynFloat64")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(CHIDX))AO")
+	field(HOPR,"$(HOPR)")
+	field(LOPR,"$(LOPR)")
+	field(DRVH,"$(DRVH)")
+	field(DRVL,"$(DRVL)")
+	field(PREC,"6")
+	field(PINI,"NO")	
+}
+record(bo,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-AOENABLE$(CHIDX)"){
+	field(DESC,"Analog Output channel $(CHIDX) enable")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(CHIDX))AOEnable")
+	field(PINI,"NO")
+	field(ZNAM,"DISABLE")
+	field(ONAM,"ENABLE")	
+}
+

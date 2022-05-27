@@ -1,0 +1,158 @@
+record(bo,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-GROUPENABLE$(GRIDX)"){
+	field(DESC,"Controls ChannelGroup$(GRIDX) enable/disable")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(GRIDX))GroupEnable")
+	field(ZNAM,"DISABLE")
+	field(ONAM,"ENABLE")
+	field(PINI,"NO")	
+}
+record(bi,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DMAsOVERFLOW$(GRIDX)"){
+	field(DESC,"Correct(0) or Overflow(1)")
+	field(DTYP,"asynInt32")
+	field(INP,"@asyn(RIO_$(MODULEIDX),$(GRIDX))DMAsOverflow")
+	field(ZNAM,"CORRECT")
+	field(ONAM,"OVERFLOW")
+	field(PINI,"YES")	
+	field(SCAN,".1 second")
+}
+record(ao,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DF$(GRIDX)"){
+	field(DESC,"Block Decimation factor of DMA$(GRIDX)")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(GRIDX))DF")
+	field(PINI,"NO")
+	field(HOPR,"100000000")
+	field(LOPR,"1")
+	field(DRVH,"100000000")
+	field(DRVL,"1")
+	field(PREC,"0")	
+}
+record(mbbo,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SIGNALMAPPING$(GRIDX)"){
+	field(DESC,"Select the signal mapping $(GRIDX)")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(GRIDX))CLSignalMapping")
+	field(PINI,"NO")
+	field(ZRVL,"0")
+	field(ONVL,"1")
+	field(TWVL,"2")
+	field(ZRST,"STANDARD")
+	field(ONST,"BASLER10TAP")
+	field(TWST,"VOSKHULER10TAP")	
+}
+record(mbbo,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-CONFIGURATION$(GRIDX)"){
+	field(DESC,"0-Base,1-Medium,2-Full")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(GRIDX))CLConfiguration")
+	field(PINI,"NO")
+	field(ZRVL,"0")
+	field(ONVL,"1")
+	field(TWVL,"2")
+	field(ZRST,"BASE")
+	field(ONST,"MEDIUM")
+	field(TWST,"FULL")	
+}
+record(bo,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-LINESCAN$(GRIDX)"){
+	field(DESC,"Set CL Line Scan $(GRIDX)")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(GRIDX))CLLineScan")
+	field(PINI,"NO")
+	field(ZNAM,"DISABLE")
+	field(ONAM,"ENABLE")	
+}
+record(bo,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-FVALHIGH$(GRIDX)"){
+	field(DESC,"Set CL FVAL Active High $(GRIDX)")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(GRIDX))CLFVALHigh")
+	field(PINI,"NO")
+	field(ZNAM,"DISABLE")
+	field(ONAM,"ENABLE")	
+}
+record(bo,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-LVALHIGH$(GRIDX)"){
+	field(DESC,"Set CL LVAL Active High $(GRIDX)")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(GRIDX))CLLVALHigh")
+	field(PINI,"NO")
+	field(ZNAM,"DISABLE")
+	field(ONAM,"ENABLE")	
+}
+record(bo,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DVALHIGH$(GRIDX)"){
+	field(DESC,"Set CL DVAL Active High $(GRIDX)")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(GRIDX))CLDVALHigh")
+	field(PINI,"NO")
+	field(ZNAM,"DISABLE")
+	field(ONAM,"ENABLE")	
+}
+record(bo,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SPAREHIGH$(GRIDX)"){
+	field(DESC,"Set CL Spare Active High $(GRIDX)")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(GRIDX))CLSpareHigh")
+	field(PINI,"NO")
+	field(ZNAM,"DISABLE")
+	field(ONAM,"ENABLE")	
+}
+record(stringin,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-UARTRECEIVE$(GRIDX)"){
+	field(DESC,"Uart Recieve $(GRIDX)")
+	field(DTYP,"asynOctetRead")
+	field(INP,"@asyn(RIO_$(MODULEIDX),$(GRIDX))UARTReceive")
+	field(SCAN,"I/O Intr")
+	field(PINI,"YES")	
+}
+record(stringout,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-UARTTRANSMIT$(GRIDX)"){
+	field(DESC,"Uart Transmit $(GRIDX)")
+	field(DTYP,"asynOctetWrite")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(GRIDX))UARTTransmit")
+	field(PINI,"NO")	
+}
+record(bi,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-UARTBREAK$(GRIDX)"){
+	field(DESC,"Uart break indicator $(GRIDX)")
+	field(DTYP,"asynInt32")
+	field(INP,"@asyn(RIO_$(MODULEIDX),$(GRIDX))UARTBreakIndicator")
+	field(ZNAM,"UARTCORRECT")
+	field(ONAM,"UARTBREAK")
+	field(SCAN,".1 second")
+	field(PINI,"YES")	
+}
+record(bi,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-UARTFRAMEeRR$(GRIDX)"){
+	field(DESC,"Frame Error $(GRIDX)")
+	field(DTYP,"asynInt32")
+	field(INP,"@asyn(RIO_$(MODULEIDX),$(GRIDX))UARTFrammingError")
+	field(ZNAM,"UARTCORRECT")
+	field(ONAM,"UARTFRAMEERROR")
+	field(SCAN,".1 second")
+	field(PINI,"YES")	
+}
+record(bi,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-UARTOVERRUN$(GRIDX)"){
+	field(DESC,"UartCorrect(0) or UartOverrun(1)")
+	field(DTYP,"asynInt32")
+	field(INP,"@asyn(RIO_$(MODULEIDX),$(GRIDX))UARTOverrunError")
+	field(ZNAM,"UARTCORRECT")
+	field(ONAM,"UARTOVERRUN")
+	field(PINI,"YES")
+	field(SCAN,".1 second")	
+}
+
+record(longout, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SIZEX$(GRIDX)") {
+	field(DESC, "Image size in X dimension current value.")
+	field(DTYP, "asynInt32")
+	field(EGU, "pix")	
+	field(OUT,  "@asyn(RIO_$(MODULEIDX),$(GRIDX))CLSizeX")
+  	field(FLNK, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-IMAGESIZE$(GRIDX)")
+	field(HOPR,"1690")
+	field(LOPR,"0")
+	field(DRVH,"1690")
+	field(DRVL,"0")
+	field(PINI,"NO")	
+}
+
+record(longout, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SIZEY$(GRIDX)") {
+	field(DESC, "Image size in X dimension current value.")
+	field(DTYP, "asynInt32")
+	field(EGU, "pix")	
+	field(OUT,  "@asyn(RIO_$(MODULEIDX),$(GRIDX))CLSizeY")
+    field(FLNK, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-IMAGESIZE$(GRIDX)")
+	field(HOPR,"1710")
+	field(LOPR,"0")
+	field(DRVH,"1710")
+	field(DRVL,"0")
+	field(PINI,"NO")	
+}

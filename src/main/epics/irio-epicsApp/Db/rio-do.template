@@ -1,0 +1,9 @@
+record (bo, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DO$(CHIDX)"){
+	field(DESC,"Digital Output channel $(CHIDX)")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(CHIDX))DO")
+	field(ZNAM,"FALSE")
+	field(ONAM,"TRUE")
+	field(PINI,"NO")	
+}
+

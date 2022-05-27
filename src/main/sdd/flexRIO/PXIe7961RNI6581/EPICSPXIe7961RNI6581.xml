@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ $HeadURL: TBD.
+ $Id: TBD.
+ 
+ Project       : CODAC Data Management
+
+ Description   : EPICS device support for PXIe7961R-NI6581 bundle using Asyn iRIOcore driver.
+		 The information is taken from the following sources:
+		 -TODO:TBD
+
+ Author        : M. Ruiz
+
+ Copyright (c) : 2010-2022 ITER Organization,
+                 CS 90 046
+                 13067 St. Paul-lez-Durance Cedex
+                 France
+
+ This file is part of ITER CODAC software.
+ For the terms and conditions of redistribution or use of this software
+ refer to the file ITER-LICENSE.TXT located in the top level directory
+ of the distribution package.
+-->
+<deviceSupport name="7961RNI6581" description="IrioAsyn driver for PXIe7961R-NI6581 bundle" xmlns="http://www.iter.org/CODAC/EPICS/2015" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.iter.org/CODAC/EPICS/2013 ../xsd/EPICS.xsd">
+	<supportedHardware>7961RNI6581</supportedHardware>
+	<prefix>7961RNI6581_</prefix>
+	<systemPath>/opt/codac/epics/modules/irio</systemPath>
+	<DBDName>irioAsyn.dbd</DBDName>
+	<libraryName>asyn</libraryName>
+	<libraryName>irio-epics</libraryName>
+	<LinuxDevPrefix>/dev/7961RNI6581.</LinuxDevPrefix><!--TODO:Verify LinuxDevPrefix-->
+<!--TODO:Study which interfaces are neccesary (Interfaces available are included in asyn.dbd->devEpics.dbd)-->
+<!--AI interfaces-->
+	<setting recordType="ai" fieldName="DTYP" userConfigurable="true">
+		<value>asynInt32</value>
+		<value>asynFloat64</value>
+	</setting>
+	<setting recordType="ai" fieldName="INP" userConfigurable="true">
+		<value>@asyn(RIO_$(MODULEIDX),$(CHIDX)) $(ASYNCOMMAND)</value>
+	</setting>	
+<!--AO interfaces-->
+	<setting recordType="ao" fieldName="DTYP" userConfigurable="true">
+		<value>asynInt32</value>
+		<value>asynFloat64</value>
+	</setting>
+	<setting recordType="ao" fieldName="OUT" userConfigurable="true">
+		<value>@asyn(RIO_$(MODULEIDX),$(CHIDX)) $(ASYNCOMMAND)</value>
+	</setting>
+<!--BI interfaces-->
+	<setting recordType="bi" fieldName="DTYP" userConfigurable="true">
+		<value>asynInt32</value>
+	</setting>
+	<setting recordType="bi" fieldName="INP" userConfigurable="true">
+		<value>@asyn(RIO_$(MODULEIDX),$(CHIDX)) $(ASYNCOMMAND)</value>
+	</setting>
+<!--BO interfaces-->
+	<setting recordType="bo" fieldName="DTYP" userConfigurable="true">
+		<value>asynInt32</value>
+	</setting>
+	<setting recordType="bo" fieldName="OUT" userConfigurable="true">
+		<value>@asyn(RIO_$(MODULEIDX),$(CHIDX)) $(ASYNCOMMAND)</value>
+	</setting>
+<!--MBBI interfaces-->
+	<setting recordType="mbbi" fieldName="DTYP" userConfigurable="true">
+		<value>asynInt32</value>
+	</setting>
+	<setting recordType="mbbi" fieldName="INP" userConfigurable="true">
+		<value>@asyn(RIO_$(MODULEIDX),$(CHIDX)) $(ASYNCOMMAND)</value>
+	</setting>
+<!--MBBO interfaces-->
+	<setting recordType="mbbo" fieldName="DTYP" userConfigurable="true">
+		<value>asynInt32</value>
+	</setting>
+	<setting recordType="mbbo" fieldName="OUT" userConfigurable="true">
+		<value>@asyn(RIO_$(MODULEIDX),$(CHIDX)) $(ASYNCOMMAND)</value>
+	</setting>
+<!--LONGIN interfaces-->
+	<setting recordType="longin" fieldName="DTYP" userConfigurable="true">
+		<value>asynInt32</value>
+	</setting>
+	<setting recordType="longin" fieldName="INP" userConfigurable="true">
+		<value>@asyn(RIO_$(MODULEIDX),$(CHIDX)) $(ASYNCOMMAND)</value>
+	</setting>
+<!--LONGOUT interfaces<-->
+	<setting recordType="longout" fieldName="DTYP" userConfigurable="true">
+		<value>asynInt32</value>
+	</setting>
+	<setting recordType="longout" fieldName="OUT" userConfigurable="true">
+		<value>@asyn(RIO_$(MODULEIDX),$(CHIDX)) $(ASYNCOMMAND)</value>
+	</setting>
+<!--STRINGIN interfaces-->
+	<setting recordType="stringin" fieldName="DTYP" userConfigurable="true">
+		<value>asynOctetRead</value>
+	</setting>
+	<setting recordType="stringin" fieldName="INP" userConfigurable="true">
+		<value>@asyn(RIO_$(MODULEIDX),$(CHIDX)) $(ASYNCOMMAND)</value>
+	</setting>
+<!--STRINGOUT interfaces-->
+	<setting recordType="stringout" fieldName="DTYP" userConfigurable="true">
+		<value>asynOctetWrite</value>
+	</setting>
+	<setting recordType="stringout" fieldName="OUT" userConfigurable="true">
+		<value>@asyn(RIO_$(MODULEIDX),$(CHIDX)) $(ASYNCOMMAND)</value>
+	</setting>
+<!--WAVEFORMS interfaces-->
+	<setting recordType="waveform" fieldName="DTYP" userConfigurable="true">
+		<value>asynFloat32ArrayIn</value>
+	</setting>
+	<setting recordType="waveform" fieldName="INP" userConfigurable="true">
+		<value>@asyn(RIO_$(MODULEIDX),$(CHIDX)) $(ASYNCOMMAND)</value>
+	</setting>
+
+<!--IRIO MODULE REASONS-->
+	<asynFunction name="FPGAStart" description="Start FPGA" direction="write" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/>
+	<asynFunction name="epics_version" description="Epics-irio driver version" direction="read" dataType="asynOctetRead" parameter="$(ASYNCOMMAND)"/>
+	<asynFunction name="DeviceTemp" description="FPGA Temperature" direction="read" dataType="asynFloat64" parameter="$(ASYNCOMMAND)"/>
+	<asynFunction name="DAQStartStop" description="Controls DAQ Start/Stop" direction="write" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/>
+	<asynFunction name="debug" description="Controls FPGA DebugMode" direction="write" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/>
+	<asynFunction name="DevQualityStatus" description="Info of errors in acquisition process" direction="read" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/>
+	<asynFunction name="VIversion" description="Bitfile version" direction="read" dataType="asynOctetRead" parameter="$(ASYNCOMMAND)"/> 
+	<asynFunction name="driver_version" description="IRIO driver version" direction="read" dataType="asynOctetRead" parameter="$(ASYNCOMMAND)"/> 
+	<asynFunction name="device_name" description="RIO Device name" direction="read" dataType="asynOctetRead" parameter="$(ASYNCOMMAND)"/> 
+	<asynFunction name="device_serial_number" description="RIO device serial number" direction="read" dataType="asynOctetRead" parameter="$(ASYNCOMMAND)"/> 
+	<asynFunction name="FPGAStatus" description="FPGAStatus" direction="read" dataType="asynOctetRead" parameter="$(ASYNCOMMAND)"/>
+	<asynFunction name="InfoStatus" description="Infostatus" direction="read" dataType="asynOctetRead" parameter="$(ASYNCOMMAND)"/>
+	<asynFunction name="riodevice_status" description="RIO Device Status" direction="read" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/>
+	<asynFunction name="SR_AI_Intr" description="Sampling rate of AI_INTR thread" direction="write" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/> 
+	<asynFunction name="SR_DI_Intr" description="Sampling rate of DI_INTR thread" direction="write" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/> 
+<!--IRIO_DATA ACQUISITION REASONS-->
+	<asynFunction name="GroupEnable" description="Controls Channel Group enable/disable" direction="write" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/>   
+	<asynFunction name="SamplingRate" description="Sampling rate of Channel Group" direction="write" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/>   
+	<asynFunction name="DF" description="block Decimation factor of Channel Group" direction="write" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/>  
+	<asynFunction name="DMAsOverflow" description="DMAsOverflow" direction="read" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/>
+	<asynFunction name="UserDefinedConversionFactor" description="User conversion factor of Channel Group" direction="write" dataType="asynFloat64" parameter="$(ASYNCOMMAND)"/>  
+<!--IRIO_AI-->
+	<asynFunction name="AI" description="AI Channel Value" direction="read" dataType="asynFloat64" parameter="$(ASYNCOMMAND)"/>   
+<!--IRIO_AO-->
+	<asynFunction name="AO" description="AO Channel Value" direction="write" dataType="asynFloat64" parameter="$(ASYNCOMMAND)"/>  
+	<asynFunction name="AOEnable" description="AOEnable Channel Enable" direction="write" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/>  
+<!--IRIO_DI--> 
+	<asynFunction name="DI" description="DI Channel Value" direction="read" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/>
+<!--IRIO_DO--> 
+	<asynFunction name="DO" description="DO Channel Value" direction="write" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/>
+<!--IRIO_AUXDI--> 
+	<asynFunction name="auxDI" description="auxDI Channel Value" direction="read" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/> 
+<!--IRIO_AUXDO--> 
+	<asynFunction name="auxDO" description="auxDO Channel Value" direction="write" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/>
+<!--IRIO_AUXAI-->
+	<asynFunction name="auxAI" description="auxAI Channel Value" direction="read" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/>
+<!--IRIO_AUXAO-->
+	<asynFunction name="auxAO" description="auxAO Channel Value" direction="write" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/>
+<!--IRIO_SIGNAL_GENERATOR-->
+	<asynFunction name="SGUpdateRate" description="Signal Generator Update Rate " direction="write" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/> 
+	<asynFunction name="SGFreq" description="Signal Generator freq " direction="write" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/>
+	<asynFunction name="SGPhase" description="Signal Generator phase control " direction="write" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/> 
+	<asynFunction name="SGAmp" description="DSS accumulator increment " direction="write" dataType="asynFloat64" parameter="$(ASYNCOMMAND)"/> 
+	<asynFunction name="SGSignalType" description="Signal shape to be generated " direction="write" dataType="asynInt32" parameter="$(ASYNCOMMAND)"/> 
+<!--IRIO_AI_WAVEFORM-->
+	<asynFunction name="CH" description="Waveform Channel Value" direction="read" dataType="asynFloat32ArrayIn" parameter="$(ASYNCOMMAND)"/>
+</deviceSupport>

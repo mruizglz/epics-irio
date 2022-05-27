@@ -1,0 +1,19 @@
+# RULES_IRIO
+
+# GENERIC_INSTALL_RULE should be called with 3 or 4 arguments:
+# $1 extension
+# $2 description of file type
+# $3 where to install
+# $4 (optional) extra vpath dirs
+define GENERIC_INSTALL_RULE
+vpath %.$1 $(USR_VPATH) $(ALL_SRC_DIRS) $4
+$3/%.$1: %.$1
+	@echo "Installing $2 file $$(@F)"
+	@$$(INSTALL) -d -m 644 $$< $$(@D)
+endef
+
+$(eval $(call GENERIC_INSTALL_RULE,lvbitx,LabVIEW FPGA bitfile,$(INSTALL_IRIO),../../$(IRIO_FPGA_DIR)))
+$(eval $(call GENERIC_INSTALL_RULE,h,LabVIEW FPGA resource file,$(INSTALL_IRIO),../../$(IRIO_FPGA_DIR)))
+
+buildInstall : $(INSTALL_IRIOS)
+

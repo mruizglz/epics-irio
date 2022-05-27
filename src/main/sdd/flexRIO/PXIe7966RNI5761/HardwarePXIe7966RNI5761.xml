@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ $HeadURL: TBD.
+ $Id: TBD.
+ 
+ Project       : CODAC Data Management
+
+ Description   : PXIe7966R-NI5761 bundle for Fast Controller in PXIe format description
+		 		 The information is taken from the following sources:
+		 		 -http://sine.ni.com/nips/cds/view/p/lang/en/nid/208962
+		 		 -TODO:TBD
+
+ Author        : M. Ruiz
+
+ Copyright (c) : 2010-2022 ITER Organization,
+                 CS 90 046
+                 13067 St. Paul-lez-Durance Cedex
+                 France
+
+ This file is part of ITER CODAC software.
+ For the terms and conditions of redistribution or use of this software
+ refer to the file ITER-LICENSE.TXT located in the top level directory
+ of the distribution package.
+-->
+<IOBoard name="7966RNI5761" shortName="7966RNI5761" xmlns="http://www.iter.org/CODAC/Hardware/2013" xmlns:cat="http://www.iter.org/CODAC/Catalog/2010">
+	<catalogReference>
+		<cat:reference>7966RNI5761</cat:reference>
+		<cat:manufacturer>National Instruments</cat:manufacturer>
+		<cat:commercialName>FlexRIO PXIe7966R with NI5761 Adpater module </cat:commercialName>
+		<cat:description>14-Bit, 250 MS/s Adapter Module for NI FlexRIO </cat:description>
+		<cat:datasheetRef>https://user.iter.org/?uid=C8TQ8R</cat:datasheetRef>
+		<cat:conformsToStandard>IEC 61010-1, EN 61010-1</cat:conformsToStandard>
+		<cat:conformsToStandard>UL 61010-1 CSA 61010-1</cat:conformsToStandard>
+		<cat:conformsToStandard>EN 61326-1 (IEC 61326-1): Class A emissions; Basic immunity</cat:conformsToStandard>
+		<cat:conformsToStandard>EN 55011 (CISPR 11): Group 1, Class A emissions</cat:conformsToStandard>
+		<cat:conformsToStandard>AS/ZNS CISPR 11: Group 1, Class A emissions</cat:conformsToStandard>
+		<cat:conformsToStandard>FCC 47 CFR Part 15B: Class A emissions</cat:conformsToStandard>
+		<cat:conformsToStandard>ICES-001: Class A emissions</cat:conformsToStandard>
+		<cat:conformsToStandard>2006/95/EC; Low-Voltage Directive (safety)</cat:conformsToStandard>
+		<cat:conformsToStandard>2004/108/EC; Electromagnetic Compatibility Directive (EMC)</cat:conformsToStandard>
+		<cat:class>High-Speed Digital I/O Module</cat:class>
+		<cat:subClass>PXIe card</cat:subClass>
+	</catalogReference>
+	<technicalData>
+		<busType>PXI</busType>
+		<channels>
+		<!-- Digital channels -->
+			<!-- Digital channels in Micro–D connector-->
+			<channel number="0">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>AUXIO0</name>
+				<pin connectorNumber="0" number="1" type="signal"/>
+				<pin connectorNumber="0" number="9" type="ground"/>
+			</channel>
+			<channel number="1">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>AUXIO1</name>
+				<pin connectorNumber="0" number="2" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="2">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>AUXIO2</name>
+				<pin connectorNumber="0" number="3" type="signal"/>
+				<pin connectorNumber="0" number="11" type="ground"/>
+			</channel>
+			<channel number="3">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>AUXIO3</name>
+				<pin connectorNumber="0" number="4" type="signal"/>
+				<pin connectorNumber="0" number="12" type="ground"/>
+			</channel>
+			<channel number="4">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>AUXIO4</name>
+				<pin connectorNumber="0" number="5" type="signal"/>
+				<pin connectorNumber="0" number="13" type="ground"/>
+			</channel>
+			<channel number="5">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>AUXIO5</name>
+				<pin connectorNumber="0" number="6" type="signal"/>
+				<pin connectorNumber="0" number="14" type="ground"/>
+			</channel>
+			<channel number="6">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>AUXIO6</name>
+				<pin connectorNumber="0" number="7" type="signal"/>
+				<pin connectorNumber="0" number="15" type="ground"/>
+			</channel>
+			<channel number="7">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>AUXIO7</name>
+				<pin connectorNumber="0" number="8" type="signal"/>
+				<pin connectorNumber="0" number="15" type="ground"/>
+			</channel>
+		<!-- Analog channels -->
+			<!-- Analog channels in SMA connector-->
+			<channel number="0">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>CH0</name>
+				<pin connectorNumber="1" number="1" type="signal"/>
+			</channel>
+			<channel number="1">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>CH1</name>
+				<pin connectorNumber="2" number="1" type="signal"/>
+			</channel>
+			<channel number="2">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>CH2</name>
+				<pin connectorNumber="3" number="1" type="signal"/>
+			</channel>
+			<channel number="3">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>CH3</name>
+				<pin connectorNumber="4" number="1" type="signal"/>
+			</channel>
+		<!--Trigger in SMA connector-->
+			<channel number="0">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>TRIG</name>
+				<pin connectorNumber="5" number="1" type="signal"/>
+			</channel>
+		<!--Clk in, in SMA connector-->
+			<channel number="0">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>CLKIN</name>
+				<pin connectorNumber="6" number="1" type="signal"/>
+			</channel>
+		</channels>
+		<pinouts>
+			<connector type="Micro–D" numPins="15" ID="0">
+				<pin name="AUXIO0"/>
+				<pin name="AUXIO1"/>
+				<pin name="AUXIO2"/>
+				<pin name="AUXIO3"/>
+				<pin name="AUXIO4"/>
+				<pin name="AUXIO5"/>
+				<pin name="AUXIO6"/>
+				<pin name="AUXIO7"/>
+				<pin name="AUXIO8"/>
+				<pin name="GND" shared="true"/>
+				<pin name="GND" shared="true"/>
+				<pin name="GND" shared="true"/>
+				<pin name="GND" shared="true"/>
+				<pin name="GND" shared="true"/>
+				<pin name="GND" shared="true"/>
+				<pin name="GND" shared="true"/>
+			</connector>
+			<connector type="SMA" numPins="1" ID="1">
+				<pin name="CH1"/>
+			</connector>
+			<connector type="SMA" numPins="1" ID="2">
+				<pin name="CH2"/>
+			</connector>
+			<connector type="SMA" numPins="1" ID="3">
+				<pin name="CH3"/>
+			</connector>
+			<connector type="SMA" numPins="1" ID="4">
+				<pin name="CH4"/>
+			</connector>
+			<connector type="SMA" numPins="1" ID="5">
+				<pin name="TRIG"/>
+			</connector>
+			<connector type="SMA" numPins="1" ID="6">
+				<pin name="CLKIN"/>
+			</connector>
+		</pinouts>
+		<size>
+			<length>0.129</length>
+			<width>0.02</width>
+			<height>0.121</height>
+		</size>
+		<chassisType>PXI</chassisType>
+		<USize>1</USize>
+		<weight>0.312</weight>
+		<minOperatingTemperature>0</minOperatingTemperature>
+		<maxOperatingTemperature>55</maxOperatingTemperature>
+		<minOperatingHumidity>10</minOperatingHumidity>
+		<maxOperatingHumidity>90</maxOperatingHumidity>
+		<powerBus voltage="3.3" current="0.200"/><!--TODO:Verify powerbus-->
+		<powerBus voltage="12" current="0.250"/><!--TODO:Verify powerbus-->
+	</technicalData>
+	<controllerType>PCF</controllerType>
+	<TTTCode>IOB</TTTCode>
+</IOBoard>

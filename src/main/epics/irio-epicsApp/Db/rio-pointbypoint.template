@@ -1,0 +1,12 @@
+record(ao,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SR_PBP$(GRIDX)"){
+	field(DESC,"SamplingRate$(GRIDX) of PBP profile")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(GRIDX)) SamplingRate")
+	field(PINI,"NO")
+	field(EGU,"S/s")
+	field(HOPR,"100000000")
+	field(LOPR,"0")
+	field(DRVH,"100000000")
+	field(DRVL,"0")
+	field(PREC,"6")
+	}

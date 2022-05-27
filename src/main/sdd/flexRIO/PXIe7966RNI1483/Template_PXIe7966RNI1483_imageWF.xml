@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns="http://www.iter.org/CODAC/PlantSystemIandC/2014-2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="7966RNI1483_imageWF" description="7966RNI1483 image waveform Template"  usesSubstitutionFiles="true"  version="530"  userCanInstanciate="true" xsi:schemaLocation="http://www.iter.org/CODAC/PlantSystemIandC/2014-2 ../xsd/PlantSystemIandC.xsd">
+	<applicableToControlUnit>PCF</applicableToControlUnit>
+	<applicableToIOBoard>7966RNI1483</applicableToIOBoard>
+	<location>rio-imagewf.template</location>
+	<EPICSDBDName>irioAsyn.dbd</EPICSDBDName>
+	<EPICSLibraryName>irio-epics</EPICSLibraryName>
+<!--Image channel-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-CH$(CHIDX)"
+                          description="Input image waveform $(CHIDX)"
+                          createdAt="2014-12-05T17:37:14.048Z"
+                          modifiedAt="2014-12-05T17:37:14.048Z">
+      <direction>state</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-CH$(CHIDX)" type="waveform"
+                           createdAt="2014-12-05T17:37:14.048Z"
+                           modifiedAt="2014-12-05T17:37:14.048Z">
+            <EPICSField name="DESC" value="Input image waveform $(CHIDX)"/>
+            <EPICSField name="DTYP" value="asynInt8ArrayIn"/>
+            <EPICSField name="INP" value="@asyn(RIO_$(MODULEIDX),$(CHIDX)) CH"/>
+            <EPICSField name="FTVL" value="UCHAR"/>
+            <EPICSField name="PINI" value="NO"/>
+            <EPICSField name="NELM" value="$(NSAMPLE)"/>
+	   		<EPICSField name="SCAN" value="I/O Intr"/>
+	    	<EPICSField name="FLNK" value="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-IMAGE$(CHIDX)"/>
+	    	<EPICSField name="TSE" value="$(TSE)"/>
+	    	
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+
+<!--image-->
+     <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-IMAGE$(CHIDX)"
+                          description="Read image."
+                          createdAt="2014-12-05T17:37:14.048Z"
+                          modifiedAt="2014-12-05T17:37:14.048Z">
+      <direction>state</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-IMAGE$(CHIDX)" type="subArray"
+                           createdAt="2014-12-05T17:37:14.048Z"
+                           modifiedAt="2014-12-05T17:37:14.048Z">
+            <EPICSField name="DESC" value="Read image"/>
+            <EPICSField name="INP" value="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-CH$(CHIDX)"/>
+            <EPICSField name="FTVL" value="UCHAR"/>
+            <EPICSField name="PINI" value="YES"/>
+            <EPICSField name="NELM" value="$(NSAMPLE)"/>
+	    	<EPICSField name="MALM" value="$(NSAMPLE)"/>
+	    	<EPICSField name="HOPR" value="$(NSAMPLE)"/>
+	    	<EPICSField name="LOPR" value="0"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+<!--image size-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-IMAGESIZE$(CHIDX)"
+                          description="Image size"
+                          createdAt="2014-12-05T17:37:14.048Z"
+                          modifiedAt="2014-12-05T17:37:14.048Z">
+      <direction>state</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-IMAGESIZE$(CHIDX)" type="calcout"
+                           createdAt="2014-12-05T17:37:14.048Z"
+                           modifiedAt="2014-12-05T17:37:14.048Z">
+            <EPICSField name="DESC" value="Image size"/>
+            <EPICSField name="INPA" value="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SIZEX$(CHIDX)"/>
+            <EPICSField name="INPB" value="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SIZEY$(CHIDX)"/>
+            <EPICSField name="EGU" value="byte"/>
+            <EPICSField name="CALC" value="A*B"/>
+            <EPICSField name="OUT" value="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-IMAGE$(CHIDX).NELEM"/>
+	    	<EPICSField name="HOPR" value="$(NSAMPLE)"/>
+	    	<EPICSField name="LOPR" value="0"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+   <macroGroup ID="USER">
+      <macro name="BOARDTYPE" description="Board type" value="1483"/>
+      <macro name="CHIDX" description="Waveform Channel index" value="0:[0,63]"/>
+      <macro name="NSAMPLE" description="Waveform Channel number of elements" value="65536:[0,2889900]"/><!--1690*1710-->
+      <macro name="TSE" description="Waveform Channel time stamp source" value="0"/>
+   </macroGroup>
+</template>

@@ -1,0 +1,1669 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ $HeadURL: TBD.
+ $Id: TBD.
+ 
+ Project       : CODAC Data Management
+
+ Description   : NI9159 compact RIO Chassis with NI9205,NI9264,NI9401,NI9425,NI9426,NI9476 and NI9477 C series modules.
+		 The information is taken from the following sources:
+		/////Chassis
+		 -NI 9159, 14-Slot MXI-Express RIO Chassis With LX110 FPGA: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208314
+		/////Modules
+		 -NI 9205 32-Ch ±200 mV to ±10 V, 16-Bit, 250 kS/s Analog Input Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208800
+		 -NI 9264 ±10 V, Analog Output, 25 kS/s/ch, 16 Ch Module:  http://sine.ni.com/nips/cds/view/p/lang/en/nid/208807
+		 -NI 9401 5 V/TTL, Bidirectional Digital I/O, 8 Ch Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208809
+		 -NI 9425 24 V, Sinking Digital Input, 32 Ch Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208815
+		 -NI 9426 32-Channel, 24 V, 7 µs Sourcing Digital Input Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208817
+		 -NI 9476 24 V, Sourcing Digital Output, 32 Ch Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208824
+		 -NI 9477 60 V, Sinking Digital Output, 32 Ch Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208825
+		 -NI 9775 4-Ch ±10 V, 14-Bit, 20MS/s/ch Analog Input Module: http://www.ni.com/pdf/manuals/377101b_02.pdf
+		 -TODO
+
+ Author        : Changseung.KIM, M. Ruiz
+
+ Copyright (c) : 2010-2022 ITER Organization,
+                 CS 90 046
+                 13067 St. Paul-lez-Durance Cedex
+                 France
+
+ This file is part of ITER CODAC software.
+ For the terms and conditions of redistribution or use of this software
+ refer to the file ITER-LICENSE.TXT located in the top level directory
+ of the distribution package.
+-->
+<IOBoard name="NI9159" shortName="NI9159" xmlns="http://www.iter.org/CODAC/Hardware/2013" xmlns:cat="http://www.iter.org/CODAC/Catalog/2010">
+	<catalogReference>
+		<cat:reference>NI9159</cat:reference>
+		<cat:manufacturer>National Instruments</cat:manufacturer>
+		<cat:commercialName>NI9159</cat:commercialName>
+		<cat:description>Reconfigurable Embedded Chassis with Integrated MXI-Express(x1)</cat:description>
+		<cat:datasheetRef>http://www.ni.com/pdf/manuals/375184b.pdf</cat:datasheetRef>
+		<cat:conformsToStandard>EN 61326 (IEC 61326): Class A emissions; Industrial immunity</cat:conformsToStandard>
+		<cat:conformsToStandard>EN 55011 (CISPR 11): Group 1, Class A emissions</cat:conformsToStandard>
+		<cat:conformsToStandard>AS/NZS CISPR 11: Group 1, Class A emissions</cat:conformsToStandard>
+		<cat:conformsToStandard>FCC 47 CFR Part 15B: Class A emissions</cat:conformsToStandard>
+		<cat:conformsToStandard>ICES-001: Class A emissions</cat:conformsToStandard>
+		<cat:conformsToStandard>2006/95/EC;Low-Voltage Directive (safety)</cat:conformsToStandard>
+		<cat:conformsToStandard>2004/108/EC; Electromagnetic Compatibility Directive (EMC)</cat:conformsToStandard>		
+		<cat:class>PXI</cat:class>
+		<cat:subClass>NI9159</cat:subClass>
+	</catalogReference>
+	<technicalData>
+		<busType>PXI</busType>
+		<channels>
+			<!--NI 9205 32-Ch ±200 mV to ±10 V, 16-Bit, 250 kS/s Analog Input Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208800-->
+			<channel number="0">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI0</name>
+				<pin connectorNumber="0" number="1" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="1">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI1</name>
+				<pin connectorNumber="0" number="2" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="2">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI2</name>
+				<pin connectorNumber="0" number="3" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="3">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI3</name>
+				<pin connectorNumber="0" number="4" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="4">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI4</name>
+				<pin connectorNumber="0" number="5" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="5">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI5</name>
+				<pin connectorNumber="0" number="6" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="6">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI6</name>
+				<pin connectorNumber="0" number="7" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="7">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI7</name>
+				<pin connectorNumber="0" number="8" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="8">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI8</name>
+				<pin connectorNumber="0" number="20" type="signal"/>
+				<pin connectorNumber="0" number="29" type="ground"/>
+			</channel>
+			<channel number="9">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI9</name>
+				<pin connectorNumber="0" number="21" type="signal"/>
+				<pin connectorNumber="0" number="29" type="ground"/>
+			</channel>
+			<channel number="10">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI10</name>
+				<pin connectorNumber="0" number="22" type="signal"/>
+				<pin connectorNumber="0" number="29" type="ground"/>
+			</channel>
+			<channel number="11">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI11</name>
+				<pin connectorNumber="0" number="23" type="signal"/>
+				<pin connectorNumber="0" number="29" type="ground"/>
+			</channel>
+			<channel number="12">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI12</name>
+				<pin connectorNumber="0" number="24" type="signal"/>
+				<pin connectorNumber="0" number="29" type="ground"/>
+			</channel>
+			<channel number="13">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI13</name>
+				<pin connectorNumber="0" number="25" type="signal"/>
+				<pin connectorNumber="0" number="29" type="ground"/>
+			</channel>
+			<channel number="14">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI14</name>
+				<pin connectorNumber="0" number="26" type="signal"/>
+				<pin connectorNumber="0" number="29" type="ground"/>
+			</channel>
+			<channel number="15">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI15</name>
+				<pin connectorNumber="0" number="27" type="signal"/>
+				<pin connectorNumber="0" number="29" type="ground"/>
+			</channel>
+			<channel number="16">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI16</name>
+				<pin connectorNumber="0" number="11" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="17">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI17</name>
+				<pin connectorNumber="0" number="12" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="18">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI18</name>
+				<pin connectorNumber="0" number="13" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="19">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI19</name>
+				<pin connectorNumber="0" number="14" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="20">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI20</name>
+				<pin connectorNumber="0" number="15" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="21">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI21</name>
+				<pin connectorNumber="0" number="16" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="22">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI22</name>
+				<pin connectorNumber="0" number="17" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="23">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI23</name>
+				<pin connectorNumber="0" number="18" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="24">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI24</name>
+				<pin connectorNumber="0" number="30" type="signal"/>
+				<pin connectorNumber="0" number="29" type="ground"/>
+			</channel>
+			<channel number="25">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI25</name>
+				<pin connectorNumber="0" number="31" type="signal"/>
+				<pin connectorNumber="0" number="29" type="ground"/>
+			</channel>
+			<channel number="26">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI26</name>
+				<pin connectorNumber="0" number="32" type="signal"/>
+				<pin connectorNumber="0" number="29" type="ground"/>
+			</channel>
+			<channel number="27">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI27</name>
+				<pin connectorNumber="0" number="33" type="signal"/>
+				<pin connectorNumber="0" number="29" type="ground"/>
+			</channel>
+			<channel number="28">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI28</name>
+				<pin connectorNumber="0" number="34" type="signal"/>
+				<pin connectorNumber="0" number="29" type="ground"/>
+			</channel>
+			<channel number="29">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI29</name>
+				<pin connectorNumber="0" number="35" type="signal"/>
+				<pin connectorNumber="0" number="29" type="ground"/>
+			</channel>
+			<channel number="30">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI30</name>
+				<pin connectorNumber="0" number="36" type="signal"/>
+				<pin connectorNumber="0" number="29" type="ground"/>
+			</channel>
+			<channel number="31">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI31</name>
+				<pin connectorNumber="0" number="37" type="signal"/>
+				<pin connectorNumber="0" number="29" type="ground"/>
+			</channel>
+		 	<!---NI 9264 ±10 V, Analog Output, 25 kS/s/ch, 16 Ch Module:  http://sine.ni.com/nips/cds/view/p/lang/en/nid/208807-->
+			<channel number="0">
+				<type>analog</type>
+				<direction>output</direction>
+				<name>AO0</name>
+				<pin connectorNumber="1" number="1" type="signal"/>
+				<pin connectorNumber="1" number="20" type="ground"/>
+			</channel>
+			<channel number="1">
+				<type>analog</type>
+				<direction>output</direction>
+				<name>AO1</name>
+				<pin connectorNumber="1" number="2" type="signal"/>
+				<pin connectorNumber="1" number="21" type="ground"/>
+			</channel>
+			<channel number="2">
+				<type>analog</type>
+				<direction>output</direction>
+				<name>AO2</name>
+				<pin connectorNumber="1" number="3" type="signal"/>
+				<pin connectorNumber="1" number="22" type="ground"/>
+			</channel>
+			<channel number="3">
+				<type>analog</type>
+				<direction>output</direction>
+				<name>AO3</name>
+				<pin connectorNumber="1" number="4" type="signal"/>
+				<pin connectorNumber="1" number="23" type="ground"/>
+			</channel>
+			<channel number="4">
+				<type>analog</type>
+				<direction>output</direction>
+				<name>AO4</name>
+				<pin connectorNumber="1" number="5" type="signal"/>
+				<pin connectorNumber="1" number="24" type="ground"/>
+			</channel>
+			<channel number="5">
+				<type>analog</type>
+				<direction>output</direction>
+				<name>AO5</name>
+				<pin connectorNumber="1" number="6" type="signal"/>
+				<pin connectorNumber="1" number="25" type="ground"/>
+			</channel>
+			<channel number="6">
+				<type>analog</type>
+				<direction>output</direction>
+				<name>AO6</name>
+				<pin connectorNumber="1" number="7" type="signal"/>
+				<pin connectorNumber="1" number="26" type="ground"/>
+			</channel>
+			<channel number="7">
+				<type>analog</type>
+				<direction>output</direction>
+				<name>AO7</name>
+				<pin connectorNumber="1" number="8" type="signal"/>
+				<pin connectorNumber="1" number="27" type="ground"/>
+			</channel>
+			<channel number="8">
+				<type>analog</type>
+				<direction>output</direction>
+				<name>AO8</name>
+				<pin connectorNumber="1" number="11" type="signal"/>
+				<pin connectorNumber="1" number="30" type="ground"/>
+			</channel>
+			<channel number="9">
+				<type>analog</type>
+				<direction>output</direction>
+				<name>AO9</name>
+				<pin connectorNumber="1" number="12" type="signal"/>
+				<pin connectorNumber="1" number="31" type="ground"/>
+			</channel>
+			<channel number="10">
+				<type>analog</type>
+				<direction>output</direction>
+				<name>AO10</name>
+				<pin connectorNumber="1" number="13" type="signal"/>
+				<pin connectorNumber="1" number="32" type="ground"/>
+			</channel>
+			<channel number="11">
+				<type>analog</type>
+				<direction>output</direction>
+				<name>AO11</name>
+				<pin connectorNumber="1" number="14" type="signal"/>
+				<pin connectorNumber="1" number="33" type="ground"/>
+			</channel>
+			<channel number="12">
+				<type>analog</type>
+				<direction>output</direction>
+				<name>AO12</name>
+				<pin connectorNumber="1" number="15" type="signal"/>
+				<pin connectorNumber="1" number="34" type="ground"/>
+			</channel>
+			<channel number="13">
+				<type>analog</type>
+				<direction>output</direction>
+				<name>AO13</name>
+				<pin connectorNumber="1" number="16" type="signal"/>
+				<pin connectorNumber="1" number="35" type="ground"/>
+			</channel>
+			<channel number="14">
+				<type>analog</type>
+				<direction>output</direction>
+				<name>AO14</name>
+				<pin connectorNumber="1" number="17" type="signal"/>
+				<pin connectorNumber="1" number="36" type="ground"/>
+			</channel>
+			<channel number="15">
+				<type>analog</type>
+				<direction>output</direction>
+				<name>AO15</name>
+				<pin connectorNumber="1" number="18" type="signal"/>
+				<pin connectorNumber="1" number="37" type="ground"/>
+			</channel>
+			<!--NI 9401 5 V/TTL, Bidirectional Digital I/O, 8 Ch Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208809-->
+			<channel number="0">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>DIO0</name>
+				<pin connectorNumber="2" number="14" type="signal"/>
+				<pin connectorNumber="2" number="1" type="ground"/>
+			</channel>
+			<channel number="1">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>DIO1</name>
+				<pin connectorNumber="2" number="16" type="signal"/>
+				<pin connectorNumber="2" number="3" type="ground"/>
+			</channel>
+			<channel number="2">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>DIO2</name>
+				<pin connectorNumber="2" number="17" type="signal"/>
+				<pin connectorNumber="2" number="4" type="ground"/>
+			</channel>
+			<channel number="3">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>DIO3</name>
+				<pin connectorNumber="2" number="19" type="signal"/>
+				<pin connectorNumber="2" number="6" type="ground"/>
+			</channel>
+			<channel number="4">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>DIO4</name>
+				<pin connectorNumber="2" number="20" type="signal"/>
+				<pin connectorNumber="2" number="7" type="ground"/>
+			</channel>
+			<channel number="5">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>DIO5</name>
+				<pin connectorNumber="2" number="22" type="signal"/>
+				<pin connectorNumber="2" number="9" type="ground"/>
+			</channel>
+			<channel number="6">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>DIO6</name>
+				<pin connectorNumber="2" number="23" type="signal"/>
+				<pin connectorNumber="2" number="10" type="ground"/>
+			</channel>
+			<channel number="7">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>DIO7</name>
+				<pin connectorNumber="2" number="25" type="signal"/>
+				<pin connectorNumber="2" number="12" type="ground"/>
+			</channel>
+			<!--NI 9425 24 V, Sinking Digital Input, 32 Ch Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208815-->
+			<channel number="0">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI0</name>
+				<pin connectorNumber="3" number="1" type="signal"/>
+				<pin connectorNumber="3" number="9" type="ground"/>
+			</channel>
+			<channel number="1">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI1</name>
+				<pin connectorNumber="3" number="2" type="signal"/>
+				<pin connectorNumber="3" number="9" type="ground"/>
+			</channel>
+			<channel number="2">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI2</name>
+				<pin connectorNumber="3" number="3" type="signal"/>
+				<pin connectorNumber="3" number="9" type="ground"/>
+			</channel>
+			<channel number="3">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI3</name>
+				<pin connectorNumber="3" number="4" type="signal"/>
+				<pin connectorNumber="3" number="9" type="ground"/>
+			</channel>
+			<channel number="4">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI4</name>
+				<pin connectorNumber="3" number="5" type="signal"/>
+				<pin connectorNumber="3" number="9" type="ground"/>
+			</channel>
+			<channel number="5">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI5</name>
+				<pin connectorNumber="3" number="6" type="signal"/>
+				<pin connectorNumber="3" number="9" type="ground"/>
+			</channel>
+			<channel number="6">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI6</name>
+				<pin connectorNumber="3" number="7" type="signal"/>
+				<pin connectorNumber="3" number="9" type="ground"/>
+			</channel>
+			<channel number="7">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI7</name>
+				<pin connectorNumber="3" number="8" type="signal"/>
+				<pin connectorNumber="3" number="9" type="ground"/>
+			</channel>
+			<channel number="8">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI8</name>
+				<pin connectorNumber="3" number="11" type="signal"/>
+				<pin connectorNumber="3" number="10" type="ground"/>
+			</channel>
+			<channel number="9">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI9</name>
+				<pin connectorNumber="3" number="12" type="signal"/>
+				<pin connectorNumber="3" number="10" type="ground"/>
+			</channel>
+			<channel number="10">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI10</name>
+				<pin connectorNumber="3" number="13" type="signal"/>
+				<pin connectorNumber="3" number="10" type="ground"/>
+			</channel>
+			<channel number="11">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI11</name>
+				<pin connectorNumber="3" number="14" type="signal"/>
+				<pin connectorNumber="3" number="10" type="ground"/>
+			</channel>
+			<channel number="12">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI12</name>
+				<pin connectorNumber="3" number="15" type="signal"/>
+				<pin connectorNumber="3" number="10" type="ground"/>
+			</channel>
+			<channel number="13">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI13</name>
+				<pin connectorNumber="3" number="16" type="signal"/>
+				<pin connectorNumber="3" number="10" type="ground"/>
+			</channel>
+			<channel number="14">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI14</name>
+				<pin connectorNumber="3" number="17" type="signal"/>
+				<pin connectorNumber="3" number="10" type="ground"/>
+			</channel>
+			<channel number="15">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI15</name>
+				<pin connectorNumber="3" number="18" type="signal"/>
+				<pin connectorNumber="3" number="10" type="ground"/>
+			</channel>
+			<channel number="16">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI16</name>
+				<pin connectorNumber="3" number="20" type="signal"/>
+				<pin connectorNumber="3" number="28" type="ground"/>
+			</channel>
+			<channel number="17">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI17</name>
+				<pin connectorNumber="3" number="21" type="signal"/>
+				<pin connectorNumber="3" number="28" type="ground"/>
+			</channel>
+			<channel number="18">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI18</name>
+				<pin connectorNumber="3" number="22" type="signal"/>
+				<pin connectorNumber="3" number="28" type="ground"/>
+			</channel>
+			<channel number="19">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI19</name>
+				<pin connectorNumber="3" number="23" type="signal"/>
+				<pin connectorNumber="3" number="28" type="ground"/>
+			</channel>
+			<channel number="20">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI20</name>
+				<pin connectorNumber="3" number="24" type="signal"/>
+				<pin connectorNumber="3" number="28" type="ground"/>
+			</channel>
+			<channel number="21">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI21</name>
+				<pin connectorNumber="3" number="25" type="signal"/>
+				<pin connectorNumber="3" number="28" type="ground"/>
+			</channel>
+			<channel number="22">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI22</name>
+				<pin connectorNumber="3" number="26" type="signal"/>
+				<pin connectorNumber="3" number="28" type="ground"/>
+			</channel>
+			<channel number="23">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI23</name>
+				<pin connectorNumber="3" number="27" type="signal"/>
+				<pin connectorNumber="3" number="28" type="ground"/>
+			</channel>
+			<channel number="24">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI24</name>
+				<pin connectorNumber="3" number="30" type="signal"/>
+				<pin connectorNumber="3" number="29" type="ground"/>
+			</channel>
+			<channel number="25">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI25</name>
+				<pin connectorNumber="3" number="31" type="signal"/>
+				<pin connectorNumber="3" number="29" type="ground"/>
+			</channel>
+			<channel number="26">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI26</name>
+				<pin connectorNumber="3" number="32" type="signal"/>
+				<pin connectorNumber="3" number="29" type="ground"/>
+			</channel>
+			<channel number="27">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI27</name>
+				<pin connectorNumber="3" number="33" type="signal"/>
+				<pin connectorNumber="3" number="29" type="ground"/>
+			</channel>
+			<channel number="28">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI28</name>
+				<pin connectorNumber="3" number="34" type="signal"/>
+				<pin connectorNumber="3" number="29" type="ground"/>
+			</channel>
+			<channel number="29">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI29</name>
+				<pin connectorNumber="3" number="35" type="signal"/>
+				<pin connectorNumber="3" number="29" type="ground"/>
+			</channel>
+			<channel number="30">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI30</name>
+				<pin connectorNumber="3" number="36" type="signal"/>
+				<pin connectorNumber="3" number="29" type="ground"/>
+			</channel>
+			<channel number="31">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI31</name>
+				<pin connectorNumber="3" number="37" type="signal"/>
+				<pin connectorNumber="3" number="29" type="ground"/>
+			</channel>
+			<!--NI 9426 32-Channel, 24 V, 7 µs Sourcing Digital Input Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208817-->
+			<channel number="0">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI0</name>
+				<pin connectorNumber="4" number="1" type="signal"/>
+				<pin connectorNumber="4" number="9" type="ground"/>
+			</channel>
+			<channel number="1">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI1</name>
+				<pin connectorNumber="4" number="2" type="signal"/>
+				<pin connectorNumber="4" number="9" type="ground"/>
+			</channel>
+			<channel number="2">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI2</name>
+				<pin connectorNumber="4" number="3" type="signal"/>
+				<pin connectorNumber="4" number="9" type="ground"/>
+			</channel>
+			<channel number="3">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI3</name>
+				<pin connectorNumber="4" number="4" type="signal"/>
+				<pin connectorNumber="4" number="9" type="ground"/>
+			</channel>
+			<channel number="4">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI4</name>
+				<pin connectorNumber="4" number="5" type="signal"/>
+				<pin connectorNumber="4" number="9" type="ground"/>
+			</channel>
+			<channel number="5">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI5</name>
+				<pin connectorNumber="4" number="6" type="signal"/>
+				<pin connectorNumber="4" number="9" type="ground"/>
+			</channel>
+			<channel number="6">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI6</name>
+				<pin connectorNumber="4" number="7" type="signal"/>
+				<pin connectorNumber="4" number="9" type="ground"/>
+			</channel>
+			<channel number="7">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI7</name>
+				<pin connectorNumber="4" number="8" type="signal"/>
+				<pin connectorNumber="4" number="9" type="ground"/>
+			</channel>
+			<channel number="8">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI8</name>
+				<pin connectorNumber="4" number="11" type="signal"/>
+				<pin connectorNumber="4" number="10" type="ground"/>
+			</channel>
+			<channel number="9">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI9</name>
+				<pin connectorNumber="4" number="12" type="signal"/>
+				<pin connectorNumber="4" number="10" type="ground"/>
+			</channel>
+			<channel number="10">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI10</name>
+				<pin connectorNumber="4" number="13" type="signal"/>
+				<pin connectorNumber="4" number="10" type="ground"/>
+			</channel>
+			<channel number="11">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI11</name>
+				<pin connectorNumber="4" number="14" type="signal"/>
+				<pin connectorNumber="4" number="10" type="ground"/>
+			</channel>
+			<channel number="12">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI12</name>
+				<pin connectorNumber="4" number="15" type="signal"/>
+				<pin connectorNumber="4" number="10" type="ground"/>
+			</channel>
+			<channel number="13">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI13</name>
+				<pin connectorNumber="4" number="16" type="signal"/>
+				<pin connectorNumber="4" number="10" type="ground"/>
+			</channel>
+			<channel number="14">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI14</name>
+				<pin connectorNumber="4" number="17" type="signal"/>
+				<pin connectorNumber="4" number="10" type="ground"/>
+			</channel>
+			<channel number="15">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI15</name>
+				<pin connectorNumber="4" number="18" type="signal"/>
+				<pin connectorNumber="4" number="10" type="ground"/>
+			</channel>
+			<channel number="16">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI16</name>
+				<pin connectorNumber="4" number="20" type="signal"/>
+				<pin connectorNumber="4" number="28" type="ground"/>
+			</channel>
+			<channel number="17">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI17</name>
+				<pin connectorNumber="4" number="21" type="signal"/>
+				<pin connectorNumber="4" number="28" type="ground"/>
+			</channel>
+			<channel number="18">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI18</name>
+				<pin connectorNumber="4" number="22" type="signal"/>
+				<pin connectorNumber="4" number="28" type="ground"/>
+			</channel>
+			<channel number="19">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI19</name>
+				<pin connectorNumber="4" number="23" type="signal"/>
+				<pin connectorNumber="4" number="28" type="ground"/>
+			</channel>
+			<channel number="20">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI20</name>
+				<pin connectorNumber="4" number="24" type="signal"/>
+				<pin connectorNumber="4" number="28" type="ground"/>
+			</channel>
+			<channel number="21">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI21</name>
+				<pin connectorNumber="4" number="25" type="signal"/>
+				<pin connectorNumber="4" number="28" type="ground"/>
+			</channel>
+			<channel number="22">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI22</name>
+				<pin connectorNumber="4" number="26" type="signal"/>
+				<pin connectorNumber="4" number="28" type="ground"/>
+			</channel>
+			<channel number="23">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI23</name>
+				<pin connectorNumber="4" number="27" type="signal"/>
+				<pin connectorNumber="4" number="28" type="ground"/>
+			</channel>
+			<channel number="24">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI24</name>
+				<pin connectorNumber="4" number="30" type="signal"/>
+				<pin connectorNumber="4" number="29" type="ground"/>
+			</channel>
+			<channel number="25">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI25</name>
+				<pin connectorNumber="4" number="31" type="signal"/>
+				<pin connectorNumber="4" number="29" type="ground"/>
+			</channel>
+			<channel number="26">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI26</name>
+				<pin connectorNumber="4" number="32" type="signal"/>
+				<pin connectorNumber="4" number="29" type="ground"/>
+			</channel>
+			<channel number="27">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI27</name>
+				<pin connectorNumber="4" number="33" type="signal"/>
+				<pin connectorNumber="4" number="29" type="ground"/>
+			</channel>
+			<channel number="28">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI28</name>
+				<pin connectorNumber="4" number="34" type="signal"/>
+				<pin connectorNumber="4" number="29" type="ground"/>
+			</channel>
+			<channel number="29">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI29</name>
+				<pin connectorNumber="4" number="35" type="signal"/>
+				<pin connectorNumber="4" number="29" type="ground"/>
+			</channel>
+			<channel number="30">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI30</name>
+				<pin connectorNumber="4" number="36" type="signal"/>
+				<pin connectorNumber="4" number="29" type="ground"/>
+			</channel>
+			<channel number="31">
+				<type>digital</type>
+				<direction>input</direction>
+				<name>DI31</name>
+				<pin connectorNumber="4" number="37" type="signal"/>
+				<pin connectorNumber="4" number="29" type="ground"/>
+			</channel>
+		        <!--NI 9476 24 V, Sourcing Digital Output, 32 Ch Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208824-->
+			<!--TODO:Review connexions of channels -->
+			<channel number="0">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO0</name>
+				<pin connectorNumber="5" number="1" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="1">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO1</name>
+				<pin connectorNumber="5" number="2" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="2">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO2</name>
+				<pin connectorNumber="5" number="3" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="3">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO3</name>
+				<pin connectorNumber="5" number="4" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="4">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO4</name>
+				<pin connectorNumber="5" number="5" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="5">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO5</name>
+				<pin connectorNumber="5" number="6" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="6">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO6</name>
+				<pin connectorNumber="5" number="7" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="7">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO7</name>
+				<pin connectorNumber="5" number="8" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="8">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO8</name>
+				<pin connectorNumber="5" number="11" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="9">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO9</name>
+				<pin connectorNumber="5" number="12" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="10">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO10</name>
+				<pin connectorNumber="5" number="13" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="11">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO11</name>
+				<pin connectorNumber="5" number="14" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="12">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO12</name>
+				<pin connectorNumber="5" number="15" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="13">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO13</name>
+				<pin connectorNumber="5" number="16" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="14">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO14</name>
+				<pin connectorNumber="5" number="17" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="15">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO15</name>
+				<pin connectorNumber="5" number="18" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="16">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO16</name>
+				<pin connectorNumber="5" number="20" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="17">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO17</name>
+				<pin connectorNumber="5" number="21" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="18">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO18</name>
+				<pin connectorNumber="5" number="22" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="19">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO19</name>
+				<pin connectorNumber="5" number="23" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="20">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO20</name>
+				<pin connectorNumber="5" number="24" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="21">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO21</name>
+				<pin connectorNumber="5" number="25" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="22">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO22</name>
+				<pin connectorNumber="5" number="26" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="23">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO23</name>
+				<pin connectorNumber="5" number="27" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="24">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO24</name>
+				<pin connectorNumber="5" number="30" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="25">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO25</name>
+				<pin connectorNumber="5" number="31" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="26">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO26</name>
+				<pin connectorNumber="5" number="32" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="27">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO27</name>
+				<pin connectorNumber="5" number="33" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="28">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO28</name>
+				<pin connectorNumber="5" number="34" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="29">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO29</name>
+				<pin connectorNumber="5" number="35" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="30">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO30</name>
+				<pin connectorNumber="5" number="36" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+			<channel number="31">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO31</name>
+				<pin connectorNumber="5" number="37" type="signal"/>
+				<pin connectorNumber="5" number="19" type="ground"/>
+			</channel>
+		<!--NI 9477 60 V, Sinking Digital Output, 32 Ch Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208825-->
+			<channel number="0">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO0</name>
+				<pin connectorNumber="6" number="1" type="signal"/>
+				<pin connectorNumber="6" number="9" type="ground"/>
+			</channel>
+			<channel number="1">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO1</name>
+				<pin connectorNumber="6" number="2" type="signal"/>
+				<pin connectorNumber="6" number="9" type="ground"/>
+			</channel>
+			<channel number="2">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO2</name>
+				<pin connectorNumber="6" number="3" type="signal"/>
+				<pin connectorNumber="6" number="9" type="ground"/>
+			</channel>
+			<channel number="3">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO3</name>
+				<pin connectorNumber="6" number="4" type="signal"/>
+				<pin connectorNumber="6" number="9" type="ground"/>
+			</channel>
+			<channel number="4">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO4</name>
+				<pin connectorNumber="6" number="5" type="signal"/>
+				<pin connectorNumber="6" number="9" type="ground"/>
+			</channel>
+			<channel number="5">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO5</name>
+				<pin connectorNumber="6" number="6" type="signal"/>
+				<pin connectorNumber="6" number="9" type="ground"/>
+			</channel>
+			<channel number="6">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO6</name>
+				<pin connectorNumber="6" number="7" type="signal"/>
+				<pin connectorNumber="6" number="9" type="ground"/>
+			</channel>
+			<channel number="7">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO7</name>
+				<pin connectorNumber="6" number="8" type="signal"/>
+				<pin connectorNumber="6" number="9" type="ground"/>
+			</channel>
+			<channel number="8">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO8</name>
+				<pin connectorNumber="6" number="11" type="signal"/>
+				<pin connectorNumber="6" number="10" type="ground"/>
+			</channel>
+			<channel number="9">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO9</name>
+				<pin connectorNumber="6" number="12" type="signal"/>
+				<pin connectorNumber="6" number="10" type="ground"/>
+			</channel>
+			<channel number="10">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO10</name>
+				<pin connectorNumber="6" number="13" type="signal"/>
+				<pin connectorNumber="6" number="10" type="ground"/>
+			</channel>
+			<channel number="11">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO11</name>
+				<pin connectorNumber="6" number="14" type="signal"/>
+				<pin connectorNumber="6" number="10" type="ground"/>
+			</channel>
+			<channel number="12">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO12</name>
+				<pin connectorNumber="6" number="15" type="signal"/>
+				<pin connectorNumber="6" number="10" type="ground"/>
+			</channel>
+			<channel number="13">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO13</name>
+				<pin connectorNumber="6" number="16" type="signal"/>
+				<pin connectorNumber="6" number="10" type="ground"/>
+			</channel>
+			<channel number="14">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO14</name>
+				<pin connectorNumber="6" number="17" type="signal"/>
+				<pin connectorNumber="6" number="10" type="ground"/>
+			</channel>
+			<channel number="15">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO15</name>
+				<pin connectorNumber="6" number="18" type="signal"/>
+				<pin connectorNumber="6" number="10" type="ground"/>
+			</channel>
+			<channel number="16">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO16</name>
+				<pin connectorNumber="6" number="20" type="signal"/>
+				<pin connectorNumber="6" number="28" type="ground"/>
+			</channel>
+			<channel number="17">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO17</name>
+				<pin connectorNumber="6" number="21" type="signal"/>
+				<pin connectorNumber="6" number="28" type="ground"/>
+			</channel>
+			<channel number="18">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO18</name>
+				<pin connectorNumber="6" number="22" type="signal"/>
+				<pin connectorNumber="6" number="28" type="ground"/>
+			</channel>
+			<channel number="19">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO19</name>
+				<pin connectorNumber="6" number="23" type="signal"/>
+				<pin connectorNumber="6" number="28" type="ground"/>
+			</channel>
+			<channel number="20">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO20</name>
+				<pin connectorNumber="6" number="24" type="signal"/>
+				<pin connectorNumber="6" number="28" type="ground"/>
+			</channel>
+			<channel number="21">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO21</name>
+				<pin connectorNumber="6" number="25" type="signal"/>
+				<pin connectorNumber="6" number="28" type="ground"/>
+			</channel>
+			<channel number="22">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO22</name>
+				<pin connectorNumber="6" number="26" type="signal"/>
+				<pin connectorNumber="6" number="28" type="ground"/>
+			</channel>
+			<channel number="23">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO23</name>
+				<pin connectorNumber="6" number="27" type="signal"/>
+				<pin connectorNumber="6" number="28" type="ground"/>
+			</channel>
+			<channel number="24">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO24</name>
+				<pin connectorNumber="6" number="30" type="signal"/>
+				<pin connectorNumber="6" number="29" type="ground"/>
+			</channel>
+			<channel number="25">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO25</name>
+				<pin connectorNumber="6" number="31" type="signal"/>
+				<pin connectorNumber="6" number="29" type="ground"/>
+			</channel>
+			<channel number="26">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO26</name>
+				<pin connectorNumber="6" number="32" type="signal"/>
+				<pin connectorNumber="6" number="29" type="ground"/>
+			</channel>
+			<channel number="27">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO27</name>
+				<pin connectorNumber="6" number="33" type="signal"/>
+				<pin connectorNumber="6" number="29" type="ground"/>
+			</channel>
+			<channel number="28">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO28</name>
+				<pin connectorNumber="6" number="34" type="signal"/>
+				<pin connectorNumber="6" number="29" type="ground"/>
+			</channel>
+			<channel number="29">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO29</name>
+				<pin connectorNumber="6" number="35" type="signal"/>
+				<pin connectorNumber="6" number="29" type="ground"/>
+			</channel>
+			<channel number="30">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO30</name>
+				<pin connectorNumber="6" number="36" type="signal"/>
+				<pin connectorNumber="6" number="29" type="ground"/>
+			</channel>
+			<channel number="31">
+				<type>digital</type>
+				<direction>output</direction>
+				<name>DO31</name>
+				<pin connectorNumber="6" number="37" type="signal"/>
+				<pin connectorNumber="6" number="29" type="ground"/>
+			</channel>
+			<!--NI 9775 4-Ch  ±10 V, 14-Bit, 20 MS/s/ch Analog Input Module: http://www.ni.com/pdf/manuals/377101b_02.pdf-->
+			<channel number="0">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI0</name>
+				<pin connectorNumber="7" number="1" type="signal"/>
+			</channel>
+			<channel number="1">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI1</name>
+				<pin connectorNumber="7" number="2" type="signal"/>
+			</channel>
+			<channel number="2">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI2</name>
+				<pin connectorNumber="7" number="3" type="signal"/>
+			</channel>
+			<channel number="3">
+				<type>analog</type>
+				<direction>input</direction>
+				<name>AI3</name>
+				<pin connectorNumber="7" number="4" type="signal"/>
+			</channel>
+		</channels>
+		<pinouts>
+		 	<!--NI 9205 32-Ch ±200 mV to ±10 V, 16-Bit, 250 kS/s Analog Input Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208800-->
+			<connector type="DSub" numPins="37" ID="0">
+				<pin name="AI0"/>
+				<pin name="AI1"/>
+				<pin name="AI2"/>
+				<pin name="AI3"/>
+				<pin name="AI4"/>
+				<pin name="AI5"/>
+				<pin name="AI6"/>
+				<pin name="AI7"/>
+				<pin name="DO0"/>
+				<pin name="COM" shared="true"/>
+				<pin name="AI16"/>
+				<pin name="AI17"/>
+				<pin name="AI18"/>
+				<pin name="AI19"/>
+				<pin name="AI20"/>
+				<pin name="AI21"/>
+				<pin name="AI22"/>
+				<pin name="AI23"/>
+				<pin name="AISENSE"/>
+				<pin name="AI8"/>
+				<pin name="AI9"/>
+				<pin name="AI10"/>
+				<pin name="AI11"/>
+				<pin name="AI12"/>
+				<pin name="AI13"/>
+				<pin name="AI14"/>
+				<pin name="AI15"/>
+				<pin name="PFIO"/>
+				<pin name="COM" shared="true"/>
+				<pin name="AI24"/>
+				<pin name="AI25"/>
+				<pin name="AI26"/>
+				<pin name="AI27"/>
+				<pin name="AI28"/>
+				<pin name="AI29"/>
+				<pin name="AI30"/>
+				<pin name="AI31"/>
+			</connector>
+		 	<!---NI 9264 ±10 V, Analog Output, 25 kS/s/ch, 16 Ch Module:  http://sine.ni.com/nips/cds/view/p/lang/en/nid/208807-->
+			<connector type="DSub" numPins="37" ID="1">
+				<pin name="AO0"/>
+				<pin name="AO1"/>
+				<pin name="AO2"/>
+				<pin name="AO3"/>
+				<pin name="AO4"/>
+				<pin name="AO5"/>
+				<pin name="AO6"/>
+				<pin name="AO7"/>
+				<pin name="NC"/>
+				<pin name="NC"/>
+				<pin name="AO8"/>
+				<pin name="AO9"/>
+				<pin name="AO10"/>
+				<pin name="AO11"/>
+				<pin name="AO12"/>
+				<pin name="AO13"/>
+				<pin name="AO14"/>
+				<pin name="AO15"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="NC"/>
+				<pin name="NC"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+			</connector>
+			<!--NI 9401 5 V/TTL, Bidirectional Digital I/O, 8 Ch Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208809-->
+			<connector type="DSub" numPins="25" ID="2">
+				<pin name="COM"/>
+				<pin name="NC"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="NC"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="NC"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="NC"/>
+				<pin name="COM"/>
+				<pin name="COM"/>
+				<pin name="DIO0"/>
+				<pin name="NC"/>
+				<pin name="DIO1"/>
+				<pin name="DIO2"/>
+				<pin name="NC"/>
+				<pin name="DIO3"/>
+				<pin name="DIO4"/>
+				<pin name="NC"/>
+				<pin name="DIO5"/>
+				<pin name="DIO6"/>
+				<pin name="NC"/>
+				<pin name="DIO7"/>
+			</connector>
+			<!--NI 9425 24 V, Sinking Digital Input, 32 Ch Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208815-->
+			<connector type="DSub" numPins="37" ID="3">
+				<pin name="DI0"/>
+				<pin name="DI1"/>
+				<pin name="DI2"/>
+				<pin name="DI3"/>
+				<pin name="DI4"/>
+				<pin name="DI5"/>
+				<pin name="DI6"/>
+				<pin name="DI7"/>
+				<pin name="COM" shared="true"/>
+				<pin name="COM" shared="true"/>
+				<pin name="DI8"/>
+				<pin name="DI9"/>
+				<pin name="DI10"/>
+				<pin name="DI11"/>
+				<pin name="DI12"/>
+				<pin name="DI13"/>
+				<pin name="DI14"/>
+				<pin name="DI15"/>
+				<pin name="NC"/>
+				<pin name="DI16"/>
+				<pin name="DI17"/>
+				<pin name="DI18"/>
+				<pin name="DI19"/>
+				<pin name="DI20"/>
+				<pin name="DI21"/>
+				<pin name="DI22"/>
+				<pin name="DI23"/>
+				<pin name="COM" shared="true"/>
+				<pin name="COM" shared="true"/>
+				<pin name="DI24"/>
+				<pin name="DI25"/>
+				<pin name="DI26"/>
+				<pin name="DI27"/>
+				<pin name="DI28"/>
+				<pin name="DI29"/>
+				<pin name="DI30"/>
+				<pin name="DI31"/>
+			</connector>
+		 	<!--NI 9426 32-Channel, 24 V, 7 µs Sourcing Digital Input Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208817-->
+			<connector type="DSub" numPins="37" ID="4">
+				<pin name="DI0"/>
+				<pin name="DI1"/>
+				<pin name="DI2"/>
+				<pin name="DI3"/>
+				<pin name="DI4"/>
+				<pin name="DI5"/>
+				<pin name="DI6"/>
+				<pin name="DI7"/>
+				<pin name="Vsup" shared="true"/>
+				<pin name="Vsup" shared="true"/>
+				<pin name="DI8"/>
+				<pin name="DI9"/>
+				<pin name="DI10"/>
+				<pin name="DI11"/>
+				<pin name="DI12"/>
+				<pin name="DI13"/>
+				<pin name="DI14"/>
+				<pin name="DI15"/>
+				<pin name="NC"/>
+				<pin name="DI16"/>
+				<pin name="DI17"/>
+				<pin name="DI18"/>
+				<pin name="DI19"/>
+				<pin name="DI20"/>
+				<pin name="DI21"/>
+				<pin name="DI22"/>
+				<pin name="DI23"/>
+				<pin name="Vsup" shared="true"/>
+				<pin name="Vsup" shared="true"/>
+				<pin name="DI24"/>
+				<pin name="DI25"/>
+				<pin name="DI26"/>
+				<pin name="DI27"/>
+				<pin name="DI28"/>
+				<pin name="DI29"/>
+				<pin name="DI30"/>
+				<pin name="DI31"/>
+			</connector>
+		        <!--NI 9476 24 V, Sourcing Digital Output, 32 Ch Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208824-->
+			<connector type="DSub" numPins="37" ID="5">
+				<pin name="DO0"/>
+				<pin name="DO1"/>
+				<pin name="DO2"/>
+				<pin name="DO3"/>
+				<pin name="DO4"/>
+				<pin name="DO5"/>
+				<pin name="DO6"/>
+				<pin name="DO7"/>
+				<pin name="Vsup" shared="true"/>
+				<pin name="Vsup" shared="true"/>
+				<pin name="DO8"/>
+				<pin name="DO9"/>
+				<pin name="DO10"/>
+				<pin name="DO11"/>
+				<pin name="DO12"/>
+				<pin name="DO13"/>
+				<pin name="DO14"/>
+				<pin name="DO15"/>
+				<pin name="COM" shared="true"/>
+				<pin name="DO16"/>
+				<pin name="DO17"/>
+				<pin name="DO18"/>
+				<pin name="DO19"/>
+				<pin name="DO20"/>
+				<pin name="DO21"/>
+				<pin name="DO22"/>
+				<pin name="DO23"/>
+				<pin name="Vsup" shared="true"/>
+				<pin name="Vsup" shared="true"/>
+				<pin name="DO24"/>
+				<pin name="DO25"/>
+				<pin name="DO26"/>
+				<pin name="DO27"/>
+				<pin name="DO28"/>
+				<pin name="DO29"/>
+				<pin name="DO30"/>
+				<pin name="DO31"/>
+			</connector>
+		<!--NI 9477 60 V, Sinking Digital Output, 32 Ch Module: http://sine.ni.com/nips/cds/view/p/lang/en/nid/208825-->
+			<connector type="DSub" numPins="37" ID="6">
+				<pin name="DO0"/>
+				<pin name="DO1"/>
+				<pin name="DO2"/>
+				<pin name="DO3"/>
+				<pin name="DO4"/>
+				<pin name="DO5"/>
+				<pin name="DO6"/>
+				<pin name="DO7"/>
+				<pin name="COM" shared="true"/>
+				<pin name="COM" shared="true"/>
+				<pin name="DO8"/>
+				<pin name="DO9"/>
+				<pin name="DO10"/>
+				<pin name="DO11"/>
+				<pin name="DO12"/>
+				<pin name="DO13"/>
+				<pin name="DO14"/>
+				<pin name="DO15"/>
+				<pin name="NC"/>
+				<pin name="DO16"/>
+				<pin name="DO17"/>
+				<pin name="DO18"/>
+				<pin name="DO19"/>
+				<pin name="DO20"/>
+				<pin name="DO21"/>
+				<pin name="DO22"/>
+				<pin name="DO23"/>
+				<pin name="COM" shared="true"/>
+				<pin name="COM" shared="true"/>
+				<pin name="DO24"/>
+				<pin name="DO25"/>
+				<pin name="DO26"/>
+				<pin name="DO27"/>
+				<pin name="DO28"/>
+				<pin name="DO29"/>
+				<pin name="DO30"/>
+				<pin name="DO31"/>
+			</connector>
+			<!--NI 9775 4-Ch  ±10 V, 14-Bit, 20 MS/s/ch Analog Input Module: http://www.ni.com/pdf/manuals/377101b_02.pdf-->
+			<connector type="BNC" numPins="4" ID="7">
+				<pin name="AI0"/>
+				<pin name="AI1"/>
+				<pin name="AI2"/>
+				<pin name="AI3"/>
+			</connector>
+		</pinouts>
+		<size>
+			<length>0.4063</length>
+			<width>0.0894</width>
+			<height>0.0873</height>
+		</size>
+		<chassisType>PXI</chassisType>
+		<USize>1</USize>
+		<weight>2231</weight>
+		<minOperatingTemperature>0</minOperatingTemperature>
+		<maxOperatingTemperature>55</maxOperatingTemperature>
+		<minOperatingHumidity>10</minOperatingHumidity>
+		<maxOperatingHumidity>90</maxOperatingHumidity>
+	</technicalData>
+	<controllerType>PCF</controllerType>
+	<TTTCode>IOB</TTTCode>
+</IOBoard>

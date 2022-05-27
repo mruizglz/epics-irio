@@ -1,0 +1,35 @@
+record(waveform,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-CH$(CHIDX)"){
+	field(DESC,"Input image waveform $(CHIDX)")
+	field(DTYP,"asynInt8ArrayIn")
+	field(INP,"@asyn(RIO_$(MODULEIDX),$(CHIDX))CH")
+	field(FTVL,"UCHAR")
+	field(PINI,"NO")
+	field(NELM,"$(NSAMPLE)")
+	field(SCAN,"I/O Intr")
+	field(FLNK, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-IMAGE$(CHIDX)")	
+	field(TSE,"$(TSE)")
+	
+}
+
+record(subArray, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-IMAGE$(CHIDX)") {
+	field(DESC, "Read image")
+	field(INP,  "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-CH$(CHIDX)")
+	field(FTVL, "UCHAR")
+	field(MALM, "$(NSAMPLE)")
+	field(NELM, "$(NSAMPLE)")
+	field(PINI, "YES")
+	field(HOPR, "$(NSAMPLE)")
+	field(LOPR, "0")	
+}
+
+record(calcout, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-IMAGESIZE$(CHIDX)") {
+	field(DESC, "Image size")
+	field(EGU,  "byte")
+	field(INPA, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SIZEX$(CHIDX)")
+	field(INPB, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SIZEY$(CHIDX)")	
+	field(CALC, "A*B" )
+	field(OUT,  "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-IMAGE$(CHIDX).NELEM" )
+	field(HOPR, "$(NSAMPLE)")
+	field(LOPR, "0")
+	field(PINI, "NO")	
+}

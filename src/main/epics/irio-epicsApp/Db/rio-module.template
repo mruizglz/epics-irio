@@ -1,0 +1,147 @@
+record(bo,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-FPGASTART"){
+	field(DESC,"FPGA Start.")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),0)FPGAStart")
+	field(PINI,"NO")
+	field(ZNAM,"OFF")
+	field(ONAM,"ON")	
+}
+record(stringin,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-EPICSVERSION"){
+	field(DESC,"Epics-irio driver version")
+	field(DTYP,"asynOctetRead")
+	field(INP,"@asyn(RIO_$(MODULEIDX),0)epics_version")
+	field(PINI,"YES")	
+}
+record(ai,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DEVICETEMP"){
+	field(DESC,"FPGA Temperature")
+	field(DTYP,"asynFloat64")
+	field(INP,"@asyn(RIO_$(MODULEIDX),0)DeviceTemp")
+	field(SCAN,"1 second")
+	field(PREC,"2")
+	field(PINI,"YES")
+	field(LINR,"NO CONVERSION")
+	field(EGU,"C Degrees")	
+}
+record(bo,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DAQSTARTSTOP"){
+	field(DESC,"Controls DAQ Start/Stop ")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),0)DAQStartStop")
+	field(PINI,"NO")
+	field(ZNAM,"OFF")
+	field(ONAM,"ON")	
+}
+record(bo,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DEBUGMODE"){
+	field(DESC,"Controls FPGA DebugMode")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),0)debug")
+	field(PINI,"NO")
+	field(ZNAM,"OFF")
+	field(ONAM,"ON")	
+}
+record(ai,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DEVQUALITYSTATUS"){
+	field(DESC,"Info of errors in acquisition process")
+	field(DTYP,"asynInt32")
+	field(INP,"@asyn(RIO_$(MODULEIDX),0)DevQualityStatus")
+	field(SCAN,"1 second")
+	field(PINI,"YES")	
+}
+record(stringin,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-FPGAVIVERSION"){
+	field(DESC,"Bifile version")
+	field(DTYP,"asynOctetRead")
+	field(INP,"@asyn(RIO_$(MODULEIDX),0)VIversion")
+	field(PINI,"YES")	
+}
+record(stringin,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DRIVERVERSION"){
+	field(DESC,"IRIO driver version")
+	field(DTYP,"asynOctetRead")
+	field(INP,"@asyn(RIO_$(MODULEIDX),0)driver_version")
+	field(PINI,"YES")
+	}
+record(stringin,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DEVICENAME"){
+	field(DESC,"RIO Device name")
+	field(DTYP,"asynOctetRead")
+	field(INP,"@asyn(RIO_$(MODULEIDX),0)device_name")
+	field(PINI,"YES")
+}
+record(stringin,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SERIALNUMBER"){
+	field(DESC,"RIO device serial number")
+	field(DTYP,"asynOctetRead")
+	field(INP,"@asyn(RIO_$(MODULEIDX),0)device_serial_number")
+	field(PINI,"YES")
+}
+record(stringin,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-FPGASTATUS"){
+	field(DESC,"RIO device FPGA Status")
+	field(DTYP,"asynOctetRead")
+	field(INP,"@asyn(RIO_$(MODULEIDX),0)FPGAStatus")
+	field(PINI,"YES")	
+}
+record(stringin,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-STATUS-STR"){
+	field(DESC,"RIO device FPGA Status INFO")
+	field(DTYP,"asynOctetRead")
+	field(INP,"@asyn(RIO_$(MODULEIDX),0)InfoStatus")
+	field(SCAN,"I/O Intr")
+	field(PINI,"YES")
+}
+record(mbbi, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-STATUS"){
+	field(DESC, "$(BOARDTYPE).$(BOARDTYPEIDX) Board Status")
+   	field(DTYP, "asynInt32")
+   	field(INP, "@asyn(RIO_$(MODULEIDX),0) riodevice_status")
+	field(SCAN,"I/O Intr")
+	field(ZRVL,"0")
+	field(ZRST,"Ok")
+   	field(ZRSV,"NO_ALARM")
+	field(ONVL,"1")   
+	field(ONST,"Initializing")
+	field(ONSV,"MINOR")
+	field(TWVL,"2")
+	field(TWST,"Resetting")
+	field(TWSV,"MINOR")
+	field(THVL,"3")	
+	field(THST,"Hardware error")
+   	field(THSV,"MAJOR")
+ 	field(FRVL,"4")   
+	field(FRST,"No Board")
+   	field(FRSV,"MAJOR")
+   	field(FVVL,"5")   
+	field(FVST,"StatConf error")
+   	field(FVSV,"MAJOR")
+   	field(SXVL,"6")   
+	field(SXST,"DynConf error")
+   	field(SXSV,"MAJOR")
+   	field(SVVL,"7")   
+	field(SVST,"Configured")
+   	field(SVSV,"NO_ALARM")
+   	field(EIVL,"8")   
+	field(EIST,"HW_config_error")
+   	field(EISV,"MAJOR")
+	field(PINI,"YES")
+	field(VAL,"4")    
+}
+
+record(ao,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SR_AI_INTR"){
+	field(DESC,"Sampling rate of AI_INTR thread")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),0)SR_AI_Intr")
+	field(PINI,"NO")
+	field(EGU,"S/s")
+	field(HOPR,"1000")
+	field(LOPR,"1")
+	field(DRVH,"1000")
+	field(DRVL,"1")
+	field(PREC,"6")
+	
+}
+
+record(ao,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SR_DI_INTR"){
+	field(DESC,"Sampling rate of DI_INTR thread")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),0)SR_DI_Intr")
+	field(PINI,"NO")
+	field(EGU,"S/s")
+	field(HOPR,"1000")
+	field(LOPR,"1")
+	field(DRVH,"1000")
+	field(DRVL,"1")
+	field(PREC,"6")
+	
+}

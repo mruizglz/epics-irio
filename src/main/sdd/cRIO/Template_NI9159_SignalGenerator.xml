@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns="http://www.iter.org/CODAC/PlantSystemIandC/2014-2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="NI9159_SignalGenerator" description="NI9159 Signal Generator template"  usesSubstitutionFiles="true"  version="530"  userCanInstanciate="true" xsi:schemaLocation="http://www.iter.org/CODAC/PlantSystemIandC/2014-2 ../xsd/PlantSystemIandC.xsd">
+	<applicableToControlUnit>PCF</applicableToControlUnit>
+	<applicableToIOBoard>NI9159</applicableToIOBoard>
+	<location>rio-sg.template</location>
+	<EPICSDBDName>irioAsyn.dbd</EPICSDBDName>
+	<EPICSLibraryName>irio-epics</EPICSLibraryName>
+<!--SGUpdateRate-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SGUPDATERATE$(CHIDX)"
+                          description="Signal Generator $(CHIDX) Update Rate "
+                          createdAt="2014-12-05T17:37:14.048Z"
+                          modifiedAt="2014-12-05T17:37:14.048Z">
+      <direction>configuration</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SGUPDATERATE$(CHIDX)" type="ao"
+                           createdAt="2014-12-05T17:37:14.048Z"
+                           modifiedAt="2014-12-05T17:37:14.048Z">
+            <EPICSField name="DESC" value="Signal Generator $(CHIDX) Update Rate "/>
+            <EPICSField name="DTYP" value="asynInt32"/>
+            <EPICSField name="OUT" value="@asyn(RIO_$(MODULEIDX),$(CHIDX)) SGUpdateRate"/>
+            <EPICSField name="PREC" value="6"/>
+            <EPICSField name="PINI" value="NO"/>
+	    	<EPICSField name="HOPR" value="$(HOPR_SGUPDATERATE)"/>
+	    	<EPICSField name="LOPR" value="$(LOPR_SGUPDATERATE)"/>
+	    	<EPICSField name="DRVH" value="$(DRVH_SGUPDATERATE)"/>
+	    	<EPICSField name="DRVL" value="$(DRVL_SGUPDATERATE)"/>
+            <EPICSField name="EGU" value="S/s"/>
+		</EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+<!--SGFreq0-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SGFREQ$(CHIDX)"
+                          description="Signal Generator $(CHIDX) freq "
+                          createdAt="2014-12-05T17:37:14.048Z"
+                          modifiedAt="2014-12-05T17:37:14.048Z">
+      <direction>configuration</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SGFREQ$(CHIDX)" type="ao"
+                           createdAt="2014-12-05T17:37:14.048Z"
+                           modifiedAt="2014-12-05T17:37:14.048Z">
+            <EPICSField name="DESC" value="Signal Generator $(CHIDX) freq "/>
+            <EPICSField name="DTYP" value="asynInt32"/>
+            <EPICSField name="OUT" value="@asyn(RIO_$(MODULEIDX),$(CHIDX)) SGFreq"/>
+            <EPICSField name="PREC" value="6"/>
+            <EPICSField name="PINI" value="NO"/>
+	    	<EPICSField name="HOPR" value="$(HOPR_SGFREQ)"/>
+	    	<EPICSField name="LOPR" value="$(LOPR_SGFREQ)"/>
+	    	<EPICSField name="DRVH" value="$(DRVH_SGFREQ)"/>
+	    	<EPICSField name="DRVL" value="$(DRVL_SGFREQ)"/>
+            <EPICSField name="EGU" value="Hz"/>            
+		</EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+<!--SGPhase0-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SGPHASE$(CHIDX)"
+                          description="Signal Generator $(CHIDX) phase control "
+                          createdAt="2014-12-05T17:37:14.048Z"
+                          modifiedAt="2014-12-05T17:37:14.048Z">
+      <direction>configuration</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SGPHASE$(CHIDX)" type="ao"
+                           createdAt="2014-12-05T17:37:14.048Z"
+                           modifiedAt="2014-12-05T17:37:14.048Z">
+            <EPICSField name="DESC" value="Signal Generator $(CHIDX) phase control"/>
+            <EPICSField name="DTYP" value="asynInt32"/>
+            <EPICSField name="OUT" value="@asyn(RIO_$(MODULEIDX),$(CHIDX)) SGPhase"/>
+            <EPICSField name="PINI" value="NO"/>
+            <EPICSField name="PREC" value="0"/>
+	    	<EPICSField name="HOPR" value="$(HOPR_SGPHASE)"/>
+	    	<EPICSField name="LOPR" value="$(LOPR_SGPHASE)"/>
+	    	<EPICSField name="DRVH" value="$(DRVH_SGPHASE)"/>
+	    	<EPICSField name="DRVL" value="$(DRVL_SGPHASE)"/>
+		</EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+<!--SGAmp0-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SGAMP$(CHIDX)"
+                          description="DSS accumulator increment $(CHIDX)"
+                          createdAt="2014-12-05T17:37:14.048Z"
+                          modifiedAt="2014-12-05T17:37:14.048Z">
+      <direction>configuration</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SGAMP$(CHIDX)" type="ao"
+                           createdAt="2014-12-05T17:37:14.048Z"
+                           modifiedAt="2014-12-05T17:37:14.048Z">
+            <EPICSField name="DESC" value="DSS accumulator increment $(CHIDX)"/>
+            <EPICSField name="DTYP" value="asynFloat64"/>
+            <EPICSField name="OUT" value="@asyn(RIO_$(MODULEIDX),$(CHIDX)) SGAmp"/>
+            <EPICSField name="PINI" value="NO"/>
+            <EPICSField name="PREC" value="6"/>
+	    	<EPICSField name="HOPR" value="$(HOPR_SGAMP)"/>
+	    	<EPICSField name="LOPR" value="$(LOPR_SGAMP)"/>
+	    	<EPICSField name="DRVH" value="$(DRVH_SGAMP)"/>
+	    	<EPICSField name="DRVL" value="$(DRVL_SGAMP)"/>
+            <EPICSField name="EGU" value="Volts"/>
+       	</EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+<!--SGSignalType0-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SGSIGNALTYPE$(CHIDX)"
+                          description="Type of signal generated $(CHIDX)"
+                          createdAt="2014-12-05T17:37:14.048Z"
+                          modifiedAt="2014-12-05T17:37:14.048Z">
+      <direction>configuration</direction>
+      <kind>discrete multi-state</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SGSIGNALTYPE$(CHIDX)" type="mbbo"
+                           createdAt="2014-12-05T17:37:14.048Z"
+                           modifiedAt="2014-12-05T17:37:14.048Z">
+            <EPICSField name="DESC" value="Type of signal generated $(CHIDX)"/>
+            <EPICSField name="DTYP" value="asynInt32"/>
+            <EPICSField name="OUT" value="@asyn(RIO_$(MODULEIDX),$(CHIDX)) SGSignalType"/>
+            <EPICSField name="PINI" value="NO"/>
+            <EPICSField name="ZRVL" value="0"/>
+            <EPICSField name="ONVL" value="1"/>
+            <EPICSField name="TWVL" value="2"/>
+            <EPICSField name="THVL" value="3"/>
+            <EPICSField name="ZRST" value="DC"/>
+            <EPICSField name="ONST" value="SINE"/>
+            <EPICSField name="TWST" value="TRIANGLE"/>
+            <EPICSField name="THST" value="SQUARE"/>
+		 </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+   <macroGroup ID="USER">
+      <macro name="BOARDTYPE" description="Board type" value="NI9159"/>
+      <macro name="CHIDX" description="index of the Signal Generator" value="0:[0,15]"/>
+      <macro name="HOPR_SGUPDATERATE" description="SGUpdateRate High operating range" value="10000:[0,100000000]"/>
+      <macro name="LOPR_SGUPDATERATE" description="SGUpdateRate Low operating range" value="0:[0,100000000]"/>
+      <macro name="DRVH_SGUPDATERATE" description="SGUpdateRate Drive high" value="10000:[0,100000000]"/>
+      <macro name="DRVL_SGUPDATERATE" description="SGUpdateRate Drive low" value="0:[0,100000000]"/>
+      <macro name="HOPR_SGFREQ" description="SGFreq High operating range" value="10:[0,50000000]"/>
+      <macro name="LOPR_SGFREQ" description="SGFreq Low operating range" value="0:[0,50000000]"/>
+      <macro name="DRVH_SGFREQ" description="SGFreq Drive high" value="10:[0,50000000]"/>
+      <macro name="DRVL_SGFREQ" description="SGFreq Drive low" value="0:[0,50000000]"/>
+      <macro name="HOPR_SGPHASE" description="SGPhase High operating range" value="360:[0,360]"/>
+      <macro name="LOPR_SGPHASE" description="SGPhase Low operating range" value="0:[0,360]"/>
+      <macro name="DRVH_SGPHASE" description="SGPhase Drive high" value="360:[0,360]"/>
+      <macro name="DRVL_SGPHASE" description="SGPhase Drive low" value="0:[0,360]"/>
+      <macro name="HOPR_SGAMP" description="SGAmp High operating range" value="10:[0,10]"/>
+      <macro name="LOPR_SGAMP" description="SGAmp Low operating range" value="-10:[-10,0]"/>
+      <macro name="DRVH_SGAMP" description="SGAmp Drive high" value="10:[0,10]"/>
+      <macro name="DRVL_SGAMP" description="SGAmp Drive low" value="-10:[-10,0]"/>
+   </macroGroup>
+</template>

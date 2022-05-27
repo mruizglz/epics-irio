@@ -1,0 +1,10 @@
+Para compilar hay que revisar los ficheros comentando o descomentando líneas según sea necesario:
+configure/RELEASE -> Rutas de EPICS_BASE, ASYN y SNCSEQ
+iocBoot/iocirioAsyn/st.cmd 	-> Mirar que envPaths se incluye (envPaths.linux.Codac o envPaths.linux)
+							-> Revisar número de serie y modelo de la tarjeta 
+iocBoot/iocirioAsyn/envPaths -> Revisar ruta de TOP 
+
+nirio/bitfiles y nirio/headerfiles -> cambiar los bitfiles y headerfiles acorde al modelo de la tarjeta
+Tambien hay que cambiar el fichero Makefile de essIOApp, poniendo el contenido de _CentOS_Makefile o _CODAC_Makefile según sea neceario.
+
+Esto es un apaño temporal, hay que meter compilacion condicional

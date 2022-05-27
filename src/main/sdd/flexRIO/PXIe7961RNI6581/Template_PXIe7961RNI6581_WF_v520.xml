@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns="http://www.iter.org/CODAC/PlantSystemIandC/2014-2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="7961RNI6581_WF" description="7961RNI6581 waveform Template"  usesSubstitutionFiles="true"  version="520"  userCanInstanciate="true" xsi:schemaLocation="http://www.iter.org/CODAC/PlantSystemIandC/2014-2 ../xsd/PlantSystemIandC.xsd">
+	<applicableToControlUnit>PCF</applicableToControlUnit>
+	<applicableToIOBoard>7961RNI6581</applicableToIOBoard>
+	<location>rio-wf.template</location>
+	<EPICSDBDName>irioAsyn.dbd</EPICSDBDName>
+	<EPICSLibraryName>irio-epics</EPICSLibraryName>
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-CH$(CHIDX)"
+                          description="Input waveform $(CHIDX)"
+                          createdAt="2014-12-05T17:37:14.048Z"
+                          modifiedAt="2014-12-05T17:37:14.048Z">
+      <direction>state</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-CH$(CHIDX)" type="waveform"
+                           createdAt="2014-12-05T17:37:14.048Z"
+                           modifiedAt="2014-12-05T17:37:14.048Z">
+            <EPICSField name="DESC" value="Input waveform $(CHIDX)"/>
+            <EPICSField name="DTYP" value="asynFloat32ArrayIn"/>
+            <EPICSField name="INP" value="@asyn(RIO_$(MODULEIDX),$(CHIDX)) CH"/>
+            <EPICSField name="FTVL" value="FLOAT"/>
+            <EPICSField name="PINI" value="YES"/>
+            <EPICSField name="NELM" value="$(NSAMPLE)"/>
+            <EPICSField name="PREC" value="6"/>
+	    <EPICSField name="SCAN" value="I/O Intr"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+   <macroGroup ID="USER">
+      <macro name="BOARDTYPE" description="Board type" value="6581"/>
+      <macro name="CHIDX" description="Waveform Channel index" value="0:[0,63]"/>
+      <macro name="NSAMPLE" description="Waveform Channel number of elements" value="128:[0,32000]"/>
+   </macroGroup>
+</template>

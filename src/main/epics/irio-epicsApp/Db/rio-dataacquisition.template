@@ -1,0 +1,58 @@
+record(bo,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-GROUPENABLE$(GRIDX)"){
+	field(DESC,"Controls ChannelGroup$(GRIDX) enable/disable")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(GRIDX))GroupEnable")
+	field(ZNAM,"DISABLE")
+	field(ONAM,"ENABLE")
+	field(PINI,"NO")
+	
+}
+record(ao,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SR$(GRIDX)"){
+	field(DESC,"Sampling rate of channel group $(GRIDX)")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(GRIDX))SamplingRate")
+	field(PINI,"NO")
+	field(EGU,"S/s")
+	field(HOPR,"125000000")
+	field(LOPR,"0")
+	field(DRVH,"125000000")
+	field(DRVL,"0")
+	field(PREC,"6")
+	
+}
+record(bi,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DMAsOVERFLOW$(GRIDX)"){
+	field(DESC,"Correct(0) or Overflow(1)")
+	field(DTYP,"asynInt32")
+	field(INP,"@asyn(RIO_$(MODULEIDX),$(GRIDX))DMAsOverflow")
+	field(ZNAM,"CORRECT")
+	field(ONAM,"OVERFLOW")
+	field(PINI,"YES")
+	field(SCAN,".1 second")
+	
+}
+
+record(ao,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DF$(GRIDX)"){
+	field(DESC,"Block Decimation factor of DMA$(GRIDX)")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(GRIDX))DF")
+	field(PINI,"NO")
+	field(HOPR,"100000000")
+	field(LOPR,"1")
+	field(DRVH,"100000000")
+	field(DRVL,"1")
+	field(PREC,"0")
+	
+}
+
+record(ao,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-USER_CONV_FACTOR$(GRIDX)"){
+	field(DESC,"User conversion factor of DMA$(GRIDX)")
+	field(DTYP,"asynFloat64")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(GRIDX))UserDefinedConversionFactor")
+	field(PINI,"YES")
+	field(HOPR,"100000000")
+	field(LOPR,"0")
+	field(DRVH,"100000000")
+	field(DRVL,"0")
+	field(PREC,"6")
+	
+}

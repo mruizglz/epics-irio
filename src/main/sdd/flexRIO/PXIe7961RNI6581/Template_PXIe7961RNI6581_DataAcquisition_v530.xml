@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns="http://www.iter.org/CODAC/PlantSystemIandC/2014-2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="7961RNI6581_DataAcquisition" description="7961RNI6581 Data Acquisition template"  usesSubstitutionFiles="true"  version="530"  userCanInstanciate="true" xsi:schemaLocation="http://www.iter.org/CODAC/PlantSystemIandC/2014-2 ../xsd/PlantSystemIandC.xsd">
+	<applicableToControlUnit>PCF</applicableToControlUnit>
+	<applicableToIOBoard>7961RNI6581</applicableToIOBoard>
+	<location>rio-dataacquisition.template</location>
+	<EPICSDBDName>irioAsyn.dbd</EPICSDBDName>
+	<EPICSLibraryName>irio-epics</EPICSLibraryName>
+<!--DMATtoHOSTEnable-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-GROUPENABLE$(GRIDX)"
+                          description="Controls ChannelGroup$(GRIDX) enable/disable"
+                          createdAt="2014-12-05T17:37:14.048Z"
+                          modifiedAt="2014-12-05T17:37:14.048Z">
+      <direction>configuration</direction>
+      <kind>discrete two-state</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-GROUPENABLE$(GRIDX)" type="bo"
+                           createdAt="2014-12-05T17:37:14.048Z"
+                           modifiedAt="2014-12-05T17:37:14.048Z">
+            <EPICSField name="DESC" value="Controls Channel Group $(GRIDX) enable/disable"/>
+            <EPICSField name="DTYP" value="asynInt32"/>
+            <EPICSField name="OUT" value="@asyn(RIO_$(MODULEIDX),$(GRIDX)) GroupEnable"/>
+            <EPICSField name="ZNAM" value="DISABLE"/>
+            <EPICSField name="ONAM" value="ENABLE"/>
+            <EPICSField name="PINI" value="NO"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+<!--DMATtoHOSTSamplingRate-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SR$(GRIDX)"
+		          description="Sampling rate of DMA$(GRIDX)"
+                          createdAt="2014-12-05T17:37:14.168Z"
+                          modifiedAt="2014-12-05T17:37:14.168Z">
+      <direction>configuration</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SR$(GRIDX)" type="ao"
+                           createdAt="2014-12-05T17:37:14.168Z"
+                           modifiedAt="2014-12-05T17:37:14.168Z">
+            <EPICSField name="DESC" value="Sampling rate of DMA$(GRIDX)"/>
+            <EPICSField name="DTYP" value="asynInt32"/>
+            <EPICSField name="OUT" value="@asyn(RIO_$(MODULEIDX),$(GRIDX)) SamplingRate"/>
+            <EPICSField name="PINI" value="NO"/>
+            <EPICSField name="EGU" value="S/s"/>
+            <EPICSField name="HOPR" value="100000000"/>
+            <EPICSField name="LOPR" value="0"/>
+            <EPICSField name="DRVH" value="100000000"/>
+            <EPICSField name="DRVL" value="0"/>
+            <EPICSField name="PREC" value="6"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+<!--DMATtoHOSTOverflows-->
+<variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DMAsOVERFLOW$(GRIDX)"
+			  description="Correct(0) or Overflow(1)"
+                          createdAt="2014-12-05T17:37:14.168Z"
+                          modifiedAt="2014-12-05T17:37:14.168Z">
+      <direction>state</direction>
+      <kind>discrete two-state</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DMAsOVERFLOW$(GRIDX)" type="bi"
+                           createdAt="2014-12-05T17:37:14.168Z"
+                           modifiedAt="2014-12-05T17:37:14.168Z">
+            <EPICSField name="DESC" value="Correct(0) or Overflow(1)"/>
+            <EPICSField name="DTYP" value="asynInt32"/>
+            <EPICSField name="INP" value="@asyn(RIO_$(MODULEIDX),$(GRIDX)) DMAsOverflow"/>
+            <EPICSField name="ZNAM" value="CORRECT"/>
+            <EPICSField name="ONAM" value="OVERFLOW"/>
+            <EPICSField name="PINI" value="YES"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+<!--DecimationFactor-->
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DF$(GRIDX)"
+		          description="Block Decimation factor of DMA$(GRIDX)"
+                          createdAt="2014-12-05T17:37:14.168Z"
+                          modifiedAt="2014-12-05T17:37:14.168Z">
+      <direction>configuration</direction>
+      <kind>continuous</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DF$(GRIDX)" type="ao"
+                           createdAt="2014-12-05T17:37:14.168Z"
+                           modifiedAt="2014-12-05T17:37:14.168Z">
+            <EPICSField name="DESC" value="Block Decimation factor of DMA$(GRIDX)"/>
+            <EPICSField name="DTYP" value="asynInt32"/>
+            <EPICSField name="OUT" value="@asyn(RIO_$(MODULEIDX),$(GRIDX)) DF"/>
+            <EPICSField name="PINI" value="NO"/>
+            <EPICSField name="HOPR" value="100000000"/>
+            <EPICSField name="LOPR" value="1"/>
+            <EPICSField name="DRVH" value="100000000"/>
+            <EPICSField name="DRVL" value="1"/>
+            <EPICSField name="PREC" value="0"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+   <macroGroup ID="USER">
+      <macro name="BOARDTYPE" description="Board type" value="6581"/>
+      <macro name="GRIDX" description="index of the DMA" value="0:[0,15]"/>
+   </macroGroup>
+</template>

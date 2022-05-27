@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns="http://www.iter.org/CODAC/PlantSystemIandC/2014-2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="7961RNI6581_auxDI" description="7961RNI6581 auxDI Template"  usesSubstitutionFiles="true"  version="510"  userCanInstanciate="true" xsi:schemaLocation="http://www.iter.org/CODAC/PlantSystemIandC/2014-2 ../xsd/PlantSystemIandC.xsd">
+	<applicableToControlUnit>PCF</applicableToControlUnit>
+	<applicableToIOBoard>7961RNI6581</applicableToIOBoard>
+	<location>/opt/codac/epics/modules/irio/db/rio-auxdi.template</location>
+	<EPICSDBDName>irioAsyn.dbd</EPICSDBDName>
+	<EPICSLibraryName>irio-epics</EPICSLibraryName>
+   <variableTemplate name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-auxDI$(CHIDX)"
+                          description="Digital Input aux channel $(CHIDX) value"
+                          createdAt="2014-12-05T17:37:14.048Z"
+                          modifiedAt="2014-12-05T17:37:14.048Z">
+      <direction>state</direction>
+      <kind>discrete two-state</kind>
+      <external>true</external>
+      <raisesAlarm>false</raisesAlarm>
+      <archivingInfo>
+         <samplingMode>monitor</samplingMode>
+         <samplingFrequency>1</samplingFrequency>
+      </archivingInfo>
+      <storage>volatile</storage>
+      <presentOnScreens>true</presentOnScreens>
+      <displayIndex>0</displayIndex>
+      <EPICSAttributes>
+         <EPICSRecord name="$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-auxDI$(CHIDX)" type="bi"
+                           createdAt="2014-12-05T17:37:14.048Z"
+                           modifiedAt="2014-12-05T17:37:14.048Z">
+            <EPICSField name="DESC" value="Digital Input aux channel $(CHIDX) value"/>
+            <EPICSField name="DTYP" value="asynInt32"/>
+            <EPICSField name="INP" value="@asyn(RIO_$(MODULEIDX),$(CHIDX)) auxDI"/>
+	    <EPICSField name="SCAN" value= ".1 second"/>
+	    <EPICSField name="ZNAM" value="0"/>
+	    <EPICSField name="ONAM" value="1"/>
+         </EPICSRecord>
+      </EPICSAttributes>
+   </variableTemplate>
+   <macroGroup ID="USER">
+      <macro name="BOARDTYPE" description="Board type" value="6581"/>
+      <macro name="CHIDX" description=" index" value="0:[0,15]"/> 
+	</macroGroup>
+</template>

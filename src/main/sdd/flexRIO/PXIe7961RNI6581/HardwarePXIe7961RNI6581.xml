@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ $HeadURL: TBD.
+ $Id: TBD.
+ 
+ Project       : CODAC Data Management
+
+ Description   : PXIe7961R-NI6581 bundle for Fast Controller in PXIe format description
+		 		 The information is taken from the following sources:
+		 		 -TBD
+
+ Author        : M. Ruiz
+
+ Copyright (c) : 2010-2022 ITER Organization,
+                 CS 90 046
+                 13067 St. Paul-lez-Durance Cedex
+                 France
+
+ This file is part of ITER CODAC software.
+ For the terms and conditions of redistribution or use of this software
+ refer to the file ITER-LICENSE.TXT located in the top level directory
+ of the distribution package.
+-->
+<IOBoard name="7961RNI6581" shortName="7961RNI6581" xmlns="http://www.iter.org/CODAC/Hardware/2013" xmlns:cat="http://www.iter.org/CODAC/Catalog/2010">
+	<catalogReference>
+		<cat:reference>7961RNI6581</cat:reference>
+		<cat:manufacturer>National Instruments</cat:manufacturer>
+		<cat:commercialName>FlexRIO PXIe7961R with NI6581 Adpater module </cat:commercialName>
+		<cat:description>TBD</cat:description>
+		<cat:datasheetRef>https://user.iter.org/?uid=C8TQ8R</cat:datasheetRef>
+		<cat:conformsToStandard>IEC 61010-1, EN 61010-1</cat:conformsToStandard>
+		<cat:conformsToStandard>UL 61010-1 CSA 61010-1</cat:conformsToStandard>
+		<cat:conformsToStandard>EN 61326-1 (IEC 61326-1): Class A emissions; Basic immunity</cat:conformsToStandard>
+		<cat:conformsToStandard>EN 55011 (CISPR 11): Group 1, Class A emissions</cat:conformsToStandard>
+		<cat:conformsToStandard>AS/ZNS CISPR 11: Group 1, Class A emissions</cat:conformsToStandard>
+		<cat:conformsToStandard>FCC 47 CFR Part 15B: Class A emissions</cat:conformsToStandard>
+		<cat:conformsToStandard>ICES-001: Class A emissions</cat:conformsToStandard>
+		<cat:conformsToStandard>2006/95/EC; Low-Voltage Directive (safety)</cat:conformsToStandard>
+		<cat:conformsToStandard>2004/108/EC; Electromagnetic Compatibility Directive (EMC)</cat:conformsToStandard>
+		<cat:class>High-Speed Digital I/O Module</cat:class>
+		<cat:subClass>PXIe card</cat:subClass>
+	</catalogReference>
+	<technicalData>
+		<busType>PXI</busType>
+		<channels>
+		<!-- Digital channels -->
+			<!-- Digital channels in DDCA(connector 0)-->
+			<channel number="0">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P0.0</name>
+				<pin connectorNumber="0" number="65" type="signal"/>
+				<pin connectorNumber="0" number="66" type="ground"/>
+			</channel>
+			<channel number="1">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P0.1</name>
+				<pin connectorNumber="0" number="31" type="signal"/>
+				<pin connectorNumber="0" number="32" type="ground"/>
+			</channel>
+			<channel number="2">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P0.2</name>
+				<pin connectorNumber="0" number="63" type="signal"/>
+				<pin connectorNumber="0" number="62" type="ground"/>
+			</channel>
+			<channel number="3">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P0.3</name>
+				<pin connectorNumber="0" number="29" type="signal"/>
+				<pin connectorNumber="0" number="28" type="ground"/>
+			</channel>
+			<channel number="4">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P0.4</name>
+				<pin connectorNumber="0" number="61" type="signal"/>
+				<pin connectorNumber="0" number="62" type="ground"/>
+			</channel>
+			<channel number="5">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P0.5</name>
+				<pin connectorNumber="0" number="27" type="signal"/>
+				<pin connectorNumber="0" number="28" type="ground"/>
+			</channel>
+			<channel number="6">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P0.6</name>
+				<pin connectorNumber="0" number="59" type="signal"/>
+				<pin connectorNumber="0" number="58" type="ground"/>
+			</channel>
+			<channel number="7">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P0.7</name>
+				<pin connectorNumber="0" number="25" type="signal"/>
+				<pin connectorNumber="0" number="24" type="ground"/>
+			</channel>
+			<channel number="8">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P1.0</name>
+				<pin connectorNumber="0" number="57" type="signal"/>
+				<pin connectorNumber="0" number="56" type="ground"/>
+			</channel>
+			<channel number="9">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P1.1</name>
+				<pin connectorNumber="0" number="23" type="signal"/>
+				<pin connectorNumber="0" number="22" type="ground"/>
+			</channel>
+			<channel number="10">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P1.2</name>
+				<pin connectorNumber="0" number="55" type="signal"/>
+				<pin connectorNumber="0" number="54" type="ground"/>
+			</channel>
+			<channel number="11">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P1.3</name>
+				<pin connectorNumber="0" number="21" type="signal"/>
+				<pin connectorNumber="0" number="20" type="ground"/>
+			</channel>
+			<channel number="12">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P1.4</name>
+				<pin connectorNumber="0" number="53" type="signal"/>
+				<pin connectorNumber="0" number="52" type="ground"/>
+			</channel>
+			<channel number="13">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P1.5</name>
+				<pin connectorNumber="0" number="19" type="signal"/>
+				<pin connectorNumber="0" number="18" type="ground"/>
+			</channel>
+			<channel number="14">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P1.6</name>
+				<pin connectorNumber="0" number="51" type="signal"/>
+				<pin connectorNumber="0" number="50" type="ground"/>
+			</channel>
+			<channel number="15">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P1.7</name>
+				<pin connectorNumber="0" number="17" type="signal"/>
+				<pin connectorNumber="0" number="16" type="ground"/>
+			</channel>
+			<channel number="16">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P2.0</name>
+				<pin connectorNumber="0" number="49" type="signal"/>
+				<pin connectorNumber="0" number="48" type="ground"/>
+			</channel>
+			<channel number="17">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P2.1</name>
+				<pin connectorNumber="0" number="15" type="signal"/>
+				<pin connectorNumber="0" number="14" type="ground"/>
+			</channel>
+			<channel number="18">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P2.2</name>
+				<pin connectorNumber="0" number="47" type="signal"/>
+				<pin connectorNumber="0" number="46" type="ground"/>
+			</channel>
+			<channel number="19">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P2.3</name>
+				<pin connectorNumber="0" number="13" type="signal"/>
+				<pin connectorNumber="0" number="12" type="ground"/>
+			</channel>
+			<channel number="20">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P2.4</name>
+				<pin connectorNumber="0" number="45" type="signal"/>
+				<pin connectorNumber="0" number="44" type="ground"/>
+			</channel>
+			<channel number="21">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P2.5</name>
+				<pin connectorNumber="0" number="11" type="signal"/>
+				<pin connectorNumber="0" number="10" type="ground"/>
+			</channel>
+			<channel number="22">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P2.6</name>
+				<pin connectorNumber="0" number="43" type="signal"/>
+				<pin connectorNumber="0" number="42" type="ground"/>
+			</channel>
+			<channel number="23">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P2.7</name>
+				<pin connectorNumber="0" number="9" type="signal"/>
+				<pin connectorNumber="0" number="8" type="ground"/>
+			</channel>
+			<channel number="24">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>PFI1</name>
+				<PFI/>
+				<pin connectorNumber="0" number="26" type="signal"/>
+				<pin connectorNumber="0" number="34" type="ground"/>
+			</channel>
+			<channel number="25">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>PFI2</name>
+				<PFI/>
+				<pin connectorNumber="0" number="64" type="signal"/>
+				<pin connectorNumber="0" number="68" type="ground"/>
+			</channel>
+			<channel number="26">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>PFI3</name>
+				<PFI/>
+				<pin connectorNumber="0" number="30" type="signal"/>
+				<pin connectorNumber="0" number="34" type="ground"/>
+			</channel>
+<!-- Digital channels in DDCB(connector 1)-->
+			<channel number="27">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P0.0</name>
+				<pin connectorNumber="1" number="65" type="signal"/>
+				<pin connectorNumber="1" number="66" type="ground"/>
+			</channel>
+			<channel number="28">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P0.1</name>
+				<pin connectorNumber="1" number="31" type="signal"/>
+				<pin connectorNumber="1" number="32" type="ground"/>
+			</channel>
+			<channel number="29">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P0.2</name>
+				<pin connectorNumber="1" number="63" type="signal"/>
+				<pin connectorNumber="1" number="62" type="ground"/>
+			</channel>
+			<channel number="30">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P0.3</name>
+				<pin connectorNumber="1" number="29" type="signal"/>
+				<pin connectorNumber="1" number="28" type="ground"/>
+			</channel>
+			<channel number="31">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P0.4</name>
+				<pin connectorNumber="1" number="61" type="signal"/>
+				<pin connectorNumber="1" number="62" type="ground"/>
+			</channel>
+			<channel number="32">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P0.5</name>
+				<pin connectorNumber="1" number="27" type="signal"/>
+				<pin connectorNumber="1" number="28" type="ground"/>
+			</channel>
+			<channel number="33">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P0.6</name>
+				<pin connectorNumber="1" number="59" type="signal"/>
+				<pin connectorNumber="1" number="58" type="ground"/>
+			</channel>
+			<channel number="34">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P0.7</name>
+				<pin connectorNumber="1" number="25" type="signal"/>
+				<pin connectorNumber="1" number="24" type="ground"/>
+			</channel>
+			<channel number="35">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P1.0</name>
+				<pin connectorNumber="1" number="57" type="signal"/>
+				<pin connectorNumber="1" number="56" type="ground"/>
+			</channel>
+			<channel number="36">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P1.1</name>
+				<pin connectorNumber="1" number="23" type="signal"/>
+				<pin connectorNumber="1" number="22" type="ground"/>
+			</channel>
+			<channel number="37">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P1.2</name>
+				<pin connectorNumber="1" number="55" type="signal"/>
+				<pin connectorNumber="1" number="54" type="ground"/>
+			</channel>
+			<channel number="38">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P1.3</name>
+				<pin connectorNumber="1" number="21" type="signal"/>
+				<pin connectorNumber="1" number="20" type="ground"/>
+			</channel>
+			<channel number="39">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P1.4</name>
+				<pin connectorNumber="1" number="53" type="signal"/>
+				<pin connectorNumber="1" number="52" type="ground"/>
+			</channel>
+			<channel number="40">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P1.5</name>
+				<pin connectorNumber="1" number="19" type="signal"/>
+				<pin connectorNumber="1" number="18" type="ground"/>
+			</channel>
+			<channel number="41">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P1.6</name>
+				<pin connectorNumber="1" number="51" type="signal"/>
+				<pin connectorNumber="1" number="50" type="ground"/>
+			</channel>
+			<channel number="42">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P1.7</name>
+				<pin connectorNumber="1" number="17" type="signal"/>
+				<pin connectorNumber="1" number="16" type="ground"/>
+			</channel>
+			<channel number="43">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P2.0</name>
+				<pin connectorNumber="1" number="49" type="signal"/>
+				<pin connectorNumber="1" number="48" type="ground"/>
+			</channel>
+			<channel number="44">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P2.1</name>
+				<pin connectorNumber="1" number="15" type="signal"/>
+				<pin connectorNumber="1" number="14" type="ground"/>
+			</channel>
+			<channel number="45">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P2.2</name>
+				<pin connectorNumber="1" number="47" type="signal"/>
+				<pin connectorNumber="1" number="46" type="ground"/>
+			</channel>
+			<channel number="46">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P2.3</name>
+				<pin connectorNumber="1" number="13" type="signal"/>
+				<pin connectorNumber="1" number="12" type="ground"/>
+			</channel>
+			<channel number="47">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P2.4</name>
+				<pin connectorNumber="1" number="45" type="signal"/>
+				<pin connectorNumber="1" number="44" type="ground"/>
+			</channel>
+			<channel number="48">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P2.5</name>
+				<pin connectorNumber="1" number="11" type="signal"/>
+				<pin connectorNumber="1" number="10" type="ground"/>
+			</channel>
+			<channel number="49">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P2.6</name>
+				<pin connectorNumber="1" number="43" type="signal"/>
+				<pin connectorNumber="1" number="42" type="ground"/>
+			</channel>
+			<channel number="50">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>P2.7</name>
+				<pin connectorNumber="1" number="9" type="signal"/>
+				<pin connectorNumber="1" number="8" type="ground"/>
+			</channel>
+			<channel number="51">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>PFI1</name>
+				<PFI/>
+				<pin connectorNumber="1" number="26" type="signal"/>
+				<pin connectorNumber="1" number="34" type="ground"/>
+			</channel>
+			<channel number="52">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>PFI2</name>
+				<PFI/>
+				<pin connectorNumber="1" number="64" type="signal"/>
+				<pin connectorNumber="1" number="68" type="ground"/>
+			</channel>
+			<channel number="53">
+				<type>digital</type>
+				<direction>bidirectional</direction>
+				<name>PFI3</name>
+				<PFI/>
+				<pin connectorNumber="1" number="30" type="signal"/>
+				<pin connectorNumber="1" number="34" type="ground"/>
+			</channel>
+		</channels>
+		<pinouts>
+			<connector type="DDCA" numPins="68" ID="0"><!--TODO:Verify TYPE of connector-->
+				<pin name="RESERVED"/>
+				<pin name="GND" shared="true"/>
+				<pin name="RESERVED"/>
+				<pin name="GND" shared="true"/>
+				<pin name="RESERVED"/>
+				<pin name="GND" shared="true"/>
+				<pin name="RESERVED"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P2.7"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P2.5"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P2.3"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P2.1" />
+				<pin name="GND" shared="true"/>
+				<pin name="P1.7"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P1.5"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P1.3"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P1.1"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P0.7"/>
+				<pin name="PFI 1"/>
+				<pin name="P0.5"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P0.3"/>
+				<pin name="PFI 3"/>
+				<pin name="P0.1"/>
+				<pin name="GND" shared="true"/>
+				<pin name="CLOCK OUT/PFI 0"/>
+				<pin name="GND" shared="true"/>
+				<pin name="RESERVED" />
+				<pin name="GND" shared="true"/>
+				<pin name="RESERVED" />
+				<pin name="GND" shared="true"/>
+				<pin name="RESERVED" />
+				<pin name="GND" shared="true"/>
+				<pin name="RESERVED" />
+				<pin name="GND" shared="true"/>
+				<pin name="P2.6" />
+				<pin name="GND" shared="true"/>
+				<pin name="P2.4" />
+				<pin name="GND" shared="true"/>
+				<pin name="P2.2" />
+				<pin name="GND" shared="true"/>
+				<pin name="P2.0" />
+				<pin name="GND" shared="true"/>
+				<pin name="P1.6"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P1.4"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P1.2" />
+				<pin name="GND" shared="true"/>
+				<pin name="P1.0"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P0.6"/>
+				<pin name="No Connect"/>
+				<pin name="P0.4"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P0.2" />
+				<pin name="PFI 2"/>
+				<pin name="P0.0"/>
+				<pin name="GND" shared="true"/>
+				<pin name="GLOBAL CLOCK 1"/>
+				<pin name="GND" shared="true"/>
+			</connector>
+			<connector type="DDCB" numPins="68" ID="1"><!--TODO:Verify TYPE of connector-->
+				<pin name="RESERVED"/>
+				<pin name="GND" shared="true"/>
+				<pin name="RESERVED"/>
+				<pin name="GND" shared="true"/>
+				<pin name="RESERVED"/>
+				<pin name="GND" shared="true"/>
+				<pin name="RESERVED"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P2.7"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P2.5"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P2.3"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P2.1" />
+				<pin name="GND" shared="true"/>
+				<pin name="P1.7"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P1.5"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P1.3"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P1.1"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P0.7"/>
+				<pin name="PFI 1"/>
+				<pin name="P0.5"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P0.3"/>
+				<pin name="PFI 3"/>
+				<pin name="P0.1"/>
+				<pin name="GND" shared="true"/>
+				<pin name="CLOCK OUT/PFI 0"/>
+				<pin name="GND" shared="true"/>
+				<pin name="RESERVED" />
+				<pin name="GND" shared="true"/>
+				<pin name="RESERVED" />
+				<pin name="GND" shared="true"/>
+				<pin name="RESERVED" />
+				<pin name="GND" shared="true"/>
+				<pin name="RESERVED" />
+				<pin name="GND" shared="true"/>
+				<pin name="P2.6" />
+				<pin name="GND" shared="true"/>
+				<pin name="P2.4" />
+				<pin name="GND" shared="true"/>
+				<pin name="P2.2" />
+				<pin name="GND" shared="true"/>
+				<pin name="P2.0" />
+				<pin name="GND" shared="true"/>
+				<pin name="P1.6"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P1.4"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P1.2" />
+				<pin name="GND" shared="true"/>
+				<pin name="P1.0"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P0.6"/>
+				<pin name="No Connect"/>
+				<pin name="P0.4"/>
+				<pin name="GND" shared="true"/>
+				<pin name="P0.2" />
+				<pin name="PFI 2"/>
+				<pin name="P0.0"/>
+				<pin name="GND" shared="true"/>
+				<pin name="GLOBAL CLOCK 1"/>
+				<pin name="GND" shared="true"/>
+			</connector>
+		</pinouts>
+		<size>
+			<length>0.129</length>
+			<width>0.02</width>
+			<height>0.121</height>
+		</size>
+		<chassisType>PXI</chassisType>
+		<USize>1</USize>
+		<weight>0.284</weight>
+		<minOperatingTemperature>0</minOperatingTemperature>
+		<maxOperatingTemperature>55</maxOperatingTemperature>
+		<minOperatingHumidity>10</minOperatingHumidity>
+		<maxOperatingHumidity>90</maxOperatingHumidity>
+		<powerBus voltage="3.3" current="0.200"/><!--TODO:Verify powerbus-->
+		<powerBus voltage="12" current="0.250"/><!--TODO:Verify powerbus-->
+	</technicalData>
+	<controllerType>PCF</controllerType>
+	<TTTCode>IOB</TTTCode>
+</IOBoard>

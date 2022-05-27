@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ $HeadURL: TBD.
+ $Id: TBD.
+ 
+ Project       : CODAC Data Management
+
+ Description   : PXIe7966R-NI1483 bundle for Fast Controller in PXIe format description
+		 		 The information is taken from the following sources:
+		 		 -http://sine.ni.com/nips/cds/view/p/lang/en/nid/208915
+		 		 -TODO:TBD
+
+ Author        : M. Ruiz
+
+ Copyright (c) : 2010-2022 ITER Organization,
+                 CS 90 046
+                 13067 St. Paul-lez-Durance Cedex
+                 France
+
+ This file is part of ITER CODAC software.
+ For the terms and conditions of redistribution or use of this software
+ refer to the file ITER-LICENSE.TXT located in the top level directory
+ of the distribution package.
+-->
+<IOBoard name="7966RNI1483" shortName="7966RNI1483" xmlns="http://www.iter.org/CODAC/Hardware/2013" xmlns:cat="http://www.iter.org/CODAC/Catalog/2010">
+	<catalogReference>
+		<cat:reference>7966RNI1483</cat:reference>
+		<cat:manufacturer>National Instruments</cat:manufacturer>
+		<cat:commercialName>FlexRIO PXIe7966R with NI1483 Adpater module </cat:commercialName>
+		<cat:description>Camera Link Adapter Module for FPGA Image Processing</cat:description>
+		<cat:datasheetRef>https://user.iter.org/?uid=C8TQ8R</cat:datasheetRef>
+		<cat:conformsToStandard>IEC 61010-1, EN 61010-1</cat:conformsToStandard>
+		<cat:conformsToStandard>UL 61010-1 CSA 61010-1</cat:conformsToStandard>
+		<cat:conformsToStandard>EN 61326-1 (IEC 61326-1): Class A emissions; Basic immunity</cat:conformsToStandard>
+		<cat:conformsToStandard>EN 55011 (CISPR 11): Group 1, Class A emissions</cat:conformsToStandard>
+		<cat:conformsToStandard>AS/ZNS CISPR 11: Group 1, Class A emissions</cat:conformsToStandard>
+		<cat:conformsToStandard>FCC 47 CFR Part 15B: Class A emissions</cat:conformsToStandard>
+		<cat:conformsToStandard>ICES-001: Class A emissions</cat:conformsToStandard>
+		<cat:conformsToStandard>2006/95/EC; Low-Voltage Directive (safety)</cat:conformsToStandard>
+		<cat:conformsToStandard>2004/108/EC; Electromagnetic Compatibility Directive (EMC)</cat:conformsToStandard>
+		<cat:class>Camera Link Adapter Module for FPGA Image Processing</cat:class>
+		<cat:subClass>PXIe card</cat:subClass>
+	</catalogReference>
+	<technicalData>
+		<busType>PXI</busType>
+		<channels>
+		<!-- Image channels -->
+			<!-- Image channel in SDR_Base connector-->
+			<channel number="0"><!--TODO:Image channel is not implemented, so this configuration has no sense for SDD implementation-->
+				<type>analog</type>
+				<direction>input</direction>
+				<name></name>
+				<pin connectorNumber="0" number="1" type="signal"/>
+				<pin connectorNumber="0" number="26" type="ground"/>
+			</channel>			
+		</channels>
+		<pinouts>
+			<connector type="SDR_Base" numPins="26" ID="0">
+				<pin name="DGND"/>
+				<pin name="CC(4)-"/>
+				<pin name="CC(3)+"/>
+				<pin name="CC(2)-"/>
+				<pin name="CC(1)+"/>
+				<pin name="SerTFG+"/>
+				<pin name="SerTC-"/>
+				<pin name="X(3)+"/>
+				<pin name="XCLK+"/>
+				<pin name="X(2)+"/>
+				<pin name="X(1)+"/>
+				<pin name="X(0)+"/>
+				<pin name="DGND"/>
+				<pin name="DGND"/>
+				<pin name="CC(4)+"/>
+				<pin name="CC(3)-"/>
+				<pin name="CC(2)+"/>
+				<pin name="CC(1)-"/>
+				<pin name="SerTFG-"/>
+				<pin name="SerTC+"/>
+				<pin name="X(3)-"/>
+				<pin name="XCLK-"/>
+				<pin name="X(2)-"/>
+				<pin name="X(1)-"/>
+				<pin name="X(0)-"/>
+				<pin name="DGND"/>
+			</connector>
+			<connector type="SDR_Medium/Full" numPins="26" ID="1">
+				<pin name="DGND"/>
+				<pin name="Z(3)+"/>
+				<pin name="ZCLK+"/>
+				<pin name="Z(2)+"/>
+				<pin name="Z(1)+"/>
+				<pin name="Z(0)+"/>
+				<pin name="100ohm_differential_termination_with_pin20"/>
+				<pin name="Y(3)+"/>
+				<pin name="YCLK+"/>
+				<pin name="Y(2)+"/>
+				<pin name="Y(1)+"/>
+				<pin name="Y(0)+"/>
+				<pin name="DGND"/>
+				<pin name="DGND"/>
+				<pin name="Z(3)-"/>
+				<pin name="ZCLK-"/>
+				<pin name="Z(2)-"/>
+				<pin name="Z(1)-"/>
+				<pin name="Z(0)-"/>
+				<pin name="100ohm_differential_termination_with_pin7"/>
+				<pin name="Y(3)-"/>
+				<pin name="YCLK-"/>
+				<pin name="Y(2)-"/>
+				<pin name="Y(1)-"/>
+				<pin name="Y(0)-"/>
+				<pin name="DGND"/>
+			</connector>
+			<connector type="D-Sub" numPins="15" ID="2">
+				<pin name="GPIO0"/>
+				<pin name="GPIO1"/>
+				<pin name="GPIO2"/>
+				<pin name="GPIO3"/>
+				<pin name="GPIO4"/>
+				<pin name="GPIO5"/>
+				<pin name="GPIO6"/>
+				<pin name="GPIO7"/>
+				<pin name="GPIO8"/>
+				<pin name="GPIO9"/>
+				<pin name="GPIO10"/>
+				<pin name="GPIO11"/>
+				<pin name="GPIO12"/>
+				<pin name="GPIO13"/>
+				<pin name="GPIO14"/>
+				<pin name="GPIO15"/>
+			</connector>
+			
+		</pinouts>
+		<size>
+			<length>0.122</length>
+			<width>0.02</width>
+			<height>0.128</height>
+		</size>
+		<chassisType>PXI</chassisType>
+		<USize>1</USize>
+		<weight>0.312</weight>
+		<minOperatingTemperature>0</minOperatingTemperature>
+		<maxOperatingTemperature>55</maxOperatingTemperature>
+		<minOperatingHumidity>10</minOperatingHumidity>
+		<maxOperatingHumidity>90</maxOperatingHumidity>
+		<powerBus voltage="3.3" current="0.200"/><!--TODO:Verify powerbus-->
+		<powerBus voltage="12" current="0.250"/><!--TODO:Verify powerbus-->
+	</technicalData>
+	<controllerType>PCF</controllerType>
+	<TTTCode>IOB</TTTCode>
+</IOBoard>

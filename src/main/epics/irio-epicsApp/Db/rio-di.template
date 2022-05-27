@@ -1,0 +1,12 @@
+record (bi, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DI$(CHIDX)"){
+	field(DESC,"Digital Input channel $(CHIDX) value")
+	field(DTYP,"asynInt32")
+	field(INP,"@asyn(RIO_$(MODULEIDX),$(CHIDX))DI")
+	field(SCAN,"$(SCAN)")
+	field(ZNAM,"FALSE")
+	field(ONAM,"TRUE")
+	field(PINI,"YES")
+	field(TSE,"$(TSE)")	
+}
+
+

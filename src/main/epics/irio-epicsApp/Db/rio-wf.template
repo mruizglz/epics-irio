@@ -1,0 +1,13 @@
+record(waveform,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-CH$(CHIDX)"){
+	field(DESC,"Input waveform $(CHIDX)")
+	field(DTYP,"asynFloat32ArrayIn")
+	field(INP,"@asyn(RIO_$(MODULEIDX),$(CHIDX))CH")
+	field(FTVL,"FLOAT")
+	field(PINI,"YES")
+	field(NELM,"$(NSAMPLE)")
+	field(PREC,"6")
+	field(SCAN,"I/O Intr")
+	field(TSE,"$(TSE)")
+#	info(asyn:FIFO,"4096")
+}
+

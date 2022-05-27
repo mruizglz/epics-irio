@@ -1,0 +1,10 @@
+record (ai, "$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-AI$(CHIDX)"){
+	field(DESC,"Analog Input channel $(CHIDX) value")
+	field(DTYP,"asynFloat64")
+	field(INP,"@asyn(RIO_$(MODULEIDX),$(CHIDX))AI")
+	field(SCAN,"$(SCAN)")
+	field(PREC,"6")
+	field(PINI,"YES")
+	field(TSE,"$(TSE)")
+}
+

@@ -1,0 +1,62 @@
+record(ao,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SGUPDATERATE$(CHIDX)"){
+	field(DESC,"Signal Generator Update Rate $(CHIDX)")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(CHIDX))SGUpdateRate")
+	field(PREC,"6")
+	field(PINI,"NO")
+	field(HOPR,"$(HOPR_SGUPDATERATE)")
+	field(LOPR,"$(LOPR_SGUPDATERATE)")
+	field(DRVH,"$(DRVH_SGUPDATERATE)")
+	field(DRVL,"$(DRVL_SGUPDATERATE)")
+	field(EGU,"S/s")
+}
+record(ao,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SGFREQ$(CHIDX)"){
+	field(DESC,"Signal Generator freq $(CHIDX)")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(CHIDX))SGFreq")
+	field(PREC,"6")
+	field(PINI,"NO")
+	field(HOPR,"$(HOPR_SGFREQ)")
+	field(LOPR,"$(LOPR_SGFREQ)")
+	field(DRVH,"$(DRVH_SGFREQ)")
+	field(DRVL,"$(DRVL_SGFREQ)")
+	field(EGU,"Hz")
+}
+record(ao,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SGPHASE$(CHIDX)"){
+	field(DESC,"Signal Generator phase control $(CHIDX)")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(CHIDX))SGPhase")
+	field(PINI,"NO")
+	field(PREC,"0")
+	field(HOPR,"$(HOPR_SGPHASE)")
+	field(LOPR,"$(LOPR_SGPHASE)")
+	field(DRVH,"$(DRVH_SGPHASE)")
+	field(DRVL,"$(DRVL_SGPHASE)")
+}
+record(ao,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SGAMP$(CHIDX)"){
+	field(DESC,"DSS accumulator increment $(CHIDX)")
+	field(DTYP,"asynFloat64")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(CHIDX))SGAmp")
+	field(PINI,"NO")
+	field(PREC,"6")
+	field(HOPR,"$(HOPR_SGAMP)")
+	field(LOPR,"$(LOPR_SGAMP)")
+	field(DRVH,"$(DRVH_SGAMP)")
+	field(DRVL,"$(DRVL_SGAMP)")
+	field(EGU, "Volts")
+}
+record(mbbo,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-SGSIGNALTYPE$(CHIDX)"){
+	field(DESC,"Type of signal generated $(CHIDX))")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),$(CHIDX))SGSignalType")
+	field(PINI,"NO")
+	field(ZRVL,"0")
+	field(ONVL,"1")
+	field(TWVL,"2")
+	field(THVL,"3")
+	field(ZRST,"DC")
+	field(ONST,"SINE")
+	field(TWST,"SQUARE")
+	field(THST,"TRIANGLE")
+}
+
