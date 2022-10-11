@@ -1,0 +1,10 @@
+############################################################################
+## CODAC specific environment variables
+############################################################################
+
+epicsEnvSet("AUTOSAVE_SYSM_PV_PREFIX","test-irio:")
+epicsEnvSet("IOCSH_PS1","${IOC}> ")
+epicsEnvSet("EPICS_DB_INCLUDE_PATH","$(TOP)/db:$(EPICS_APPS)/epics-irio/db:$(EPICS_ROOT)/db")
+epicsEnvSet("STREAM_PROTOCOL_PATH","$(TOP)/db:$(EPICS_APPS)/epics-irio/db:$(EPICS_ROOT)/db")
+
+#- End-of-file marker - do not delete or add lines below!

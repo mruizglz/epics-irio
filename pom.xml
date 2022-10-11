@@ -126,6 +126,9 @@
                                 </properties>
                             </include>
                         </package>
+			<package name="test-irio-ioc">
+			    <include name="test-irio" type="ioc" />
+			</package>
                     </packaging>
                 </configuration>
             </plugin>

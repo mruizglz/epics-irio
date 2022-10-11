@@ -1,0 +1,9 @@
+############################################################################
+## User provided environment variables
+############################################################################
+
+#epicsEnvSet("EPICS_CA_SERVER_PORT", "5064")
+#epicsEnvSet("EPICS_CA_ADDR_LIST", "")
+#epicsEnvSet("EPICS_CA_AUTO_ADDR_LIST", "YES")
+
+#- End-of-file marker - do not delete or add lines below!
