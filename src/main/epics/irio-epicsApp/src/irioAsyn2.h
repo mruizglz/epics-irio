@@ -23,6 +23,8 @@
 #ifndef IRIOASYN_H_
 #define IRIOASYN_H_
 
+#include <map>
+#include <functional>
 /* Standard includes */
 #include <stddef.h>
 #include <stdio.h>
@@ -37,44 +39,45 @@
 #include <sys/time.h>
 #include <limits.h>
 /* epics */
-#include <cantProceed.h>
+//#include <cantProceed.h>
 #include <iocsh.h>
 #include <epicsThread.h>
 #include <epicsString.h>
-#include "epicsExit.h"
-#include "epicsRingBytes.h"
-#include <errlog.h>
+//#include "epicsExit.h"
+//#include "epicsRingBytes.h"
+//#include <errlog.h>
 #include <epicsTime.h>
 #include <registryFunction.h>
 #include <epicsExport.h>
-
-#include "alarm.h"
-#include "cvtTable.h"
-#include "dbDefs.h"
-#include "dbAccess.h"
-#include "recGbl.h"
-#include "recSup.h"
-#include "devSup.h"
-#include "link.h"
-#include "aiRecord.h"
-#include "stringinRecord.h"
-#include "stringoutRecord.h"
-#include "mbboRecord.h"
-#include "boRecord.h"
+//
+//#include "alarm.h"
+//#include "cvtTable.h"
+//#include "dbDefs.h"
+//#include "dbAccess.h"
+//#include "recGbl.h"
+//#include "recSup.h"
+//#include "devSup.h"
+//#include "link.h"
+//#include "aiRecord.h"
+//#include "stringinRecord.h"
+//#include "stringoutRecord.h"
+//#include "mbboRecord.h"
+//#include "boRecord.h"
 
 #include "locale.h"
 
 /* asyn */
-#include <asynDriver.h>
-#include <asynInt32.h>
-#include <asynUInt32Digital.h>
-#include <asynFloat64.h>
-#include <asynStandardInterfaces.h>
-#include <asynCommonSyncIO.h>
-#include <asynInt32ArraySyncIO.h>
-#include <asynDrvUser.h>
-#include <asynOctet.h>
-#include <asynFloat32ArraySyncIO.h>
+//#include <asynDriver.h>
+//#include <asynInt32.h>
+//#include <asynUInt32Digital.h>
+//#include <asynFloat64.h>
+//#include <asynStandardInterfaces.h>
+//#include <asynCommonSyncIO.h>
+//#include <asynInt32ArraySyncIO.h>
+//#include <asynDrvUser.h>
+//#include <asynOctet.h>
+//#include <asynFloat32ArraySyncIO.h>
+#include <epicsTypes.h>
 #include <asynPortDriver.h>
 
 #include <dbStaticLib.h>
@@ -127,7 +130,56 @@ public:
 			const char *FPGAversion,
 			int verbosity);
 	 ~irio();
+	virtual asynStatus readOctet(asynUser *pasynUser, char *value, size_t maxChars,
+									size_t *nActual, int *eomReason);
+	virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
+									size_t *nActual);//!< Asyn asynOctet interface
+	virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
+	virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+//	virtual asynStatus readInt64(asynUser *pasynUser, epicsInt64 *value);
+//	virtual asynStatus writeInt64(asynUser *pasynUser, epicsInt64 value);
+//	virtual asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
+//	virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
+//	virtual asynStatus readInt8Array(asynUser *pasynUser, epicsInt8 *value,
+//							size_t nElements, size_t *nIn);
+//	virtual asynStatus writeInt8Array(asynUser *pasynUser, epicsInt8 *value,
+//							size_t nElements);
+//
+//	virtual asynStatus readInt16Array(asynUser *pasynUser, epicsInt16 *value,
+//							size_t nElements, size_t *nIn);
+//	virtual asynStatus writeInt16Array(asynUser *pasynUser, epicsInt16 *value,
+//							size_t nElements);
+//
+//	virtual asynStatus readInt32Array(asynUser *pasynUser, epicsInt32 *value,
+//							size_t nElements, size_t *nIn);
+//	virtual asynStatus writeInt32Array(asynUser *pasynUser, epicsInt32 *value,
+//							size_t nElements);
+//
+//	virtual asynStatus readInt64Array(asynUser *pasynUser, epicsInt64 *value,
+//							size_t nElements, size_t *nIn);
+//	virtual asynStatus writeInt64Array(asynUser *pasynUser, epicsInt64 *value,
+//							size_t nElements);
+//
+//	virtual asynStatus readFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
+//							size_t nElements, size_t *nIn);
+//	virtual asynStatus writeFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
+//							size_t nElements);
+//
+//	virtual asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
+//							size_t nElements, size_t *nIn);
+//	virtual asynStatus writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
+//							size_t nElements);
 
+protected:
+	int EPICSVerisonMessage;
+	int FPGAStart;
+	int DevQualityStatus;
+	template <typename T>
+			using handler_t = std::function<int(asynUser *, T*)>;
+	template <typename T>
+			using handlerMap_t = std::map<int, handler_t<T>>;
+	handlerMap_t<char *> mapa;
+	int echoHandler(asynUser *, char *);
 
 private:
 	int status_func(void *drvPvt, TStatus* status);
@@ -156,45 +208,6 @@ private:
 	//        asynInterface   common;				//!< Asyn common interface
 	//        asynInterface   AsynDrvUser;		//!< Asyn asynDrvUser interface
 	//        asynInterface   AsynOption;			//!< Asyn asynOption interface
-	    virtual asynStatus readOctet(asynUser *pasynUser, char *value, size_t maxChars,
-	                                                size_t *nActual, int *eomReason);
-        virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
-	                                                size_t *nActual);//!< Asyn asynOctet interface
-        virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
-		virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-		virtual asynStatus readInt64(asynUser *pasynUser, epicsInt64 *value);
-		virtual asynStatus writeInt64(asynUser *pasynUser, epicsInt64 value);
-		virtual asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
-		virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
-		virtual asynStatus readInt8Array(asynUser *pasynUser, epicsInt8 *value,
-											size_t nElements, size_t *nIn);
-		virtual asynStatus writeInt8Array(asynUser *pasynUser, epicsInt8 *value,
-											size_t nElements);
-
-		virtual asynStatus readInt16Array(asynUser *pasynUser, epicsInt16 *value,
-											size_t nElements, size_t *nIn);
-		virtual asynStatus writeInt16Array(asynUser *pasynUser, epicsInt16 *value,
-											size_t nElements);
-
-		virtual asynStatus readInt32Array(asynUser *pasynUser, epicsInt32 *value,
-											size_t nElements, size_t *nIn);
-		virtual asynStatus writeInt32Array(asynUser *pasynUser, epicsInt32 *value,
-											size_t nElements);
-
-		virtual asynStatus readInt64Array(asynUser *pasynUser, epicsInt64 *value,
-											size_t nElements, size_t *nIn);
-		virtual asynStatus writeInt64Array(asynUser *pasynUser, epicsInt64 *value,
-											size_t nElements);
-
-		virtual asynStatus readFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
-											size_t nElements, size_t *nIn);
-		virtual asynStatus writeFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
-											size_t nElements);
-
-		virtual asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
-											size_t nElements, size_t *nIn);
-		virtual asynStatus writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
-											size_t nElements);
 
 //        asynInterface   AsynInt8Array;		//!< Asyn asynInt8Array interface
 	//        asynInterface   AsynInt32;			//!< Asyn asynInt32 interface
@@ -230,7 +243,11 @@ private:
 	//} irio_pvt_t;
 };
 
-
-
+/* Status message strings */
+#define EPICSVersionString       "epics_version"        /**< (asynOctet,    r/o) Status message */
+#define FPGAStartString "FPGAStart" /** <asynInt32
+//#define ADStringToServerString      "STRING_TO_SERVER"      /**< (asynOctet,    r/o) String sent to server for message-based drivers */
+//#define ADStringFromServerString    "STRING_FROM_SERVER"    /**< (asynOctet,    r/o) String received from server for message-based drivers */
+#define DevQualityStatusString "DevQualityStatus"
 
 #endif

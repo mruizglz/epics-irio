@@ -19,6 +19,7 @@ DB += rio-auxao.template
 DB += rio-auxdi.template
 DB += rio-auxdo.template
 DB += rio-module.template
+DB += rio-module2.template
 DB += rio-dataacquisition.template
 DB += rio-sg.template
 DB += rio-wf.template

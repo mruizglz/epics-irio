@@ -1,0 +1,24 @@
+
+record(stringin,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-EPICSVERSION"){
+	field(DESC,"Epics-irio driver version")
+	field(DTYP,"asynOctetRead")
+	field(INP,"@asyn(RIO_$(MODULEIDX),0)epics_version")
+	field(PINI,"YES")	
+	field(SCAN,"1 second")
+}
+record(bo,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-FPGASTART"){
+	field(DESC,"FPGA Start.")
+	field(DTYP,"asynInt32")
+	field(OUT,"@asyn(RIO_$(MODULEIDX),0)FPGAStart")
+	field(PINI,"NO")
+	field(ZNAM,"OFF")
+	field(ONAM,"ON")	
+}
+record(ai,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DEVQUALITYSTATUS"){
+	field(DESC,"Info of errors in acquisition process")
+	field(DTYP,"asynInt32")
+	field(INP,"@asyn(RIO_$(MODULEIDX),0)DevQualityStatus")
+	field(SCAN,"1 second")
+	field(PINI,"YES")	
+}
+

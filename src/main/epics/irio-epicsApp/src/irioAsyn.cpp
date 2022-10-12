@@ -157,11 +157,15 @@ void nirio_epicsExit(void *ptr);
 				0,
 				1,
 				0,
-				0) {
+				0), driverInitialized(0),flag_close(0),flag_exit(0), epicsExiting(0),closeDriver(0) {
 	//TODO: implement checks!!!
 
-
-
+	 asynStatus status=createParam(EPICSVersionString,       asynParamOctet, &EPICSVerisonMessage);
+     setStringParam(EPICSVerisonMessage, "Hola mundo");
+      status=createParam(FPGAStartString, asynParamInt32, &FPGAStart);
+     setIntegerParam(FPGAStart,0);
+     status=createParam(DevQualityStatusString, asynParamInt32, &DevQualityStatus);
+     setIntegerParam(DevQualityStatus,255);
 
 
 
@@ -236,54 +240,58 @@ void nirio_epicsExit(void *ptr);
 //	globalData[pdrvPvt->portNumber].number_of_DMAs=0;
 //
 //    epicsAtExit(nirio_epicsExit,(void*)pdrvPvt);
-	epicsAtExit(nirio_epicsExit,&iriodrv);
-    int retry = 0;
 
-	rio_device_status=STATUS_NO_BOARD;
-	std::string appCallID;
-	std::string currentdir(get_current_dir_name());
-	std::string bitfilepath=currentdir+"/irio/";
-	std::string OSdirFW("/opt/codac/firmware/ni/irio/"); //default path
 
-	rio_device_status=STATUS_INITIALIZING;
-	TStatus irio_status;
-	irio_initStatus(&irio_status);
-    int st=irio_initDriver(appCallID.c_str(),DevSerial,PXInirioModel,projectName,FPGAversion,verbosity,bitfilepath.c_str(),bitfilepath.c_str(),&iriodrv,&irio_status);
-    if(st==IRIO_success){
-    	asynPrint(pasynUserSelf,ASYN_TRACE_FLOW,"[%s-%d][%s]Device initialization OK.\n",__func__,__LINE__,portName);
-    	driverInitialized=1;
-    	status_func(&iriodrv,&irio_status);
-    }
-    if(st==IRIO_error){
-	if (irio_status.detailCode == HeaderNotFound_Error ) retry=1;
-	else{
-		status_func(&iriodrv,&irio_status);
-		nirio_shutdown();
-		//TODO ???? return asynError;
-	}
-    }
-    if(st==IRIO_warning){
-    	status_func(&iriodrv,&irio_status);
-    }
+	//epicsAtExit(nirio_epicsExit,&iriodrv);
+//    int retry = 0;
 //
-    if (retry){
-    	bitfilepath=OSdirFW;
-        st=irio_initDriver(appCallID.c_str(),DevSerial,PXInirioModel,projectName,FPGAversion,verbosity,bitfilepath.c_str(),bitfilepath.c_str(),&iriodrv,&irio_status);
-        if(st==IRIO_success){
-                asynPrint(pasynUserSelf,ASYN_TRACE_FLOW,"[%s-%d][%s]Device initialization OK.\n",__func__,__LINE__,portName);
-                driverInitialized=1;
-                status_func(&iriodrv,&irio_status);
-        }
-        if(st==IRIO_error){
-                status_func(&iriodrv,&irio_status);
-                nirio_shutdown();
-                //TODO ?return asynError;
-        }
-
-        if(st==IRIO_warning){
-                status_func(&iriodrv,&irio_status);
-        }
-    }
+//	rio_device_status=STATUS_NO_BOARD;
+//	std::string appCallID;
+//	std::string currentdir;
+//	std::string bitfilepath;
+//	std::string OSdirFW;
+//	OSdirFW="/opt/codac/firmware/ni/irio/"; //default path
+//    currentdir=get_current_dir_name();
+//    bitfilepath=currentdir+"/irio/";
+//	rio_device_status=STATUS_INITIALIZING;
+//	TStatus irio_status;
+//	irio_initStatus(&irio_status);
+//    int st=irio_initDriver(appCallID.c_str(),DevSerial,PXInirioModel,projectName,FPGAversion,verbosity,bitfilepath.c_str(),bitfilepath.c_str(),&iriodrv,&irio_status);
+//    if(st==IRIO_success){
+//    	asynPrint(pasynUserSelf,ASYN_TRACE_FLOW,"[%s-%d][%s]Device initialization OK.\n",__func__,__LINE__,portName);
+//    	driverInitialized=1;
+//    	status_func(&iriodrv,&irio_status);
+//    }
+//    if(st==IRIO_error){
+//	if (irio_status.detailCode == HeaderNotFound_Error ) retry=1;
+//	else{
+//		status_func(&iriodrv,&irio_status);
+//		nirio_shutdown();
+//		//TODO ???? return asynError;
+//	}
+//    }
+//    if(st==IRIO_warning){
+//    	status_func(&iriodrv,&irio_status);
+//    }
+////
+//    if (retry){
+//    	bitfilepath=OSdirFW;
+//        st=irio_initDriver(appCallID.c_str(),DevSerial,PXInirioModel,projectName,FPGAversion,verbosity,bitfilepath.c_str(),bitfilepath.c_str(),&iriodrv,&irio_status);
+//        if(st==IRIO_success){
+//                asynPrint(pasynUserSelf,ASYN_TRACE_FLOW,"[%s-%d][%s]Device initialization OK.\n",__func__,__LINE__,portName);
+//                driverInitialized=1;
+//                status_func(&iriodrv,&irio_status);
+//        }
+//        if(st==IRIO_error){
+//                status_func(&iriodrv,&irio_status);
+//                nirio_shutdown();
+//                //TODO ?return asynError;
+//        }
+//
+//        if(st==IRIO_warning){
+//                status_func(&iriodrv,&irio_status);
+//        }
+    //}
 //
 //
 //
@@ -1899,14 +1907,14 @@ extern "C"{
 int irio_configure(const char *namePort, const char *DevSerial,
 		const char *PXInirioModel, const char *projectName,
 		const char *FPGAversion, int verbosity){
-	    try {
-	 	 irio irio_device(namePort, DevSerial, 	PXInirioModel, projectName,	FPGAversion,  verbosity);
-	    }
-	    catch (...)
-	    {
+	    //try {
+	 	 new irio(namePort, DevSerial, 	PXInirioModel, projectName,	FPGAversion,  verbosity);
+	    //}
+	    //catch (...)
+	    //{
 
-	    }
-	 	 return 0;
+	    //}
+	 	 return asynSuccess;
 }
 /**
 *	Next, Registration of the irioinit function and its 4 parameters
@@ -2218,77 +2226,131 @@ void irio::nirio_shutdown(){
 
 asynStatus irio::readOctet(asynUser *pasynUser, char *value, size_t maxChars,
 		size_t *nActual, int *eomReason) {
+	int function = pasynUser->reason;
+	asynStatus status = asynSuccess;
+	const char *paramName;
+	const char* functionName = "readOctet";
+
+	/* Set the parameter in the parameter library. */
+
+	status = (asynStatus) getStringParam(function, (int)maxChars, value);
+     //ojo con las sobrecargas de las funciones de getSttringParam????
+
+	/* Fetch the parameter string name for possible use in debugging */
+	getParamName(function, &paramName);
+	asynPrint(pasynUser,function, "%s",paramName);
+	*nActual=strlen(value)+1;
+	return status;
+
+
 }
 
 asynStatus irio::writeOctet(asynUser *pasynUser, const char *value,
 		size_t maxChars, size_t *nActual) {
+	int function = pasynUser->reason;
+		asynStatus status = asynSuccess;
+		const char *paramName;
+		const char* functionName = "readOctet";
+
+		/* Set the parameter in the parameter library. */
+		status = (asynStatus) setStringParam(function, (char*)value);
+
+		/* Fetch the parameter string name for possible use in debugging */
+		getParamName(function, &paramName);
+		asynPrint(pasynUser,function, "%s",paramName);
+		*nActual=maxChars;
+		return status;
 }
 
 asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
+	int function = pasynUser->reason;
+	asynStatus status = asynSuccess;
+	const char *paramName;
+	const char* functionName = "readInt32";
+
+	/* Set the parameter in the parameter library. */
+	status = (asynStatus) getIntegerParam(function, value);
+
+	/* Fetch the parameter string name for possible use in debugging */
+	getParamName(function, &paramName);
+	asynPrint(pasynUser,function, "%s",paramName);
+	return status;
 }
 
 asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
-}
+	int function = pasynUser->reason;
+	asynStatus status = asynSuccess;
+	const char *paramName;
+	const char* functionName = "writeInt32";
 
-asynStatus irio::readInt64(asynUser *pasynUser, epicsInt64 *value) {
-}
+	/* Set the parameter in the parameter library. */
+	status = (asynStatus) setIntegerParam(function, value);
 
-asynStatus irio::writeInt64(asynUser *pasynUser, epicsInt64 value) {
+	/* Fetch the parameter string name for possible use in debugging */
+	getParamName(function, &paramName);
+	asynPrint(pasynUser,function, "%s",paramName);
+	return status;
 }
-
-asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
-}
-
-asynStatus irio::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
-}
-
-asynStatus irio::readInt8Array(asynUser *pasynUser, epicsInt8 *value,
-		size_t nElements, size_t *nIn) {
-}
-
-asynStatus irio::writeInt8Array(asynUser *pasynUser, epicsInt8 *value,
-		size_t nElements) {
-}
-
-asynStatus irio::readInt16Array(asynUser *pasynUser, epicsInt16 *value,
-		size_t nElements, size_t *nIn) {
-}
-
-asynStatus irio::writeInt16Array(asynUser *pasynUser, epicsInt16 *value,
-		size_t nElements) {
-}
-
-asynStatus irio::readInt32Array(asynUser *pasynUser, epicsInt32 *value,
-		size_t nElements, size_t *nIn) {
-}
-
-asynStatus irio::writeInt32Array(asynUser *pasynUser, epicsInt32 *value,
-		size_t nElements) {
-}
-
-asynStatus irio::readInt64Array(asynUser *pasynUser, epicsInt64 *value,
-		size_t nElements, size_t *nIn) {
-}
-
-asynStatus irio::writeInt64Array(asynUser *pasynUser, epicsInt64 *value,
-		size_t nElements) {
-}
-
-asynStatus irio::readFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
-		size_t nElements, size_t *nIn) {
-}
-
-asynStatus irio::writeFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
-		size_t nElements) {
-}
-
-asynStatus irio::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
-		size_t nElements, size_t *nIn) {
-}
-
-asynStatus irio::writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
-		size_t nElements) {
-}
+//
+//asynStatus irio::readInt64(asynUser *pasynUser, epicsInt64 *value) {
+//}
+//
+//asynStatus irio::writeInt64(asynUser *pasynUser, epicsInt64 value) {
+//}
+//
+//asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
+//}
+//
+//asynStatus irio::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
+//}
+//
+//asynStatus irio::readInt8Array(asynUser *pasynUser, epicsInt8 *value,
+//		size_t nElements, size_t *nIn) {
+//}
+//
+//asynStatus irio::writeInt8Array(asynUser *pasynUser, epicsInt8 *value,
+//		size_t nElements) {
+//}
+//
+//asynStatus irio::readInt16Array(asynUser *pasynUser, epicsInt16 *value,
+//		size_t nElements, size_t *nIn) {
+//}
+//
+//asynStatus irio::writeInt16Array(asynUser *pasynUser, epicsInt16 *value,
+//		size_t nElements) {
+//}
+//
+//asynStatus irio::readInt32Array(asynUser *pasynUser, epicsInt32 *value,
+//		size_t nElements, size_t *nIn) {
+//}
+//
+//asynStatus irio::writeInt32Array(asynUser *pasynUser, epicsInt32 *value,
+//		size_t nElements) {
+//}
+//
+//asynStatus irio::readInt64Array(asynUser *pasynUser, epicsInt64 *value,
+//		size_t nElements, size_t *nIn) {
+//}
+//
+//asynStatus irio::writeInt64Array(asynUser *pasynUser, epicsInt64 *value,
+//		size_t nElements) {
+//}
+//
+//asynStatus irio::readFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
+//		size_t nElements, size_t *nIn) {
+//}
+//
+//asynStatus irio::writeFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
+//		size_t nElements) {
+//}
+//
+//asynStatus irio::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
+//		size_t nElements, size_t *nIn) {
+//}
+//
+//asynStatus irio::writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
+//		size_t nElements) {
+//}
 //
 //static void ai_intr_thread(void *p){
 //	TIRIOStatusCode status=IRIO_success;

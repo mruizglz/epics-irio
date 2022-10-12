@@ -38,7 +38,7 @@ test_irio_registerRecordDeviceDriver pdbbase
 < "${TOP}/iocBoot/ioctest-irio/userPreDriverConf.cmd"
 < "${TOP}/iocBoot/ioctest-irio/threadSchedulingConf.cmd"
 < "${TOP}/iocBoot/ioctest-irio/dbToLoad.cmd"
-< "${TOP}/iocBoot/ioctest-irio/ioctest-irio-preSaveRestore.cmd"
+#< "${TOP}/iocBoot/ioctest-irio/ioctest-irio-preSaveRestore.cmd"
 
 ############################################################################
 ## IOC Logging
@@ -52,16 +52,16 @@ iocLogPrefix "${STY} : "
 cd "${TOP}/db"
 iocInit
 
-< "${TOP}/iocBoot/ioctest-irio/ioctest-irio-postSaveRestore.cmd"
-< "${TOP}/iocBoot/ioctest-irio/sddSeqToLoad.cmd"
-< "${TOP}/iocBoot/ioctest-irio/seqToLoad.cmd"
-< "${TOP}/iocBoot/ioctest-irio/sddPostDriverConf.cmd"
-< "${TOP}/iocBoot/ioctest-irio/userPostDriverConf.cmd"
+#< "${TOP}/iocBoot/ioctest-irio/ioctest-irio-postSaveRestore.cmd"
+#< "${TOP}/iocBoot/ioctest-irio/sddSeqToLoad.cmd"
+#< "${TOP}/iocBoot/ioctest-irio/seqToLoad.cmd"
+#< "${TOP}/iocBoot/ioctest-irio/sddPostDriverConf.cmd"
+#< "${TOP}/iocBoot/ioctest-irio/userPostDriverConf.cmd"
 
 
-dbl > "${CODAC_VAR}/iocdump/${UNIT_NAME}/${IOC_NAME}-${IOC_BOOT_TIME}.dbl"
-dbla > "${CODAC_VAR}/iocdump/${UNIT_NAME}/${IOC_NAME}-${IOC_BOOT_TIME}.dbla"
-dbior > "${CODAC_VAR}/iocdump/${UNIT_NAME}/${IOC_NAME}-${IOC_BOOT_TIME}.dbior"
-dbhcr > "${CODAC_VAR}/iocdump/${UNIT_NAME}/${IOC_NAME}-${IOC_BOOT_TIME}.dbhcr"
+#dbl > "${CODAC_VAR}/iocdump/${UNIT_NAME}/${IOC_NAME}-${IOC_BOOT_TIME}.dbl"
+#dbla > "${CODAC_VAR}/iocdump/${UNIT_NAME}/${IOC_NAME}-${IOC_BOOT_TIME}.dbla"
+#dbior > "${CODAC_VAR}/iocdump/${UNIT_NAME}/${IOC_NAME}-${IOC_BOOT_TIME}.dbior"
+#dbhcr > "${CODAC_VAR}/iocdump/${UNIT_NAME}/${IOC_NAME}-${IOC_BOOT_TIME}.dbhcr"
 
 #- End-of-file marker - do not delete or add lines below!

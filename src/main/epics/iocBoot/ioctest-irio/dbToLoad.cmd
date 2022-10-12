@@ -19,4 +19,7 @@
 # Uncomment below statement if iocmon feature is required and substitue XXXX with proper values
 #dbLoadRecords("iocmon.db","CBS1=XXXX, CBS2=XXXX, CTRLTYPE=X, IDX=X, IOCTYPE=XXXX")
 
+cd $(TOP)/iocBoot/$(IOC)
+dbLoadTemplate("PCF0-rio-module.substitution")
+
 #- End-of-file marker - do not delete or add lines below!
