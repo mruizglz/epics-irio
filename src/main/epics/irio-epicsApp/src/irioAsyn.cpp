@@ -1,8 +1,7 @@
 /**************************************************************************//**
  * \file irioAsyn.h
  * \authors Mariano Ruiz (Universidad Politécnica de Madrid, UPM)
- * \authors Enrique Bernal (Universidad Politécnica de Madrid, UPM)
-
+ * \authors Enrique Bernal ()
  * \brief Initialization and common resources access methods for IRIOASYN Driver.
  * \date Sept., 2022
  *****************************************************************************/
@@ -22,6 +21,13 @@
 #include <filesystem>
 #include <unistd.h>
 #include "irioAsyn2.h"
+#include <regex>
+#include <stdexcept>
+static const char *driverName = "irio";
+#define ERR(msg) asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s: %s\n", \
+    driverName, functionName, msg)
+#define FLOW(msg) asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s: %s\n", \
+    driverName, functionName, msg)
 void nirio_epicsExit(void *ptr);
 //
 //static void gettingDBInfo(initHookState state)
@@ -157,146 +163,88 @@ void nirio_epicsExit(void *ptr);
 				0,
 				1,
 				0,
-				0), driverInitialized(0),flag_close(0),flag_exit(0), epicsExiting(0),closeDriver(0) {
+				0), driverInitialized(0),flag_close(0),flag_exit(0), epicsExiting(0),closeDriver(0),rio_device_status(STATUS_INITIALIZING) {
 	//TODO: implement checks!!!
+	 const char *functionName = "irio constructor";
 
-	 asynStatus status=createParam(EPICSVersionString,       asynParamOctet, &EPICSVerisonMessage);
-     setStringParam(EPICSVerisonMessage, "Hola mundo");
-      status=createParam(FPGAStartString, asynParamInt32, &FPGAStart);
+
+	 asynStatus status=createParam(DeviceSerialNumberString,       asynParamOctet, &DeviceSerialNumber);
+
+     setStringParam(EPICSVersionMessage, "Hola mundo");
+     status=createParam(EPICSVersionString,       asynParamOctet, &EPICSVersionMessage);
+     status=createParam(IRIOVersionString, asynParamOctet, &IRIOVersionMessage);
+     status=createParam(DeviceNameString, asynParamOctet, &DeviceName);
+     status=createParam(FPGAStatusString, asynParamOctet, &FPGAStatus);
+     status=createParam(InfoStatusString, asynParamOctet, &InfoStatus);
+     status=createParam(VIversionString, asynParamOctet, &VIversion);
+
+     status=createParam(FPGAStartString, asynParamInt32, &FPGAStart);
      setIntegerParam(FPGAStart,0);
      status=createParam(DevQualityStatusString, asynParamInt32, &DevQualityStatus);
      setIntegerParam(DevQualityStatus,255);
 
 
+     epicsAtExit(nirio_epicsExit,&iriodrv);
 
-//int nirioinit(const char *namePort,const char *DevSerial,const char *PXInirioModel, const char *projectName, const char *FPGAversion,int verbosity)
-//{
-//	irio_pvt_t *pdrvPvt;
-//	asynStatus status;
-//	asynUser *pasynUser = NULL;
-//	int i=0, number_dma_ch=0;
-//
-//	TIRIOStatusCode st=IRIO_success;
-//	initHookRegister(gettingDBInfo);
+
+//	TODO: initHookRegister(gettingDBInfo);  for database analisys
 //
 //	/* Define port name */
-//	pdrvPvt = callocMustSucceed(sizeof(irio_pvt_t) + 1,sizeof (char),"iriosInit error");
-//	memset (pdrvPvt, 0, sizeof(*pdrvPvt));
-//	pdrvPvt->InfoStatus=callocMustSucceed(sizeof(char)*100 + 1,sizeof(char),"irioInit_port error");
-//	strcpy(pdrvPvt->InfoStatus ,"-");
-//	pdrvPvt->FPGAStatus=callocMustSucceed(sizeof(char)*100 + 1,sizeof(char),"irioInit_port error");
-//	strcpy(pdrvPvt->FPGAStatus ,"OK");
-//	pdrvPvt->portName = callocMustSucceed(strlen(namePort) + 1,sizeof(char),"irioInit_port error");
-//
-//    /* Checking correct format of portName. It must be RIO_$(MODULEIDX), where $(MODULEIDX) must be a value between 0 and MAX_NUMBER_OF_CARDS*/
-//    strcpy(pdrvPvt->portName ,namePort);
-//    if(pdrvPvt->portName==NULL){
-//		printf("\n\n[%s-%d]PortName format is wrong. Correct format is: RIO_$(MODULEIDX)\n\n",__func__,__LINE__);
-//		return asynError;
-//    }
-//    char portcmp[]="RIO_";
-//    if(strncmp(pdrvPvt->portName,portcmp,4)!=0){
-//		printf("\n\n[%s-%d]PortName %s format is wrong. Correct format is: RIO_$(MODULEIDX)\n\n",__func__,__LINE__,pdrvPvt->portName);
-//		return asynError;
-//    }
-//	char *portNumber=NULL;
-//	portNumber=strstr(pdrvPvt->portName,"_");
-//	if(portNumber==NULL){
-//		printf("\n\n[%s-%d]PortName %s format is wrong. Correct format is: RIO_$(MODULEIDX)\n\n",__func__,__LINE__,pdrvPvt->portName);
-//		return asynError;
-//	}
-//	portNumber=portNumber+1;
-//	int portnumberlenth=strlen(portNumber);
-//	char validchars[]="0123456789";
-//	if(strspn(portNumber,validchars)!=portnumberlenth){
-//		printf("\n\n[%s-%d]PortName %s format is wrong. Correct format is: RIO_$(MODULEIDX)\n\n",__func__,__LINE__,pdrvPvt->portName);
-//		return asynError;
-//	}
-//	if((strncmp(portNumber,"0",1)==0) && portnumberlenth!=1){
-//		printf("\n\n[%s-%d]PortName %s format is wrong. Correct format is: RIO_$(MODULEIDX)\n\n",__func__,__LINE__,pdrvPvt->portName);
-//		return asynError;
-//	}
-//	pdrvPvt->portNumber=atoi(portNumber);
-//	if((pdrvPvt->portNumber>=MAX_NUMBER_OF_CARDS)||(pdrvPvt->portNumber<0)){
-//		printf("\n\n[%s-%d]PortName %s must be set between RIO_0 and RIO_%d\n\n",__func__,__LINE__,pdrvPvt->portName,(MAX_NUMBER_OF_CARDS-1));
-//		return asynError;
-//	}
-//	call_gettingDBInfo=0;
-//	all_poll_threads_finished=0;
-//	all_dma_threads_finished=0;
-//	epicsExiting=0;
-//
-//	/* Initialize global data for each port Number */
-//	globalData[pdrvPvt->portNumber].ch_nelm=NULL;
-//	globalData[pdrvPvt->portNumber].intr_records=NULL;
-//	globalData[pdrvPvt->portNumber].init_success=0;
-//	globalData[pdrvPvt->portNumber].io_number=0;
-//	globalData[pdrvPvt->portNumber].ai_poll_thread_created=0;
-//	globalData[pdrvPvt->portNumber].ai_poll_thread_run=0;
-//	globalData[pdrvPvt->portNumber].di_poll_thread_created=0;
-//	globalData[pdrvPvt->portNumber].di_poll_thread_run=0;
-//	globalData[pdrvPvt->portNumber].dma_thread_created=NULL;
-//	globalData[pdrvPvt->portNumber].dma_thread_run=NULL;
-//	globalData[pdrvPvt->portNumber].number_of_DMAs=0;
-//
-//    epicsAtExit(nirio_epicsExit,(void*)pdrvPvt);
+portName=namePort;
+if (portName.empty()) {
+	ERR("PORTNAME is empty!");
+	throw std::logic_error("");
+}
+//std::regex pat("RIO_\d+$"); //see https://regex101.com/ for help
+//std::regex pat("RIO_\[:digit:]");
+//bool match = std::regex_match(portName,pat);
+//if (!match){
+//	ERR("PORTNAME format invalid: use RIO_<n> !");
+//	throw std::logic_error("");
+//}
 
 
-	//epicsAtExit(nirio_epicsExit,&iriodrv);
-//    int retry = 0;
-//
-//	rio_device_status=STATUS_NO_BOARD;
-//	std::string appCallID;
-//	std::string currentdir;
-//	std::string bitfilepath;
-//	std::string OSdirFW;
-//	OSdirFW="/opt/codac/firmware/ni/irio/"; //default path
-//    currentdir=get_current_dir_name();
-//    bitfilepath=currentdir+"/irio/";
-//	rio_device_status=STATUS_INITIALIZING;
-//	TStatus irio_status;
-//	irio_initStatus(&irio_status);
-//    int st=irio_initDriver(appCallID.c_str(),DevSerial,PXInirioModel,projectName,FPGAversion,verbosity,bitfilepath.c_str(),bitfilepath.c_str(),&iriodrv,&irio_status);
-//    if(st==IRIO_success){
-//    	asynPrint(pasynUserSelf,ASYN_TRACE_FLOW,"[%s-%d][%s]Device initialization OK.\n",__func__,__LINE__,portName);
-//    	driverInitialized=1;
-//    	status_func(&iriodrv,&irio_status);
-//    }
-//    if(st==IRIO_error){
-//	if (irio_status.detailCode == HeaderNotFound_Error ) retry=1;
-//	else{
-//		status_func(&iriodrv,&irio_status);
-//		nirio_shutdown();
-//		//TODO ???? return asynError;
-//	}
-//    }
-//    if(st==IRIO_warning){
-//    	status_func(&iriodrv,&irio_status);
-//    }
-////
-//    if (retry){
-//    	bitfilepath=OSdirFW;
-//        st=irio_initDriver(appCallID.c_str(),DevSerial,PXInirioModel,projectName,FPGAversion,verbosity,bitfilepath.c_str(),bitfilepath.c_str(),&iriodrv,&irio_status);
-//        if(st==IRIO_success){
-//                asynPrint(pasynUserSelf,ASYN_TRACE_FLOW,"[%s-%d][%s]Device initialization OK.\n",__func__,__LINE__,portName);
-//                driverInitialized=1;
-//                status_func(&iriodrv,&irio_status);
-//        }
-//        if(st==IRIO_error){
-//                status_func(&iriodrv,&irio_status);
-//                nirio_shutdown();
-//                //TODO ?return asynError;
-//        }
-//
-//        if(st==IRIO_warning){
-//                status_func(&iriodrv,&irio_status);
-//        }
-    //}
-//
-//
-//
-//    free(appCallID);
-//
+
+
+
+	std::string appCallID;
+	std::string currentdir;
+	std::string bitfilepath;
+	std::string OSdirFW;
+	OSdirFW="/opt/codac/firmware/ni/irio/"; //default path
+    currentdir=get_current_dir_name();
+    bitfilepath=currentdir+"/irio/";
+	rio_device_status=STATUS_INITIALIZING;
+	TStatus irio_status;
+	irio_initStatus(&irio_status);
+	// We search for the bitfile in two locations. a) local folder b) system CODAC folder
+	unsigned int retry = 2;
+	do{
+		int st=irio_initDriver(appCallID.c_str(),DevSerial,PXInirioModel,projectName,FPGAversion,verbosity,bitfilepath.c_str(),bitfilepath.c_str(),&iriodrv,&irio_status);
+		switch (st) {
+			case IRIO_success:
+				FLOW("Device initialization OK.\n");
+				driverInitialized=1;
+				status_func(&iriodrv,&irio_status);
+				retry=0;
+				break;
+			case IRIO_error:
+				if (irio_status.detailCode == HeaderNotFound_Error ) retry--;
+				else{
+				  status_func(&iriodrv,&irio_status);
+				  nirio_shutdown();
+				  FLOW("Device initialization Fails. Bitfile or header file not found.");
+				  bitfilepath=OSdirFW;
+				}
+				break;
+			case IRIO_warning:
+				status_func(&iriodrv,&irio_status);
+				retry=0;
+				break;
+		}
+	}while (retry>0);
+
+
 //	/* find first unused slot in array of pointers */
 //	for (i=0; i<MAX_NUMBER_OF_CARDS; i++) {
 //		if (pdrvPvt_array[i].used == 0) {
@@ -1907,14 +1855,13 @@ extern "C"{
 int irio_configure(const char *namePort, const char *DevSerial,
 		const char *PXInirioModel, const char *projectName,
 		const char *FPGAversion, int verbosity){
-	    //try {
+	    try {
 	 	 new irio(namePort, DevSerial, 	PXInirioModel, projectName,	FPGAversion,  verbosity);
-	    //}
-	    //catch (...)
-	    //{
-
-	    //}
-	 	 return asynSuccess;
+	    }
+	    catch (...){
+	    	return asynSuccess;
+	    }
+	 	return asynSuccess;
 }
 /**
 *	Next, Registration of the irioinit function and its 4 parameters
@@ -2239,7 +2186,48 @@ asynStatus irio::readOctet(asynUser *pasynUser, char *value, size_t maxChars,
 	/* Fetch the parameter string name for possible use in debugging */
 	getParamName(function, &paramName);
 	asynPrint(pasynUser,function, "%s",paramName);
-	*nActual=strlen(value)+1;
+    //Nose puede usar switch porque funtion es una variable
+
+	if (function==DeviceSerialNumber){
+			std::string tmp(this->iriodrv.DeviceSerialNumber);
+			std::strcpy(value,tmp.c_str());
+			*nActual=tmp.length();
+	}
+	else if (function==EPICSVersionMessage){
+		std::string tmp(EPICS_DRIVER_VERSION);
+		std::strcpy(value,tmp.c_str());
+		*nActual=tmp.length();
+	}
+	else if (function==IRIOVersionMessage){
+		std::string tmp(40,' ');
+		TStatus status;
+		int st=irio_getVersion((char *)tmp.c_str(), &status);
+		std::strcpy(value,tmp.c_str());
+		*nActual=tmp.length();
+	}
+	else if (function==DeviceName){
+		std::string tmp(DEVICE_NAME);
+		std::strcpy(value,tmp.c_str());
+		*nActual=tmp.length();
+	}
+	else if (function==FPGAStatus){
+		std::string tmp(this->sFPGAStatus);
+		std::strcpy(value,tmp.c_str());
+		*nActual=tmp.length();
+	}
+	else if (function==InfoStatus){
+		std::string tmp(this->sInfoStatus);
+		std::strcpy(value,tmp.c_str());
+		*nActual=tmp.length();
+	}
+	else if (function==VIversion){
+		std::string tmp(40,' ');
+		TStatus status;
+		int st=irio_getFPGAVIVersion(&(this->iriodrv), (char *)tmp.c_str(), maxChars, nActual, &status);
+		std::strcpy(value,tmp.c_str());
+		*nActual=tmp.length();
+	}
+
 	return status;
 
 

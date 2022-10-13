@@ -43,7 +43,7 @@
 #include <iocsh.h>
 #include <epicsThread.h>
 #include <epicsString.h>
-//#include "epicsExit.h"
+#include "epicsExit.h"
 //#include "epicsRingBytes.h"
 //#include <errlog.h>
 #include <epicsTime.h>
@@ -171,9 +171,7 @@ public:
 //							size_t nElements);
 
 protected:
-	int EPICSVerisonMessage;
-	int FPGAStart;
-	int DevQualityStatus;
+
 	template <typename T>
 			using handler_t = std::function<int(asynUser *, T*)>;
 	template <typename T>
@@ -189,10 +187,10 @@ private:
 	//{
 	//		char irio_version[10];						//!< IRIO Library version used
 	//		char linux_driver_version[10];				//!< NI_RIO Linux driver version used
-	//        char *portName;								//!< portName
+	        std::string portName;								//!< portName
 	//        int portNumber;
-	//        char *InfoStatus;							//!< Additional info of RIO device status
-	        std::string FPGAStatus;							//!< FPGA info status
+	        std::string sInfoStatus;							//!< Additional info of RIO device status
+	        std::string sFPGAStatus;							//!< FPGA info status
 	        irioDrv_t iriodrv;							//!< Main struct of irioCore. Stores all ports, the current session and the status
 	//        int acq_status;								//!< Acquisition status. 1=Acquiring else=not acquiring
 	        riodevice_status_name_t rio_device_status;  //!< RIO device status enum
@@ -241,10 +239,28 @@ private:
 	//        thread_di_t* thread_di; 			//!<  Pointer to struct of DI data acquisition thread resources
 	//
 	//} irio_pvt_t;
+	int DeviceSerialNumber;
+	int EPICSVersionMessage;
+	int IRIOVersionMessage;
+	int DeviceName;
+	int FPGAStatus;
+	int InfoStatus;
+	int VIversion;
+	int FPGAStart;
+	int DevQualityStatus;
+
 };
 
 /* Status message strings */
+#define DeviceSerialNumberString "device_serial_number"
 #define EPICSVersionString       "epics_version"        /**< (asynOctet,    r/o) Status message */
+#define IRIOVersionString		 "driver_version"
+#define DeviceNameString  	     "device_name"
+#define FPGAStatusString		"FPGAStatus"
+#define InfoStatusString 		"InfoStatus"
+#define VIversionString			"VIversion"
+
+
 #define FPGAStartString "FPGAStart" /** <asynInt32
 //#define ADStringToServerString      "STRING_TO_SERVER"      /**< (asynOctet,    r/o) String sent to server for message-based drivers */
 //#define ADStringFromServerString    "STRING_FROM_SERVER"    /**< (asynOctet,    r/o) String received from server for message-based drivers */
