@@ -183,6 +183,7 @@ void nirio_epicsExit(void *ptr);
      status=createParam(DevQualityStatusString, asynParamInt32, &DevQualityStatus);
      setIntegerParam(DevQualityStatus,255);
 
+     status=createParam(DeviceTempString, asynParamFloat64, &DeviceTemp);
 
      epicsAtExit(nirio_epicsExit,&iriodrv);
 
@@ -1900,6 +1901,71 @@ static void nirioRegister (void)
 epicsExportRegistrar(nirioRegister);
 epicsRegisterFunction(irioTimeStamp);
 }
+
+void irio::report(FILE *fp, int details) {
+	char *platform[2]={"FlexRIO","cRIO"};
+	char *couplingMode[3]={"AC","DC","N/A"};
+
+
+	int i=iriodrv.devProfile;
+	if (iriodrv.platform){ // cRIOs
+		i=i+4;
+	}
+	fprintf(fp, "\t---------------------------------------------------------- \n" );
+	fprintf(fp, "\tNI-RIO EPICS device support \n" );
+	fprintf(fp, "\t---------------------------------------------------------- \n" );
+	fprintf(fp, "\tDevice Name                         : %s \n", DEVICE_NAME);
+	fprintf(fp, "\tRIO platform                        : %s \n", platform[iriodrv.platform]);
+	fprintf(fp, "\tRIO Device Model                    : %s \n", iriodrv.RIODeviceModel);
+	fprintf(fp, "\tRIO Serial Number                   : %s \n", iriodrv.DeviceSerialNumber);
+	fprintf(fp, "\tModule ID (xxx:FPGASTART must be ON): %u \n", iriodrv.moduleValue);
+	fprintf(fp, "\tLabVIEW Project Name (VI)           : %s \n", iriodrv.projectName);
+	fprintf(fp, "\tEPICS Driver Version                : %s \n", EPICS_DRIVER_VERSION );
+	std::string tmp;
+	getStringParam(IRIOVersionMessage,tmp);
+	fprintf(fp, "\tIRIO Library Version                : %s \n", tmp.c_str()) ;
+	fprintf(fp, "\tDevice Profile                      : %s \n", platform_profile[i].platform_profile_string);
+
+	switch (details){
+	case 0:
+	 break;
+	case 1:
+	case 2:
+
+	 fprintf(fp, "\t---------------------------------------------------------- \n" );
+	 fprintf(fp, "\tAdditional Details \n" );
+	 fprintf(fp, "\t---------------------------------------------------------- \n" );
+	 fprintf(fp, "\tFPGA Main Loop Frequency                 : %u \n", iriodrv.Fref);
+	 fprintf(fp, "\tMin Sampling Rate                        : %f \n", iriodrv.minSamplingRate);
+	 fprintf(fp, "\tMax Sampling Rate                        : %f \n", iriodrv.maxSamplingRate);
+	 fprintf(fp, "\tMin Analog Output                        : %f \n", iriodrv.minAnalogOut);
+	 fprintf(fp, "\tMax Analog Output                        : %f \n", iriodrv.maxAnalogOut);
+	 fprintf(fp, "\tCoupling Mode                            : %s \n", couplingMode[iriodrv.couplingMode]);
+	 fprintf(fp, "\tConversion to Volts of analog inputs     : %g \n", iriodrv.CVADC);
+	 fprintf(fp, "\tConversion from Volts for analog outputs : %g \n", iriodrv.CVDAC);
+	 //	     for(i=0;pdrvPvt->drvPvt.DMATtoHOSTNo.value;i++){
+	 //		 	 fprintf(fp, "\t---------------------------------------------------------- \n" );
+	 //		 	 fprintf(fp, "\tDMA%d details \n",i);
+	 //		 	 fprintf(fp, "\t---------------------------------------------------------- \n" );
+	 //	     	 fprintf(fp, "\tSize of DMA%d data blocks in terms of DMA(U64) words : %d \n",i, pdrvPvt->drvPvt.DMATtoHOSTBlockNWords[i]);
+	 //		 	 fprintf(fp, "\tSample size used by the DMA%d : %d \n",i, pdrvPvt->drvPvt.DMATtoHOSTSampleSize[i]);
+	 //		 	 fprintf(fp, "\tFrame type used by the DMA%d : %d \n",i, pdrvPvt->drvPvt.DMATtoHOSTFrameType[i]);
+	 //		 	 fprintf(fp, "\tNumber of Channels in DMA%d : %d \n",i, pdrvPvt->drvPvt.DMATtoHOSTNCh[i]);
+	 //	     }
+
+	 break;
+
+	default:
+	 break;
+	}
+
+	fprintf(fp, "\t---------------------------------------------------------- \n" );
+ fprintf(fp, "\t asynReport params \n" );
+ fprintf(fp, "\t---------------------------------------------------------- \n" );
+	asynPortDriver::report(fp, details); //This displays the info of the parameters registered
+
+}
+
 //
 
 
@@ -2227,7 +2293,7 @@ asynStatus irio::readOctet(asynUser *pasynUser, char *value, size_t maxChars,
 		std::strcpy(value,tmp.c_str());
 		*nActual=tmp.length();
 	}
-
+	setStringParam(function, value); //updating the Param for AsynPortDriver
 	return status;
 
 
@@ -2277,6 +2343,14 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 	/* Fetch the parameter string name for possible use in debugging */
 	getParamName(function, &paramName);
 	asynPrint(pasynUser,function, "%s",paramName);
+	if (function==FPGAStart){
+		TStatus irio_status;
+		int st=irio_setFPGAStart(&iriodrv,(int32_t)value,&irio_status);
+			if (st==IRIO_success){
+				FPGAstarted=1;
+				//errlogSevPrintf(errlogInfo,"[%s-%d][%s]FPGAStart (addr=%d) value: %d \n",__func__,__LINE__,pdrvPvt->portName,addr,value);
+			}
+	}
 	return status;
 }
 //
@@ -2286,8 +2360,30 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 //asynStatus irio::writeInt64(asynUser *pasynUser, epicsInt64 value) {
 //}
 //
-//asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
-//}
+asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
+	int function = pasynUser->reason;
+	asynStatus status = asynSuccess;
+	const char *paramName;
+	const char* functionName = "readFloat64";
+
+	/* Set the parameter in the parameter library. */
+	status = (asynStatus) getDoubleParam(function, value);
+
+	/* Fetch the parameter string name for possible use in debugging */
+	getParamName(function, &paramName);
+	asynPrint(pasynUser,function, "%s",paramName);
+	if (function==DeviceTemp){
+		TStatus irio_status;
+		int32_t vaux;
+		int st = irio_getDevTemp(&iriodrv,&vaux,&irio_status);
+					if(st==IRIO_success){
+						*value=(epicsFloat64)vaux*0.25;
+						//errlogSevPrintf(errlogInfo,"[%s-%d][%s]DeviceTemp (addr=%d) value: %f \n",__func__,__LINE__,pdrvPvt->portName,addr,*value);
+		}
+	}
+	setDoubleParam(function, *value);
+	return status;
+}
 //
 //asynStatus irio::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
 //}

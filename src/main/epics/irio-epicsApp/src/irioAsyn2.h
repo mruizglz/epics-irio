@@ -130,6 +130,7 @@ public:
 			const char *FPGAversion,
 			int verbosity);
 	 ~irio();
+	virtual void report(FILE *fp, int details);
 	virtual asynStatus readOctet(asynUser *pasynUser, char *value, size_t maxChars,
 									size_t *nActual, int *eomReason);
 	virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
@@ -138,7 +139,7 @@ public:
 	virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
 //	virtual asynStatus readInt64(asynUser *pasynUser, epicsInt64 *value);
 //	virtual asynStatus writeInt64(asynUser *pasynUser, epicsInt64 value);
-//	virtual asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
+	virtual asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
 //	virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
 //	virtual asynStatus readInt8Array(asynUser *pasynUser, epicsInt8 *value,
 //							size_t nElements, size_t *nIn);
@@ -198,7 +199,8 @@ private:
 	//        int hw_err_count;  							//!< Errors in hardware configuration counter
 	//        int stat_err_count;  						//!< Out of bound errors counter before FPGASTART=ON
 	//        int dyn_err_count; 							//!< Out of bound errors counter after FPGASTART=ON
-	//        int aux2, bit, shift, shift_pbp, shift_dma, shift_ao, shift_sg, FPGAstarted; 	//!< Variables to manage out of bound errors
+	        //int aux2, bit, shift, shift_pbp, shift_dma, shift_ao, shift_sg,  	//!< Variables to manage out of bound errors
+			unsigned int FPGAstarted;
 	        int flag_close, flag_exit, closeDriver, driverInitialized, epicsExiting;		//!< Flags to close FPGA and exit IOC safely
 	//        epicsFloat64 *UserDefinedConversionFactor;	//!< Conversion factor to be applied to data read from DMA if appropiate FrameType is selected.
 	//
@@ -248,6 +250,7 @@ private:
 	int VIversion;
 	int FPGAStart;
 	int DevQualityStatus;
+	int DeviceTemp;
 
 };
 
@@ -266,4 +269,37 @@ private:
 //#define ADStringFromServerString    "STRING_FROM_SERVER"    /**< (asynOctet,    r/o) String received from server for message-based drivers */
 #define DevQualityStatusString "DevQualityStatus"
 
+
+#define DeviceTempString "DeviceTemp"
+/**
+ * Enum Type of RIO device platform-profiles
+ */
+typedef enum {
+	flexRIO_DAQ=0,		//!< FlexRIO DMA data acquisition profile
+	flexRIO_IMAQ,		//!< FlexRIO Image data acquisition profile
+	flexRIO_DAQ_GPU,	//!< FlexRIO GPU DMA data acquisition profile
+	flexRIO_IMAGE_GPU,	//!< FlexRIO GPU Image data acquisition profile
+	cRIO_DAQ,			//!< cRIO DMA data acquisition profile
+	cRIO_IO,			//!< cRIO input/output data acquisition profile
+}platform_profile_enumt;
+
+/**
+ * Struct to store RIO device platform-profiles enum and strings.
+ */
+typedef struct {
+	platform_profile_enumt platform_profile_name; 	//!< RIO device platforn-profile enum
+	const char *platform_profile_string;			//!< RIO device platforn-profile string
+} platform_profile_t;
+
+/**
+ * Array of RIO device platform-profiles {enum,string}
+ */
+static platform_profile_t platform_profile[6]= {
+	{flexRIO_DAQ,"flexRIO DMA Data Acquisition profile."},
+	{flexRIO_IMAQ,"flexRIO IMAQ Data Acquisition profile."},
+	{flexRIO_DAQ_GPU,"flexRIO GPU DMA Data Acquisition profile."},
+	{flexRIO_IMAGE_GPU,"flexRIO GPU IMAGE Data Acquisition profile."},
+	{cRIO_DAQ,"cRIO DMA Data Acquisition profile."},
+	{cRIO_IO,"cRIO Point by Point Data Acquisition profile."},
+};
 #endif

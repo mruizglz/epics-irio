@@ -12,16 +12,16 @@ record(stringin,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-EPICSVERSION"
 	field(INP,"@asyn(RIO_$(MODULEIDX),0)epics_version")
 	field(PINI,"YES")	
 }
-#record(ai,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DEVICETEMP"){
-#	field(DESC,"FPGA Temperature")
-#	field(DTYP,"asynFloat64")
-#	field(INP,"@asyn(RIO_$(MODULEIDX),0)DeviceTemp")
-#	field(SCAN,"1 second")
-#	field(PREC,"2")
-#	field(PINI,"YES")
-#	field(LINR,"NO CONVERSION")
-#	field(EGU,"C Degrees")	
-#}
+record(ai,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DEVICETEMP"){
+	field(DESC,"FPGA Temperature")
+	field(DTYP,"asynFloat64")
+	field(INP,"@asyn(RIO_$(MODULEIDX),0)DeviceTemp")
+	field(SCAN,"1 second")
+	field(PREC,"2")
+	field(PINI,"YES")
+	field(LINR,"NO CONVERSION")
+	field(EGU,"C Degrees")	
+}
 #record(bo,"$(CBS1)-$(CBS2)-HWCF:$(BOARDTYPE)-$(BOARDTYPEIDX)-DAQSTARTSTOP"){
 #	field(DESC,"Controls DAQ Start/Stop ")
 #	field(DTYP,"asynInt32")
