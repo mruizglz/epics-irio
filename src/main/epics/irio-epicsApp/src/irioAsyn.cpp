@@ -24,10 +24,10 @@
 #include <regex>
 #include <stdexcept>
 static const char *driverName = "irio";
-#define ERR(msg) asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s: %s\n", \
-    driverName, functionName, msg)
-#define FLOW(msg) asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s: %s\n", \
-    driverName, functionName, msg)
+#define ERR(msg) asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, "[%s-%d] %s::%s: %s\n", \
+    __func__, __LINE__, driverName, functionName, msg)
+#define FLOW(msg) asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "[%s-%d] %s::%s: %s\n", \
+	__func__, __LINE__,driverName, functionName, msg)
 void nirio_epicsExit(void *ptr);
 //
 //static void gettingDBInfo(initHookState state)
@@ -164,7 +164,7 @@ void nirio_epicsExit(void *ptr);
 				1,
 				0,
 				0), driverInitialized(0),flag_close(0),flag_exit(0), epicsExiting(0),closeDriver(0),rio_device_status(STATUS_INITIALIZING) {
-	//TODO: implement checks!!!
+
 	 const char *functionName = "irio constructor";
 
 
@@ -178,35 +178,63 @@ void nirio_epicsExit(void *ptr);
      status=createParam(InfoStatusString, asynParamOctet, &InfoStatus);
      status=createParam(VIversionString, asynParamOctet, &VIversion);
 
-     status=createParam(FPGAStartString, asynParamInt32, &FPGAStart);
-     setIntegerParam(FPGAStart,0);
-     status=createParam(DevQualityStatusString, asynParamInt32, &DevQualityStatus);
-     setIntegerParam(DevQualityStatus,255);
+
+
+
+
 
      status=createParam(DeviceTempString, asynParamFloat64, &DeviceTemp);
+
+
+     //asynInt32
+
+     status=createParam(RIODeviceStatusString, asynParamInt32, &riodevice_status);
+     status=createParam(SamplingRateString, asynParamInt32, &SamplingRate);
+     status=createParam(SR_AI_IntrString, asynParamInt32, &SR_AI_Intr);
+     status=createParam(SR_DI_IntrString, asynParamInt32, &SR_DI_Intr);
+     status=createParam(DebugString, asynParamInt32, &debug);
+     status=createParam(GroupEnableString, asynParamInt32, &GroupEnable);
+     status=createParam(FPGAStartString, asynParamInt32, &FPGAStart);
+     setIntegerParam(FPGAStart,0);
+     status=createParam(DAQStartStopString, asynParamInt32, &DAQStartStop);
+     status=createParam(DFString, asynParamInt32, &DF);
+     status=createParam(DevQualityStatusString, asynParamInt32, &DevQualityStatus);
+     setIntegerParam(DevQualityStatus,255);
+     status=createParam(DMAOverflowString, asynParamInt32, &DMAOverflow);
+
+     status=createParam(AOEnableString, asynParamInt32, &AOEnable);
+     status=createParam(SGFreqString, asynParamInt32, &SGFreq);
+     status=createParam(SGUpdateRateString, asynParamInt32, &SGUpdateRate);
+     status=createParam(SGSignalTypeString, asynParamInt32, &SGSignalType);
+     status=createParam(SGPhaseString, asynParamInt32, &SGPhase);
+     status=createParam(DIString, asynParamInt32, &DI);
+     status=createParam(DOString, asynParamInt32, &DO);
+	status=createParam(auxAIString, asynParamInt32, &auxAI);
+	status=createParam(auxAOString, asynParamInt32, &auxAO);
+	status=createParam(auxDIString, asynParamInt32, &auxDI);
+	status=createParam(auxDOString, asynParamInt32, &auxDO);
+
+
+
 
      epicsAtExit(nirio_epicsExit,&iriodrv);
 
 
 //	TODO: initHookRegister(gettingDBInfo);  for database analisys
 //
-//	/* Define port name */
-portName=namePort;
-if (portName.empty()) {
-	ERR("PORTNAME is empty!");
-	throw std::logic_error("");
-}
-//std::regex pat("RIO_\d+$"); //see https://regex101.com/ for help
-//std::regex pat("RIO_\[:digit:]");
-//bool match = std::regex_match(portName,pat);
-//if (!match){
-//	ERR("PORTNAME format invalid: use RIO_<n> !");
-//	throw std::logic_error("");
-//}
 
+	portName=namePort;
+	if (portName.empty()) {
+		ERR("PORTNAME is empty!");
+		throw std::logic_error("");
+	}
+	std::regex pat("RIO_\\d+$"); //see https://regex101.com/ for help
 
-
-
+	bool match = std::regex_match(portName,pat);
+	if (!match){
+		ERR("PORTNAME format invalid: use RIO_<n> !");
+		throw std::logic_error("");
+	}
 
 	std::string appCallID;
 	std::string currentdir;
@@ -226,25 +254,29 @@ if (portName.empty()) {
 			case IRIO_success:
 				FLOW("Device initialization OK.\n");
 				driverInitialized=1;
-				status_func(&iriodrv,&irio_status);
+				status_func(&irio_status);
 				retry=0;
 				break;
 			case IRIO_error:
 				if (irio_status.detailCode == HeaderNotFound_Error ) retry--;
 				else{
-				  status_func(&iriodrv,&irio_status);
+				  status_func(&irio_status);
 				  nirio_shutdown();
 				  FLOW("Device initialization Fails. Bitfile or header file not found.");
 				  bitfilepath=OSdirFW;
 				}
 				break;
 			case IRIO_warning:
-				status_func(&iriodrv,&irio_status);
+				status_func(&irio_status);
 				retry=0;
 				break;
 		}
 	}while (retry>0);
 
+//resizing vectors
+sgData.resize(iriodrv.NoOfSG);
+UserDefinedConversionFactor.resize(iriodrv.DMATtoHOSTNo.value);
+//Total number of channels in DMAs
 
 //	/* find first unused slot in array of pointers */
 //	for (i=0; i<MAX_NUMBER_OF_CARDS; i++) {
@@ -255,23 +287,15 @@ if (portName.empty()) {
 //		}
 //	}
 //
-//	//Allocate Signal Generators
-//	if(pdrvPvt->drvPvt.NoOfSG>0){
-//		pdrvPvt->sgData = (SGData_t*) calloc(pdrvPvt->drvPvt.NoOfSG,sizeof(SGData_t));
-//	}
-//
-//	//Allocate memory for User_Defined_Conversion_Factors
-//	if(pdrvPvt->drvPvt.DMATtoHOSTNo.value!=0){
-//		pdrvPvt->UserDefinedConversionFactor=calloc(pdrvPvt->drvPvt.DMATtoHOSTNo.value, sizeof(epicsFloat64));
-//	}
 //
 //	//Allocate memory for AI+DI+CH records
 //	//i=0;
-//	for(i=0;i<pdrvPvt->drvPvt.DMATtoHOSTNo.value;i++){
-//		number_dma_ch+=(int)pdrvPvt->drvPvt.DMATtoHOSTNCh[i];
+uint32_t number_dma_ch=0;
+	for(uint32_t i=0;i<iriodrv.DMATtoHOSTNo.value;i++){
+		number_dma_ch+=(uint32_t)iriodrv.DMATtoHOSTNCh[i];
 //	    errlogSevPrintf(errlogInfo,"[%s-%d][%s]Number of channels of DMA%d is:%d\n",__func__,__LINE__,pdrvPvt->portName,i,(int)pdrvPvt->drvPvt.DMATtoHOSTNCh[i]);
 //
-//	}
+	}
 //    errlogSevPrintf(errlogInfo,"[%s-%d][%s]Total number of channels in ALL DMAs is:%d\n",__func__,__LINE__,pdrvPvt->portName,number_dma_ch);
 //    errlogSevPrintf(errlogInfo,"[%s-%d][%s]Total number of maxAI(%d)+maxDI(%d)+CH(%d) is:%d\n",__func__,__LINE__,pdrvPvt->portName,pdrvPvt->drvPvt.max_analogoutputs, pdrvPvt->drvPvt.max_digitalsinputs, number_dma_ch, (pdrvPvt->drvPvt.max_analogoutputs+pdrvPvt->drvPvt.max_digitalsinputs+number_dma_ch));
 //
@@ -280,49 +304,8 @@ if (portName.empty()) {
 //	globalData[pdrvPvt->portNumber].dma_thread_created=calloc(pdrvPvt->drvPvt.DMATtoHOSTNo.value,sizeof(int));
 //	globalData[pdrvPvt->portNumber].dma_thread_run=calloc(pdrvPvt->drvPvt.DMATtoHOSTNo.value,sizeof(int));
 //
+int st=resources();
 //
-//	//IMAQ Profile
-//	if(pdrvPvt->drvPvt.platform==IRIO_FlexRIO && (pdrvPvt->drvPvt.devProfile==1 || pdrvPvt->drvPvt.devProfile==3)){
-//		pdrvPvt->UARTReceivedMsg= malloc(sizeof(char)*MAX_UARTSIZE);
-//		strcpy(pdrvPvt->UARTReceivedMsg,"");
-//		pdrvPvt->sizeX=256;
-//		pdrvPvt->sizeY=256;
-//	}
-//
-//	//If not cRIO PBP Profile create DMA threads
-//	if(!(pdrvPvt->drvPvt.platform==IRIO_cRIO && pdrvPvt->drvPvt.devProfile==1)){
-//		pdrvPvt->ai_dma_thread = malloc(sizeof(irio_dmathread_t)*pdrvPvt->drvPvt.DMATtoHOSTNo.value);
-//		//Setup all DMAs:
-//		st=irio_setUpDMAsTtoHost(&pdrvPvt->drvPvt,&irio_status);
-//		if (st!=IRIO_success){
-//			status_func(pdrvPvt,&irio_status);
-//			if(st==IRIO_error){
-//				return asynError;
-//			}
-//		}
-//		//Create and launch threads attending each DMA
-//		for (i=0;i<(pdrvPvt->drvPvt.DMATtoHOSTNo.value) ;i++){
-//				pdrvPvt->ai_dma_thread[i].dma_thread_id=NULL;
-//				pdrvPvt->ai_dma_thread[i].dma_thread_name=NULL;
-//				asprintf(&pdrvPvt->ai_dma_thread[i].dma_thread_name,"RIO%d_DMA%d",pdrvPvt->portNumber,i);
-//				pdrvPvt->ai_dma_thread[i].id=i;
-//				pdrvPvt->ai_dma_thread[i].threadends=0;
-//				pdrvPvt->ai_dma_thread[i].endAck=0;
-//				pdrvPvt->ai_dma_thread[i].DecimationFactor=1;
-//				pdrvPvt->ai_dma_thread[i].SR=1;
-//				pdrvPvt->ai_dma_thread[i].blockSize=1;
-//				pdrvPvt->ai_dma_thread[i].asynPvt=pdrvPvt;
-//				pdrvPvt->ai_dma_thread[i].IdRing=NULL;
-//				pdrvPvt->ai_dma_thread[i].dmanumber=i;
-//				pdrvPvt->ai_dma_thread[i].dma_thread_id=(epicsThreadId*)epicsThreadCreate(pdrvPvt->ai_dma_thread[i].dma_thread_name,
-//									epicsThreadPriorityHigh,
-//									epicsThreadGetStackSize(epicsThreadStackBig),
-//									(EPICSTHREADFUNC)aiDMA_thread,(void *)(&pdrvPvt->ai_dma_thread[i]));
-//				globalData[pdrvPvt->portNumber].dma_thread_created[i]=1;
-//		}
-//		globalData[pdrvPvt->portNumber].number_of_DMAs=pdrvPvt->drvPvt.DMATtoHOSTNo.value;
-//
-//	}
 //
 //	/*Control of device status error parameters*/
 //	if(pdrvPvt->drvPvt.platform==IRIO_cRIO && pdrvPvt->drvPvt.devProfile==1){
@@ -377,10 +360,131 @@ void nirio_epicsExit(void *ptr) {
 
 }
 
-int irio::status_func(void* drvPvt, TStatus* status)
+int irio::status_func(TStatus* status)
 {
-	//REDO
-	return 0;
+	//irio_pvt_t* pdrvPvt=(irio_pvt_t *)drvPvt;
+	char *error_string=NULL;
+	std::string msg;
+
+	riodevice_status_name_t next_status=rio_device_status;
+	int update=0;
+	switch(status->detailCode){
+	case Generic_Error:
+		next_status=STATUS_DYNAMIC_CONFIG_ERROR;
+		msg="One of the values configured is out of bounds";
+		error_string=(char *)msg.c_str();
+		update=1;
+		break;
+	case HardwareNotFound_Error:
+		next_status=STATUS_NO_BOARD;
+		irio_getErrorString(status->detailCode,&error_string);
+		update=1;
+		break;
+	case BitfileDownload_Error:
+	case ListRIODevicesCommand_Error:
+	case ListRIODevicesParsing_Error:
+	case SignatureNotFound_Error:
+	case MemoryAllocation_Error:
+	case FileAccess_Error:
+	case FileNotFound_Error:
+	case FeatureNotImplemented_Error:
+		next_status=STATUS_STATIC_CONFIG_ERROR;
+		irio_getErrorString(status->detailCode,&error_string);
+		update=1;
+		break;
+	case NIRIO_API_Error:
+		if((rio_device_status!=STATUS_STATIC_CONFIG_ERROR) && (rio_device_status!=STATUS_NO_BOARD) ){
+			next_status=STATUS_HARDWARE_ERROR;
+			irio_getErrorString(status->detailCode,&error_string);
+			update=1;
+		}
+
+		break;
+	case InitDone_Error:
+	case IOModule_Error:
+	case ResourceNotFound_Error:
+		next_status=STATUS_INCORRECT_HW_CONFIGURATION;
+		irio_getErrorString(status->detailCode,&error_string);
+		update=1;
+		break;
+	case SignatureValueNotValid_Error:
+	case ResourceValueNotValid_Error:
+	case BitfileNotFound_Error:
+	case HeaderNotFound_Error:
+		next_status=STATUS_STATIC_CONFIG_ERROR; //CHANGE FOR STATUS_CONFIG_FILES_ERROR
+		irio_getErrorString(status->detailCode,&error_string);
+		update=1;
+		break;
+	case Success:
+		if(dyn_err_count==0){
+			if(FPGAstarted==1 && (rio_device_status==STATUS_CONFIGURED || rio_device_status==STATUS_DYNAMIC_CONFIG_ERROR)){
+				next_status=STATUS_OK;
+				msg="Device is OK and running";
+				error_string=(char *)msg.c_str();
+				update=1;
+			}
+			if(FPGAstarted==0 && driverInitialized==1 && (rio_device_status==STATUS_DYNAMIC_CONFIG_ERROR ||rio_device_status==STATUS_INITIALIZING)){
+				next_status=STATUS_CONFIGURED;
+				msg="Device is configured";
+				error_string=(char *)msg.c_str();
+				update=1;
+			}
+		}
+		break;
+	case FPGAAlreadyRunning_Warning:
+		if(FPGAstarted==1 && rio_device_status==STATUS_CONFIGURED){
+			next_status=STATUS_OK;
+			msg="FPGA started before IOC.";
+			error_string=(char *)msg.c_str();
+			update=1;
+		}
+		break;
+	case TemporaryFileDelete_Warning:
+	case ResourceNotFound_Warning:
+	case Read_NIRIO_Warning:
+	case Read_Resource_Warning:
+	case Write_NIRIO_Warning:
+	case Write_Resource_Warning:
+	case ConfigDMA_Warning:
+	case ConfigUART_Warning:
+	case ValueOOB_Warning:
+	case Generic_Warning:
+	case DAQtimeout_Warning:
+		irio_getErrorString(status->detailCode,&error_string);
+		update=1;
+		break;
+	default:
+		break;
+	}
+
+	rio_device_status=next_status;
+//	if(update==1){
+//		callbackInt32(pdrvPvt, riodevice_status, 0, (epicsInt32)err_dev_stat_struct[pdrvPvt->rio_device_status].riodevice_status_name);
+//		char* aux = pdrvPvt->InfoStatus;
+//		pdrvPvt->InfoStatus=error_string;
+//		callbackOctet(pdrvPvt,InfoStatus,pdrvPvt->InfoStatus,strlen(pdrvPvt->InfoStatus));
+//		free(aux);
+//	}else{
+//		free(error_string);
+//	}
+
+	int retVal=asynSuccess;
+	switch(status->code){
+	case IRIO_warning:
+		//errlogSevPrintf(errlogMinor,"[status_func][%s]IRIO WARNING Code:%d. Description:%s. IRIO Messages:%s",pdrvPvt->portName,status->detailCode,pdrvPvt->InfoStatus,status->msg);
+		retVal=asynError;
+		break;
+	case IRIO_error:
+		//errlogSevPrintf(errlogFatal,"[status_func][%s]IRIO ERROR Code:%d. Description:%s. IRIO Messages:%s",pdrvPvt->portName,status->detailCode,pdrvPvt->InfoStatus,status->msg);
+		retVal=asynError;
+		break;
+	default:
+		retVal=asynSuccess;
+		break;
+	}
+	irio_resetStatus(status);
+	return retVal;
+
 }
 ///**
 // * asynCommon
@@ -1966,6 +2070,72 @@ void irio::report(FILE *fp, int details) {
 
 }
 
+int irio::resources(void) {
+	int st;
+	switch (iriodrv.platform){
+	case IRIO_FlexRIO:
+		if (iriodrv.devProfile==1 || iriodrv.devProfile==3){
+			//IMAQ Profile
+			UARTReceivedMsg.resize(MAX_UARTSIZE);
+			UARTReceivedMsg.empty();
+			sizeX=256;
+			sizeY=256;
+		}
+		ai_dma_thread.resize(iriodrv.DMATtoHOSTNo.value);
+		TStatus irio_status;
+		st=irio_setUpDMAsTtoHost(&iriodrv,&irio_status);
+		if (st!=IRIO_success){
+			status_func(&irio_status);
+			if(st==IRIO_error){
+				return st;
+			}
+		}
+		break;
+	case IRIO_cRIO:
+		if (iriodrv.devProfile!=1 ){
+			ai_dma_thread.resize(iriodrv.DMATtoHOSTNo.value);
+			TStatus irio_status;
+			 st=irio_setUpDMAsTtoHost(&iriodrv,&irio_status);
+			if (st!=IRIO_success){
+				status_func(&irio_status);
+				if(st==IRIO_error){
+					return st;
+				}
+			}
+		}
+		break;
+	default:
+		int st=IRIO_error;
+		return st;
+		break;
+	}
+return IRIO_success;
+
+	//		//Create and launch threads attending each DMA
+	//		for (i=0;i<(pdrvPvt->drvPvt.DMATtoHOSTNo.value) ;i++){
+	//				pdrvPvt->ai_dma_thread[i].dma_thread_id=NULL;
+	//				pdrvPvt->ai_dma_thread[i].dma_thread_name=NULL;
+	//				asprintf(&pdrvPvt->ai_dma_thread[i].dma_thread_name,"RIO%d_DMA%d",pdrvPvt->portNumber,i);
+	//				pdrvPvt->ai_dma_thread[i].id=i;
+	//				pdrvPvt->ai_dma_thread[i].threadends=0;
+	//				pdrvPvt->ai_dma_thread[i].endAck=0;
+	//				pdrvPvt->ai_dma_thread[i].DecimationFactor=1;
+	//				pdrvPvt->ai_dma_thread[i].SR=1;
+	//				pdrvPvt->ai_dma_thread[i].blockSize=1;
+	//				pdrvPvt->ai_dma_thread[i].asynPvt=pdrvPvt;
+	//				pdrvPvt->ai_dma_thread[i].IdRing=NULL;
+	//				pdrvPvt->ai_dma_thread[i].dmanumber=i;
+	//				pdrvPvt->ai_dma_thread[i].dma_thread_id=(epicsThreadId*)epicsThreadCreate(pdrvPvt->ai_dma_thread[i].dma_thread_name,
+	//									epicsThreadPriorityHigh,
+	//									epicsThreadGetStackSize(epicsThreadStackBig),
+	//									(EPICSTHREADFUNC)aiDMA_thread,(void *)(&pdrvPvt->ai_dma_thread[i]));
+	//				globalData[pdrvPvt->portNumber].dma_thread_created[i]=1;
+	//		}
+	//		globalData[pdrvPvt->portNumber].number_of_DMAs=pdrvPvt->drvPvt.DMATtoHOSTNo.value;
+	//
+	//	}
+}
+
 //
 
 
@@ -2252,8 +2422,13 @@ asynStatus irio::readOctet(asynUser *pasynUser, char *value, size_t maxChars,
 	/* Fetch the parameter string name for possible use in debugging */
 	getParamName(function, &paramName);
 	asynPrint(pasynUser,function, "%s",paramName);
-    //Nose puede usar switch porque funtion es una variable
 
+	//Hay que introducir cierta lógica que impida acceder a la fpga sino esta inicializada
+	if (driverInitialized==0){
+	 *nActual=0;
+	 return asynSuccess;
+	}
+	//Nose puede usar switch porque funtion es una variable
 	if (function==DeviceSerialNumber){
 			std::string tmp(this->iriodrv.DeviceSerialNumber);
 			std::strcpy(value,tmp.c_str());
@@ -2321,13 +2496,97 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 	asynStatus status = asynSuccess;
 	const char *paramName;
 	const char* functionName = "readInt32";
-
+	int addr=0;
+	TStatus irio_status;
 	/* Set the parameter in the parameter library. */
 	status = (asynStatus) getIntegerParam(function, value);
 
 	/* Fetch the parameter string name for possible use in debugging */
 	getParamName(function, &paramName);
 	asynPrint(pasynUser,function, "%s",paramName);
+	//TODO: revisar el uso de la funcion de abajo
+	status = parseAsynUser(pasynUser, &function, &addr, &paramName);
+	if (function==riodevice_status){
+		*value=rio_device_status;
+	}
+	else if (function==SamplingRate){
+		if (iriodrv.platform==IRIO_cRIO && iriodrv.devProfile==1){
+			int st=irio_getSamplingRate(&iriodrv, addr, value, &irio_status);
+			if (st==IRIO_success){
+				if (*value==0) *value=1;
+				*value=iriodrv.Fref/(*value);
+			}
+
+		}else{
+			int st=irio_getDMATtoHostSamplingRate(&iriodrv, addr, value, &irio_status);
+			if (st==IRIO_success){
+				if (*value==0) *value=1;
+				*value=iriodrv.Fref/(*value);
+				//TODO: iriodrv.ai_dma_thread[addr].SR=*value;
+			}
+		}
+
+	}
+	else if (function==SR_AI_Intr){
+
+	}
+	else if (function==SR_DI_Intr){
+
+	}
+	else if (function==debug){
+
+	}
+	else if (function==GroupEnable){
+
+	}
+	else if (function==FPGAStart){
+
+	}
+	else if (function==DAQStartStop){
+
+	}
+	else if (function==DF){
+
+	}
+	else if (function==DevQualityStatus){
+
+	}
+	else if (function==DMAOverflow){
+
+	}
+	else if (function==AOEnable){
+
+	}
+	else if (function==SGFreq){
+
+	}
+	else if (function==SGUpdateRate){
+
+	}
+	else if (function==SGSignalType){
+
+	}
+	else if (function==SGPhase){
+
+	}
+	else if (function==DI){
+
+	}
+	else if (function==DO){
+
+	}
+	else if (function==auxAI){
+
+	}
+	else if (function==auxAO){
+
+	}
+	else if (function==auxDI){
+
+	}
+	else if (function==auxDO){
+
+	}
 	return status;
 }
 
@@ -2343,13 +2602,79 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 	/* Fetch the parameter string name for possible use in debugging */
 	getParamName(function, &paramName);
 	asynPrint(pasynUser,function, "%s",paramName);
-	if (function==FPGAStart){
+
+
+
+	if (function==riodevice_status){
+
+	}
+	else if (function==SamplingRate){
+
+	}
+	else if (function==SR_AI_Intr){
+
+	}
+	else if (function==SR_DI_Intr){
+
+	}
+	else if (function==debug){
+
+	}
+	else if (function==GroupEnable){
+
+	}
+	else if (function==FPGAStart){
 		TStatus irio_status;
 		int st=irio_setFPGAStart(&iriodrv,(int32_t)value,&irio_status);
-			if (st==IRIO_success){
-				FPGAstarted=1;
-				//errlogSevPrintf(errlogInfo,"[%s-%d][%s]FPGAStart (addr=%d) value: %d \n",__func__,__LINE__,pdrvPvt->portName,addr,value);
-			}
+		if (st==IRIO_success){
+			FPGAstarted=1;
+			//errlogSevPrintf(errlogInfo,"[%s-%d][%s]FPGAStart (addr=%d) value: %d \n",__func__,__LINE__,pdrvPvt->portName,addr,value);
+		}
+	}
+	else if (function==DAQStartStop){
+
+	}
+	else if (function==DF){
+
+	}
+	else if (function==DevQualityStatus){
+
+	}
+	else if (function==DMAOverflow){
+
+	}
+	else if (function==AOEnable){
+
+	}
+	else if (function==SGFreq){
+
+	}
+	else if (function==SGUpdateRate){
+
+	}
+	else if (function==SGSignalType){
+
+	}
+	else if (function==SGPhase){
+
+	}
+	else if (function==DI){
+
+	}
+	else if (function==DO){
+
+	}
+	else if (function==auxAI){
+
+	}
+	else if (function==auxAO){
+
+	}
+	else if (function==auxDI){
+
+	}
+	else if (function==auxDO){
+
 	}
 	return status;
 }

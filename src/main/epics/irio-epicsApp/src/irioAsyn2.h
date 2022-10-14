@@ -23,6 +23,7 @@
 #ifndef IRIOASYN_H_
 #define IRIOASYN_H_
 
+
 #include <map>
 #include <functional>
 /* Standard includes */
@@ -44,7 +45,7 @@
 #include <epicsThread.h>
 #include <epicsString.h>
 #include "epicsExit.h"
-//#include "epicsRingBytes.h"
+#include "epicsRingBytes.h"
 //#include <errlog.h>
 #include <epicsTime.h>
 #include <registryFunction.h>
@@ -107,6 +108,115 @@
  */
 #define MAX_UARTSIZE 40
 
+/* Status message strings */
+#define DeviceSerialNumberString "device_serial_number"
+#define EPICSVersionString       "epics_version"        /**< (asynOctet,    r/o) Status message */
+#define IRIOVersionString		 "driver_version"
+#define DeviceNameString  	     "device_name"
+#define FPGAStatusString		"FPGAStatus"
+#define InfoStatusString 		"InfoStatus"
+#define VIversionString			"VIversion"
+
+//asynInt32
+#define RIODeviceStatusString "riodevice_status"
+#define SamplingRateString "SamplingRate"
+#define SR_AI_IntrString "SR_AI_Intr"
+#define SR_DI_IntrString "SR_DI_Intr"
+#define DebugString "debug"
+#define GroupEnableString "GroupEnable"
+#define FPGAStartString "FPGAStart" /** <asynInt32 */
+#define DAQStartStopString "DAQStartStop"
+#define DFString "DF"
+#define DevQualityStatusString "DevQualityStatus"
+#define DMAOverflowString "DMAOverflow"
+#define AOEnableString "AOEnable"
+#define SGFreqString "SGFreq"
+#define SGUpdateRateString "SGUpdateRate"
+#define SGSignalTypeString "SGSignalType"
+#define SGPhaseString "SGPhase"
+#define DIString "DI"
+#define DOString "DO"
+#define auxAIString "auxAI"
+#define auxAOString "auxAO"
+#define auxDIString "auxDI"
+#define auxDOString "auxDO"
+//TODOD: Añadir los del profile de imagen!!!!!!
+
+
+
+#define DeviceTempString "DeviceTemp"
+/**
+ * Enum Type of RIO device platform-profiles
+ */
+typedef enum {
+	flexRIO_DAQ=0,		//!< FlexRIO DMA data acquisition profile
+	flexRIO_IMAQ,		//!< FlexRIO Image data acquisition profile
+	flexRIO_DAQ_GPU,	//!< FlexRIO GPU DMA data acquisition profile
+	flexRIO_IMAGE_GPU,	//!< FlexRIO GPU Image data acquisition profile
+	cRIO_DAQ,			//!< cRIO DMA data acquisition profile
+	cRIO_IO,			//!< cRIO input/output data acquisition profile
+}platform_profile_enumt;
+
+/**
+ * Struct to store RIO device platform-profiles enum and strings.
+ */
+typedef struct {
+	platform_profile_enumt platform_profile_name; 	//!< RIO device platforn-profile enum
+	const char *platform_profile_string;			//!< RIO device platforn-profile string
+} platform_profile_t;
+
+/**
+ * Array of RIO device platform-profiles {enum,string}
+ */
+static platform_profile_t platform_profile[6]= {
+	{flexRIO_DAQ,"flexRIO DMA Data Acquisition profile."},
+	{flexRIO_IMAQ,"flexRIO IMAQ Data Acquisition profile."},
+	{flexRIO_DAQ_GPU,"flexRIO GPU DMA Data Acquisition profile."},
+	{flexRIO_IMAGE_GPU,"flexRIO GPU IMAGE Data Acquisition profile."},
+	{cRIO_DAQ,"cRIO DMA Data Acquisition profile."},
+	{cRIO_IO,"cRIO Point by Point Data Acquisition profile."},
+};
+/**
+ * Struct of Camera Link configuration resources
+ */
+typedef struct CLConfigData
+{
+	int Configuration;			//!< Parameter to config camera to Base, Medium or Full
+	int SignalMapping;			//!< Parameter to set the signal mapping to Standard, Basler10Tap or Voskhuler10Tap
+	int LineScan;				//!< Enable/Disable the line scan for Cameralink
+	int FVALHigh;				//!< Enable/Disable the logic level used for the FVALHIGH signal
+	int LVALHigh;				//!< Enable/Disable the logic level used for the LVALHIGH signal
+	int DVALHigh;				//!< Enable/Disable the logic level used for the DVALHIGH signal
+	int SpareHigh;				//!< Enable/Disable the logic level used for the Spare High signal
+	int ControlEnable;			//!< Enable/Disable if the camera control lines on the Camera Link cable are driven by the CL Control signals
+}CLConfigData_t;
+
+/**
+ * Struct of Signal Generator resources
+ */
+typedef struct SGData
+{
+	int32_t Freq;
+	int32_t UpdateRate;
+}SGData_t;
+
+/**
+ * Struct for managing DMA thread acquisition resources
+ */
+typedef struct threadDMA
+{
+	epicsThreadId *dma_thread_id;	//!< Pointer to DMA acquisition thread ID
+	char		  *dma_thread_name; //!< Pointer to DMA acquisition thread name
+	int id;							//!< ID
+	int threadends; 				//!< This field will be used to terminate the thread when change to 1
+	int endAck;						//!< This field will be used to notify thread termination when change to 1
+	int DecimationFactor; 			//!< Decimation Factor
+	int SR;							//!< Sampling Rate
+	int blockSize; 					//!< Size of acquisition block (in terms of DMA NwordU64)
+	struct irioPvt* asynPvt;		//!< Pointer to data structure of RIO device resources
+	epicsRingBytesId* IdRing;		//!< Pointer to RingBuffer ID
+	int dmanumber;					//!< DMA number
+} irio_dmathread_t;
 
 typedef enum {
 	STATUS_OK = 0, 						//!< RIO Device running OK.
@@ -173,19 +283,13 @@ public:
 
 protected:
 
-	template <typename T>
-			using handler_t = std::function<int(asynUser *, T*)>;
-	template <typename T>
-			using handlerMap_t = std::map<int, handler_t<T>>;
-	handlerMap_t<char *> mapa;
-	int echoHandler(asynUser *, char *);
+
 
 private:
-	int status_func(void *drvPvt, TStatus* status);
-
+	int status_func( TStatus* status);
+	int resources(void);
 	void nirio_shutdown();
-	//typedef struct irioPvt
-	//{
+
 	//		char irio_version[10];						//!< IRIO Library version used
 	//		char linux_driver_version[10];				//!< NI_RIO Linux driver version used
 	        std::string portName;								//!< portName
@@ -198,49 +302,32 @@ private:
 	//        uint8_t *error_oob_array[MAX_ERROR_OOB];					//!< Array of out of bound errors
 	//        int hw_err_count;  							//!< Errors in hardware configuration counter
 	//        int stat_err_count;  						//!< Out of bound errors counter before FPGASTART=ON
-	//        int dyn_err_count; 							//!< Out of bound errors counter after FPGASTART=ON
+	        int dyn_err_count; 							//!< Out of bound errors counter after FPGASTART=ON
 	        //int aux2, bit, shift, shift_pbp, shift_dma, shift_ao, shift_sg,  	//!< Variables to manage out of bound errors
 			unsigned int FPGAstarted;
 	        int flag_close, flag_exit, closeDriver, driverInitialized, epicsExiting;		//!< Flags to close FPGA and exit IOC safely
-	//        epicsFloat64 *UserDefinedConversionFactor;	//!< Conversion factor to be applied to data read from DMA if appropiate FrameType is selected.
+	        std::vector<epicsFloat64> UserDefinedConversionFactor;	//!< Conversion factor to be applied to data read from DMA if appropiate FrameType is selected.
 	//
-	//        /* Asyn interfaces */
-	//        asynInterface   common;				//!< Asyn common interface
-	//        asynInterface   AsynDrvUser;		//!< Asyn asynDrvUser interface
-	//        asynInterface   AsynOption;			//!< Asyn asynOption interface
 
-//        asynInterface   AsynInt8Array;		//!< Asyn asynInt8Array interface
-	//        asynInterface   AsynInt32;			//!< Asyn asynInt32 interface
-	//        asynInterface   AsynInt32Array;		//!< Asyn asynInt32Array interface
-	//        asynInterface   AsynFloat64;		//!< Asyn asynFloat64 interface
-	//        asynInterface   AsynFloat32Array;	//!< Asyn asynFloat32Array interface
-	//
-	//        /* For interrupt sources */
-	//        void *asynOctetInterruptPvt;			//!< Asyn asynOctet interrupt source
-	//        void *asynInt8ArrayInterruptPvt;		//!< Asyn asynInt8Array interrupt source
-	//        void *asynInt32InterruptPvt;			//!< Asyn asynInt32 interrupt source
-	//        void *asynInt32ArrayInterruptPvt;		//!< Asyn asynInt32Array interrupt source
-	//        void *asynFloat32ArrayInterruptPvt;		//!< Asyn asynFloat32Array interrupt source
-	//        void *asynFloat64InterruptPvt;			//!< Asyn asynFloat64 interrupt source
 	//
 	//        /*IMAQ Profile*/
-	//        CLConfigData_t CLConfig; 	//!< Camera Link configuration resources struct
-	//        char* UARTReceivedMsg;		//!< UART Message received
-	//		int sizeX;					//!< Image x size
-	//		int sizeY;					//!< Image Y size
+	        CLConfigData_t CLConfig; 	//!< Camera Link configuration resources struct
+	        std::string UARTReceivedMsg;		//!< UART Message received
+			int sizeX;					//!< Image x size
+			int sizeY;					//!< Image Y size
 	//
-	//		/*SG Info*/
-	//		SGData_t* sgData;  			//!< Signal generator resources struct
+			/*SG Info*/
+			std::vector<SGData_t> sgData;  			//!< Array of Signal generator resources structs
 	//
-	//        /* DMA data acquisition threads */
-	//        irio_dmathread_t* ai_dma_thread; 	//!<  Pointer to struct of DMA data acquisition thread resources
+	        /* DMA data acquisition threads */
+	        std::vector<irio_dmathread_t> ai_dma_thread; 	//!<  Pointer to struct of DMA data acquisition thread resources
 	//
 	//        /* AI I/O Intr data acquisition threads */
 	//        thread_ai_t* thread_ai; 			//!<  Pointer to struct of AI data acquisition thread resources
 	//         /* DI I/O Intr data acquisition threads */
 	//        thread_di_t* thread_di; 			//!<  Pointer to struct of DI data acquisition thread resources
 	//
-	//} irio_pvt_t;
+
 	int DeviceSerialNumber;
 	int EPICSVersionMessage;
 	int IRIOVersionMessage;
@@ -248,58 +335,37 @@ private:
 	int FPGAStatus;
 	int InfoStatus;
 	int VIversion;
-	int FPGAStart;
-	int DevQualityStatus;
+
+
 	int DeviceTemp;
 
+
+	int riodevice_status;
+	 int SamplingRate;
+	 int SR_AI_Intr;
+	 int SR_DI_Intr;
+	 int debug;
+	 int GroupEnable;
+	 int FPGAStart;
+
+	 int DAQStartStop;
+	 int DF;
+	 int  DevQualityStatus;
+	int DMAOverflow;
+	int AOEnable;
+	int SGFreq;
+	int SGUpdateRate;
+	int SGSignalType;
+	int SGPhase;
+	int DI;
+	int DO;
+	int auxAI;
+	int auxAO;
+	int auxDI;
+	int auxDO;
+
 };
 
-/* Status message strings */
-#define DeviceSerialNumberString "device_serial_number"
-#define EPICSVersionString       "epics_version"        /**< (asynOctet,    r/o) Status message */
-#define IRIOVersionString		 "driver_version"
-#define DeviceNameString  	     "device_name"
-#define FPGAStatusString		"FPGAStatus"
-#define InfoStatusString 		"InfoStatus"
-#define VIversionString			"VIversion"
 
 
-#define FPGAStartString "FPGAStart" /** <asynInt32
-//#define ADStringToServerString      "STRING_TO_SERVER"      /**< (asynOctet,    r/o) String sent to server for message-based drivers */
-//#define ADStringFromServerString    "STRING_FROM_SERVER"    /**< (asynOctet,    r/o) String received from server for message-based drivers */
-#define DevQualityStatusString "DevQualityStatus"
-
-
-#define DeviceTempString "DeviceTemp"
-/**
- * Enum Type of RIO device platform-profiles
- */
-typedef enum {
-	flexRIO_DAQ=0,		//!< FlexRIO DMA data acquisition profile
-	flexRIO_IMAQ,		//!< FlexRIO Image data acquisition profile
-	flexRIO_DAQ_GPU,	//!< FlexRIO GPU DMA data acquisition profile
-	flexRIO_IMAGE_GPU,	//!< FlexRIO GPU Image data acquisition profile
-	cRIO_DAQ,			//!< cRIO DMA data acquisition profile
-	cRIO_IO,			//!< cRIO input/output data acquisition profile
-}platform_profile_enumt;
-
-/**
- * Struct to store RIO device platform-profiles enum and strings.
- */
-typedef struct {
-	platform_profile_enumt platform_profile_name; 	//!< RIO device platforn-profile enum
-	const char *platform_profile_string;			//!< RIO device platforn-profile string
-} platform_profile_t;
-
-/**
- * Array of RIO device platform-profiles {enum,string}
- */
-static platform_profile_t platform_profile[6]= {
-	{flexRIO_DAQ,"flexRIO DMA Data Acquisition profile."},
-	{flexRIO_IMAQ,"flexRIO IMAQ Data Acquisition profile."},
-	{flexRIO_DAQ_GPU,"flexRIO GPU DMA Data Acquisition profile."},
-	{flexRIO_IMAGE_GPU,"flexRIO GPU IMAGE Data Acquisition profile."},
-	{cRIO_DAQ,"cRIO DMA Data Acquisition profile."},
-	{cRIO_IO,"cRIO Point by Point Data Acquisition profile."},
-};
 #endif
