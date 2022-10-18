@@ -1,0 +1,21 @@
+file "rio-module2.template" {
+
+pattern
+{
+	BOARDTYPE,
+	BOARDTYPEIDX,
+	CBS1,
+	CBS2,
+	MODULEIDX
+}
+ 	
+	
+{
+	"5761",
+	"1",
+	"TEST",
+	"FCT0",
+	"1"
+}
+	
+}

@@ -26,6 +26,7 @@
 
 #include <map>
 #include <functional>
+#include <list>
 /* Standard includes */
 #include <stddef.h>
 #include <stdio.h>
@@ -201,22 +202,28 @@ typedef struct SGData
 }SGData_t;
 
 /**
- * Struct for managing DMA thread acquisition resources
+ * Class for managing DMA thread acquisition resources
  */
-typedef struct threadDMA
+class dmathread
 {
-	epicsThreadId *dma_thread_id;	//!< Pointer to DMA acquisition thread ID
-	char		  *dma_thread_name; //!< Pointer to DMA acquisition thread name
-	int id;							//!< ID
-	int threadends; 				//!< This field will be used to terminate the thread when change to 1
-	int endAck;						//!< This field will be used to notify thread termination when change to 1
-	int DecimationFactor; 			//!< Decimation Factor
-	int SR;							//!< Sampling Rate
-	int blockSize; 					//!< Size of acquisition block (in terms of DMA NwordU64)
-	struct irioPvt* asynPvt;		//!< Pointer to data structure of RIO device resources
-	epicsRingBytesId* IdRing;		//!< Pointer to RingBuffer ID
-	int dmanumber;					//!< DMA number
-} irio_dmathread_t;
+public:
+	dmathread(uint8_t id);
+	~dmathread();
+	void runthread(void);
+	void *aiDMA_thread(void *p);
+private:
+	epicsThreadId *_thread_id;	//!< Pointer to DMA acquisition thread ID
+	std::string		  _name; //!< Pointer to DMA acquisition thread name
+	int _id;							//!< ID
+	int _threadends; 				//!< This field will be used to terminate the thread when change to 1
+	int _endAck;						//!< This field will be used to notify thread termination when change to 1
+	int _DecimationFactor; 			//!< Decimation Factor
+	int _SR;							//!< Sampling Rate
+	int _blockSize; 					//!< Size of acquisition block (in terms of DMA NwordU64)
+//	struct irioPvt* asynPvt;		//!< Pointer to data structure of RIO device resources
+	epicsRingBytesId* _IdRing;		//!< Pointer to RingBuffer ID
+	uint8_t _dmanumber;					//!< DMA number
+};
 
 typedef enum {
 	STATUS_OK = 0, 						//!< RIO Device running OK.
@@ -320,7 +327,7 @@ private:
 			std::vector<SGData_t> sgData;  			//!< Array of Signal generator resources structs
 	//
 	        /* DMA data acquisition threads */
-	        std::vector<irio_dmathread_t> ai_dma_thread; 	//!<  Pointer to struct of DMA data acquisition thread resources
+	        std::vector<dmathread> ai_dma_thread; 	//!<  Pointer to struct of DMA data acquisition thread resources
 	//
 	//        /* AI I/O Intr data acquisition threads */
 	//        thread_ai_t* thread_ai; 			//!<  Pointer to struct of AI data acquisition thread resources
@@ -366,6 +373,7 @@ private:
 
 };
 
-
+std::vector<irio> instances;
+uint8_t number=0;
 
 #endif

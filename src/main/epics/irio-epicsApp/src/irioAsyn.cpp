@@ -28,7 +28,7 @@ static const char *driverName = "irio";
     __func__, __LINE__, driverName, functionName, msg)
 #define FLOW(msg) asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "[%s-%d] %s::%s: %s\n", \
 	__func__, __LINE__,driverName, functionName, msg)
-void nirio_epicsExit(void *ptr);
+
 //
 //static void gettingDBInfo(initHookState state)
 //{
@@ -153,6 +153,66 @@ void nirio_epicsExit(void *ptr);
 //	}
 //}
 //
+
+static void irioTimeStamp(void *userPvt,epicsTimeStamp *pTimeStamp){
+	epicsTimeGetCurrent(pTimeStamp);
+}
+
+extern "C"{
+int irio_configure(const char *namePort, const char *DevSerial,
+		const char *PXInirioModel, const char *projectName,
+		const char *FPGAversion, int verbosity){
+	    try {
+	 	 new irio(namePort, DevSerial, 	PXInirioModel, projectName,	FPGAversion,  verbosity);
+	    //no funciona	instances.emplace_front(irio(namePort, DevSerial, 	PXInirioModel, projectName,	FPGAversion,  verbosity));
+	 	//no funciona instances.at(number++)=(irio(namePort, DevSerial, 	PXInirioModel, projectName,	FPGAversion,  verbosity));
+	    }
+	    catch (...){
+	    	return asynSuccess;
+	    }
+	 	return asynSuccess;
+}
+/**
+*	Next, Registration of the irioinit function and its 4 parameters
+*/
+static const iocshArg nirioInitArg0 = { "portName", iocshArgString }; 	//!< i.e, "RIO12" first number "1" the number of chassis from top to down
+									//!< i.e, second number "2" is the number of slot.
+static const iocshArg nirioInitArg1 = { "DevSerial", iocshArgString };   //!< i.e, Serial Number of the device Card
+static const iocshArg nirioInitArg2 = { "irioDevice", iocshArgString }; //!< i.e, "PXIe-7965R"
+static const iocshArg nirioInitArg3 = { "projectName", iocshArgString }; //!< i.e, "7952fpga"
+static const iocshArg nirioInitArg4 = { "FPGAVersion", iocshArgString };	//!< i.e, "V2.12"
+static const iocshArg nirioInitArg5 = { "verbosity", iocshArgInt };
+
+static const iocshArg *nirioInitArgs[] = {
+						&nirioInitArg0,
+						&nirioInitArg1,
+						&nirioInitArg2,
+						&nirioInitArg3,
+						&nirioInitArg4,
+						&nirioInitArg5};
+
+static const iocshFuncDef nirioInitFuncDef = {"nirioinit",6, nirioInitArgs};
+
+static void nirioInitCallFunc (const iocshArgBuf *args) {
+	irio_configure(args[0].sval, args[1].sval ,args[2].sval,args[3].sval,args[4].sval,args[5].ival);
+}
+
+static void nirioRegister (void)
+{
+	static int firstTime = 1;
+	if (firstTime==1) {
+		firstTime = 0;
+		iocshRegister(&nirioInitFuncDef, nirioInitCallFunc);
+	}
+}
+
+epicsExportRegistrar(nirioRegister);
+epicsRegisterFunction(irioTimeStamp);
+void nirio_epicsExit(void *ptr) {
+	irio *pirio = (irio *)ptr;
+	delete pirio;
+}
+}
  irio::irio(const char *namePort, const char *DevSerial,
 		const char *PXInirioModel, const char *projectName,
 		const char *FPGAversion, int verbosity): asynPortDriver(
@@ -217,7 +277,7 @@ void nirio_epicsExit(void *ptr);
 
 
 
-     epicsAtExit(nirio_epicsExit,&iriodrv);
+     epicsAtExit(nirio_epicsExit,this);
 
 
 //	TODO: initHookRegister(gettingDBInfo);  for database analisys
@@ -352,13 +412,13 @@ int st=resources();
 
  irio::~irio(void){
 	//TODO:Analyze the functions to execute in object destruction
-}
-
-
-
-void nirio_epicsExit(void *ptr) {
+	//parar threads
 
 }
+
+
+
+
 
 int irio::status_func(TStatus* status)
 {
@@ -1953,58 +2013,8 @@ int irio::status_func(TStatus* status)
 //	return status_func(pdrvPvt,&irio_status);
 //}
 //
-static void irioTimeStamp(void *userPvt,epicsTimeStamp *pTimeStamp){
-	epicsTimeGetCurrent(pTimeStamp);
-}
-extern "C"{
-int irio_configure(const char *namePort, const char *DevSerial,
-		const char *PXInirioModel, const char *projectName,
-		const char *FPGAversion, int verbosity){
-	    try {
-	 	 new irio(namePort, DevSerial, 	PXInirioModel, projectName,	FPGAversion,  verbosity);
-	    }
-	    catch (...){
-	    	return asynSuccess;
-	    }
-	 	return asynSuccess;
-}
-/**
-*	Next, Registration of the irioinit function and its 4 parameters
-*/
-static const iocshArg nirioInitArg0 = { "portName", iocshArgString }; 	//!< i.e, "RIO12" first number "1" the number of chassis from top to down
-									//!< i.e, second number "2" is the number of slot.
-static const iocshArg nirioInitArg1 = { "DevSerial", iocshArgString };   //!< i.e, Serial Number of the device Card
-static const iocshArg nirioInitArg2 = { "irioDevice", iocshArgString }; //!< i.e, "PXIe-7965R"
-static const iocshArg nirioInitArg3 = { "projectName", iocshArgString }; //!< i.e, "7952fpga"
-static const iocshArg nirioInitArg4 = { "FPGAVersion", iocshArgString };	//!< i.e, "V2.12"
-static const iocshArg nirioInitArg5 = { "verbosity", iocshArgInt };
 
-static const iocshArg *nirioInitArgs[] = {
-						&nirioInitArg0,
-						&nirioInitArg1,
-						&nirioInitArg2,
-						&nirioInitArg3,
-						&nirioInitArg4,
-						&nirioInitArg5};
 
-static const iocshFuncDef nirioInitFuncDef = {"nirioinit",6, nirioInitArgs};
-
-static void nirioInitCallFunc (const iocshArgBuf *args) {
-	irio_configure(args[0].sval, args[1].sval ,args[2].sval,args[3].sval,args[4].sval,args[5].ival);
-}
-
-static void nirioRegister (void)
-{
-	static int firstTime = 1;
-	if (firstTime==1) {
-		firstTime = 0;
-		iocshRegister(&nirioInitFuncDef, nirioInitCallFunc);
-	}
-}
-
-epicsExportRegistrar(nirioRegister);
-epicsRegisterFunction(irioTimeStamp);
-}
 
 void irio::report(FILE *fp, int details) {
 	char *platform[2]={"FlexRIO","cRIO"};
@@ -2081,7 +2091,12 @@ int irio::resources(void) {
 			sizeX=256;
 			sizeY=256;
 		}
-		ai_dma_thread.resize(iriodrv.DMATtoHOSTNo.value);
+		//Reserving the needed space for the specific number of DMA
+		ai_dma_thread.reserve(iriodrv.DMATtoHOSTNo.value);
+		//initializing every object with the number
+		for (std::vector<dmathread>::iterator it=ai_dma_thread.begin(); it!=ai_dma_thread.end(); it++){
+			*it=dmathread(std::distance(ai_dma_thread.begin(),it ));
+		}
 		TStatus irio_status;
 		st=irio_setUpDMAsTtoHost(&iriodrv,&irio_status);
 		if (st!=IRIO_success){
@@ -2093,7 +2108,12 @@ int irio::resources(void) {
 		break;
 	case IRIO_cRIO:
 		if (iriodrv.devProfile!=1 ){
-			ai_dma_thread.resize(iriodrv.DMATtoHOSTNo.value);
+			//Reserving the needed space for the specific number of DMA
+			ai_dma_thread.reserve(iriodrv.DMATtoHOSTNo.value);
+			//initializing every object with the number
+			for (std::vector<dmathread>::iterator it=ai_dma_thread.begin(); it!=ai_dma_thread.end(); it++){
+				*it=dmathread(std::distance(ai_dma_thread.begin(),it ));
+			}
 			TStatus irio_status;
 			 st=irio_setUpDMAsTtoHost(&iriodrv,&irio_status);
 			if (st!=IRIO_success){
@@ -2696,7 +2716,7 @@ asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
 
 	/* Fetch the parameter string name for possible use in debugging */
 	getParamName(function, &paramName);
-	asynPrint(pasynUser,function, "%s",paramName);
+	//asynPrint(pasynUser,function, "%s",paramName);
 	if (function==DeviceTemp){
 		TStatus irio_status;
 		int32_t vaux;
@@ -2705,6 +2725,7 @@ asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
 						*value=(epicsFloat64)vaux*0.25;
 						//errlogSevPrintf(errlogInfo,"[%s-%d][%s]DeviceTemp (addr=%d) value: %f \n",__func__,__LINE__,pdrvPvt->portName,addr,*value);
 		}
+					else *value=0;
 	}
 	setDoubleParam(function, *value);
 	return status;
@@ -2861,7 +2882,7 @@ asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
 //	free(aux);
 //}
 //
-//static void aiDMA_thread(void *p){
+ void* dmathread::aiDMA_thread(void *p){
 //	TIRIOStatusCode status=IRIO_success;
 //	TStatus irio_status;
 //	irio_initStatus(&irio_status);
@@ -3133,7 +3154,7 @@ asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
 //
 //	irio_resetStatus(&irio_status);
 //	ai_dma_thread->endAck=1;
-//}
+}
 //
 //static void ai_pv_thread(void *p){
 //	//There is one thread per ringbuffer (per DMA channel)
@@ -3405,3 +3426,22 @@ asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
 //	epicsTimeGetCurrent(pTimeStamp);
 //}
 //
+dmathread::dmathread(uint8_t id){
+_thread_id=NULL;
+_name="RIO_"+std::to_string(id)+"-DMA_"+std::to_string(id);
+_id=id;
+_threadends=0;
+_endAck=0;
+_DecimationFactor=1;
+_SR=1;
+_blockSize=1;
+_IdRing=NULL;
+_dmanumber=id;
+}
+dmathread::~dmathread(){
+
+}
+void dmathread::runthread(void){
+	void *p;
+_thread_id=(epicsThreadId *)epicsThreadCreate(_name.c_str(), epicsThreadPriorityHigh, epicsThreadGetStackSize(epicsThreadStackBig), (EPICSTHREADFUNC)(this->aiDMA_thread(p)), (void *)NULL);
+}
