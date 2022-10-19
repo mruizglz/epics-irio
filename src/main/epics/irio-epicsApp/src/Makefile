@@ -39,7 +39,7 @@ endif
 LIBRARY += irio-epics
 
 # Add source file for module
-LIB_SRCS += irioAsyn.cpp
+LIB_SRCS += irioAsyniocsh.cpp irioAsyn.cpp 
 
 # irioAsyn.dbd will be created and installed
 DBD += irioAsyn.dbd
@@ -58,10 +58,10 @@ USR_SYS_LIBS += irioCore
 ##Conditional compilation of IRIOCore
 ifdef CODAC_ROOT
 	USR_CPPFLAGS += -I$(CODAC_ROOT)/include/irioCore
-	USR_LDFLAGS += -L$(CODAC_ROOT)/lib -Wl,-rpath=$(CODAC_ROOT)/lib
+	USR_LDFLAGS += -L$(CODAC_ROOT)/lib -Wl,-rpath=$(CODAC_ROOT)/lib 
 else
 	USR_CPPFLAGS += -I$(IRIOCORE_DIR)/target/main/c/include
-	USR_LDFLAGS += -L$(IRIOCORE_DIR)/target/lib -Wl,-rpath=$(IRIOCORE_DIR)/target/lib 
+	USR_LDFLAGS += -L$(IRIOCORE_DIR)/target/lib -Wl,-rpath=$(IRIOCORE_DIR)/target/lib  
 endif
 
 #=============================

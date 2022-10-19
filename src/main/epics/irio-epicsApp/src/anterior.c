@@ -10,7 +10,6 @@
  *****************************************************************************/
 
 #include "irioHandlerSG.h"
-#include "irioAsyn.h"
 #include "irioDataTypes.h"
 #include "irioDriver.h"
 #include "irioResourceFinder.h"
@@ -20,6 +19,7 @@
 #include "irioHandlerImage.h"
 #include "irioError.h"
 #include <math.h>
+#include "irioAsynold.h"
 
 static void gettingDBInfo(initHookState state)
 {
@@ -773,8 +773,8 @@ static asynStatus octetRead(void *drvPvt, asynUser *pasynUser, char *data, size_
 		}
 	}
 
-	if(maxchars<=0){
-		irio_mergeStatus(&irio_status,Generic_Warning,0,"[%s-%d][%s]OctetRead call from reason %s with maxChars<=0 (%d)\n",__func__,__LINE__,pdrvPvt->portName,commands[pasynUser->reason].commandString,(int)maxchars);
+	if(maxchars==0){
+		irio_mergeStatus(&irio_status,Generic_Warning,0,"[%s-%d][%s]OctetRead call from reason %s with maxChars=0 (%d)\n",__func__,__LINE__,pdrvPvt->portName,commands[pasynUser->reason].commandString,(int)maxchars);
 		return status_func(pdrvPvt,&irio_status);
 	}
 
