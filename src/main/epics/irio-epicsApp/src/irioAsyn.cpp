@@ -156,6 +156,7 @@ int irio::createIRIOParams(void) {
 		status= createParam(VIversionString, asynParamOctet, &VIversion);
 
 		status= createParam(DeviceTempString, asynParamFloat64, &DeviceTemp);
+		status = createParam(AIString, asynParamFloat64, &AI);
 
 		//asynInt32
 
@@ -590,12 +591,17 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 	} else if (function == SR_DI_Intr) {
 
 	} else if (function == debug) {
+		int st = irio_getDebugMode(&_iriodrv,value,&irio_status);
 
 	} else if (function == GroupEnable) {
 
 	} else if (function == FPGAStart) {
 
 	} else if (function == DAQStartStop) {
+		int st = irio_getDAQStartStop(&_iriodrv,value,&irio_status);
+		if(st==IRIO_success){
+			acq_status=*value;
+		}
 
 	} else if (function == DF) {
 
@@ -626,20 +632,24 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 	} else if (function == auxDO) {
 
 	}
+	setIntegerParam(function, *value);
 	return status;
 }
 
 asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
-	int function = pasynUser->reason;
+	int function;
+	int addr;
 	asynStatus status = asynSuccess;
 	const char *paramName;
 	const char *functionName = "writeInt32";
+	TStatus irio_status;
+
+	status = parseAsynUser(pasynUser, &function, &addr, &paramName);
 
 	/* Set the parameter in the parameter library. */
 	status = (asynStatus) setIntegerParam(function, value);
 
-	/* Fetch the parameter string name for possible use in debugging */
-	getParamName(function, &paramName);
+
 	asynPrint(pasynUser, function, "%s", paramName);
 
 	if (function == riodevice_status) {
@@ -651,17 +661,21 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 	} else if (function == SR_DI_Intr) {
 
 	} else if (function == debug) {
+		int st = irio_setDebugMode(&_iriodrv, value,&irio_status);
 
 	} else if (function == GroupEnable) {
 
 	} else if (function == FPGAStart) {
-		TStatus irio_status;
 		int st = irio_setFPGAStart(&_iriodrv, (int32_t) value, &irio_status);
 		if (st == IRIO_success) {
 			FPGAstarted = 1;
 			//errlogSevPrintf(errlogInfo,"[%s-%d][%s]FPGAStart (addr=%d) value: %d \n",__func__,__LINE__,pdrvPvt->portName,addr,value);
 		}
 	} else if (function == DAQStartStop) {
+		int st = irio_setDAQStartStop(&_iriodrv,value,&irio_status);
+				if (st==IRIO_success){
+					acq_status = value;
+				}
 
 	} else if (function == DF) {
 
@@ -702,24 +716,35 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 //}
 //
 asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
-	int function = pasynUser->reason;
+	int function ;
 	asynStatus status = asynSuccess;
 	const char *paramName;
 	const char *functionName = "readFloat64";
+	int addr = 0;
+	TStatus irio_status;
+	int32_t vaux;
+
+	irio_initStatus(&irio_status);
+
+	status = parseAsynUser(pasynUser, &function, &addr, &paramName);
 
 	/* Set the parameter in the parameter library. */
 	status = (asynStatus) getDoubleParam(function, value);
 
-	/* Fetch the parameter string name for possible use in debugging */
-	getParamName(function, &paramName);
 	//asynPrint(pasynUser,function, "%s",paramName);
+
 	if (function == DeviceTemp) {
-		TStatus irio_status;
-		int32_t vaux;
 		int st = irio_getDevTemp(&_iriodrv, &vaux, &irio_status);
 		if (st == IRIO_success) {
 			*value = (epicsFloat64) vaux * 0.25;
 			//errlogSevPrintf(errlogInfo,"[%s-%d][%s]DeviceTemp (addr=%d) value: %f \n",__func__,__LINE__,pdrvPvt->portName,addr,*value);
+		} else
+			*value = 0;
+
+	} else if (function == AI) {
+		int st = irio_getAI(&_iriodrv,addr,&vaux,&irio_status);
+		if (st == IRIO_success) {
+			*value = (epicsFloat64) vaux * this->_iriodrv.CVADC;
 		} else
 			*value = 0;
 	}

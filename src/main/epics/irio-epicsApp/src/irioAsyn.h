@@ -152,6 +152,9 @@
 #define auxDOString "auxDO"
 //TODOD: Añadir los del profile de imagen!!!!!!
 
+#define AIString "AI"
+#define AOString "AO"
+
 #define DeviceTempString "DeviceTemp"
 /**
  * Enum Type of RIO device platform-profiles
@@ -305,7 +308,7 @@ private:
 	std::string _sInfoStatus;		//!< Additional info of RIO device status
 	std::string _sFPGAStatus;							//!< FPGA info status
 	irioDrv_t _iriodrv;	//!< Main struct of irioCore. Stores all ports, the current session and the status
-	//        int acq_status;								//!< Acquisition status. 1=Acquiring else=not acquiring
+	int acq_status;								//!< Acquisition status. 1=Acquiring else=not acquiring
 	riodevice_status_name_t _rio_device_status;  //!< RIO device status enum
 	//        uint8_t *error_oob_array[MAX_ERROR_OOB];					//!< Array of out of bound errors
 	//        int hw_err_count;  							//!< Errors in hardware configuration counter
@@ -369,6 +372,10 @@ private:
 	int auxAO;
 	int auxDI;
 	int auxDO;
+
+	int AI;
+	int AO;
+
 
 };
 
