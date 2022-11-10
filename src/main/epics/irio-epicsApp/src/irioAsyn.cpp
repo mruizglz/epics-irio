@@ -591,14 +591,14 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 	} else if (function == SR_DI_Intr) {
 
 	} else if (function == debug) {
-		int st = irio_getDebugMode(&_iriodrv,value,&irio_status);
+		int st = irio_getDebugMode(&_iriodrv, value, &irio_status);
 
 	} else if (function == GroupEnable) {
 
 	} else if (function == FPGAStart) {
 
 	} else if (function == DAQStartStop) {
-		int st = irio_getDAQStartStop(&_iriodrv,value,&irio_status);
+		int st = irio_getDAQStartStop(&_iriodrv, value, &irio_status);
 		if(st==IRIO_success){
 			acq_status=*value;
 		}
@@ -620,16 +620,27 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 	} else if (function == SGPhase) {
 
 	} else if (function == DI) {
+		int st = irio_getDI(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == DO) {
+		int st = irio_getDO(&_iriodrv, addr, value, &irio_status);
+
 
 	} else if (function == auxAI) {
+		int st = irio_getAuxAI(&_iriodrv, addr, value, &irio_status);
+
 
 	} else if (function == auxAO) {
+		int st = irio_getAuxAO(&_iriodrv, addr, value, &irio_status);
+
 
 	} else if (function == auxDI) {
+		int st = irio_getAuxDI(&_iriodrv, addr, value, &irio_status);
+
 
 	} else if (function == auxDO) {
+		int st = irio_getAuxDO(&_iriodrv, addr, value, &irio_status);
+
 
 	}
 	setIntegerParam(function, *value);
@@ -693,17 +704,14 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 
 	} else if (function == SGPhase) {
 
-	} else if (function == DI) {
-
 	} else if (function == DO) {
-
-	} else if (function == auxAI) {
+		int st = irio_setDO(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == auxAO) {
-
-	} else if (function == auxDI) {
+		int st = irio_setAuxAO(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == auxDO) {
+		int st = irio_setAuxDO(&_iriodrv, addr, value, &irio_status);
 
 	}
 	return status;
