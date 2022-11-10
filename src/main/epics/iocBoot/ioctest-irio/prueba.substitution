@@ -6,7 +6,9 @@ pattern
 	BOARDTYPEIDX,
 	CBS1,
 	CBS2,
-	MODULEIDX
+	MODULEIDX,
+	CHIDX,
+	SCAN
 }
  	
 	
@@ -15,7 +17,9 @@ pattern
 	"0",
 	"TEST",
 	"FCT0",
-	"0"
+	"0",
+	"0",
+	"1 second"
 }
 	
 }
