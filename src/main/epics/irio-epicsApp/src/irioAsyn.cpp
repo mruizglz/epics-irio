@@ -157,6 +157,7 @@ int irio::createIRIOParams(void) {
 
 		status= createParam(DeviceTempString, asynParamFloat64, &DeviceTemp);
 		status = createParam(AIString, asynParamFloat64, &AI);
+		status = createParam(AOString, asynParamFloat64, &AO);
 
 		//asynInt32
 
@@ -550,20 +551,21 @@ asynStatus irio::writeOctet(asynUser *pasynUser, const char *value,
 }
 
 asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
-	int function = pasynUser->reason;
+	int function;
 	asynStatus status = asynSuccess;
 	const char *paramName;
 	const char *functionName = "readInt32";
 	int addr = 0;
 	TStatus irio_status;
+
+	//TODO: revisar el uso de la funcion de abajo
+	status = parseAsynUser(pasynUser, &function, &addr, &paramName);
+
 	/* Set the parameter in the parameter library. */
 	status = (asynStatus) getIntegerParam(function, value);
 
-	/* Fetch the parameter string name for possible use in debugging */
-	getParamName(function, &paramName);
-	asynPrint(pasynUser, function, "%s", paramName);
-	//TODO: revisar el uso de la funcion de abajo
-	status = parseAsynUser(pasynUser, &function, &addr, &paramName);
+	//asynPrint(pasynUser, function, "%s", paramName);
+
 	if (function == riodevice_status) {
 		*value = _rio_device_status;
 	} else if (function == SamplingRate) {
@@ -610,6 +612,7 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 	} else if (function == DMAOverflow) {
 
 	} else if (function == AOEnable) {
+		int st = irio_getAOEnable(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == SGFreq) {
 
@@ -661,7 +664,7 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 	status = (asynStatus) setIntegerParam(function, value);
 
 
-	asynPrint(pasynUser, function, "%s", paramName);
+	//asynPrint(pasynUser, function, "%s", paramName);
 
 	if (function == riodevice_status) {
 
@@ -695,6 +698,8 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 	} else if (function == DMAOverflow) {
 
 	} else if (function == AOEnable) {
+		int st = irio_setAOEnable(&_iriodrv, addr, value, &irio_status);
+
 
 	} else if (function == SGFreq) {
 
@@ -752,7 +757,14 @@ asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
 	} else if (function == AI) {
 		int st = irio_getAI(&_iriodrv,addr,&vaux,&irio_status);
 		if (st == IRIO_success) {
-			*value = (epicsFloat64) vaux * this->_iriodrv.CVADC;
+			*value = (epicsFloat64) vaux * _iriodrv.CVADC;
+		} else
+			*value = 0;
+
+	} else if (function == AO) {
+		int st = irio_getAO(&_iriodrv,addr,&vaux,&irio_status);
+		if (st == IRIO_success) {
+			*value = (epicsFloat64) vaux / _iriodrv.CVDAC;
 		} else
 			*value = 0;
 	}
@@ -760,10 +772,43 @@ asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
 	return status;
 }
 
-//
-//asynStatus irio::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
-//}
-//
+
+asynStatus irio::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
+	int function;
+	int st;
+	asynStatus status = asynSuccess;
+	const char *paramName;
+	const char *functionName = "writeFloat64";
+	int addr = 0;
+	TStatus irio_status;
+	int32_t vaux;
+
+	irio_initStatus(&irio_status);
+
+	status = parseAsynUser(pasynUser, &function, &addr, &paramName);
+
+	/* Set the parameter in the parameter library. */
+	status = (asynStatus) setDoubleParam(function, value);
+
+	//asynPrint(pasynUser,function, "%s",paramName);
+
+	if (function == AO) {
+		if (value > _iriodrv.minAnalogOut && value < _iriodrv.maxAnalogOut){
+			st=irio_setAO(&_iriodrv,addr, (int32_t)(value * _iriodrv.CVDAC),&irio_status);
+			//TODO: Error Out of bounds
+		}
+		//else{
+		//}
+
+
+	}
+
+	return status;
+}
+
+
+
+
 //asynStatus irio::readInt8Array(asynUser *pasynUser, epicsInt8 *value,
 //		size_t nElements, size_t *nIn) {
 //}

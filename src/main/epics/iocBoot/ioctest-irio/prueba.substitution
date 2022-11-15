@@ -1,4 +1,4 @@
-file "rio-di.template" {
+file "rio-ao.template" {
 
 pattern
 {
@@ -8,7 +8,10 @@ pattern
 	CBS2,
 	MODULEIDX,
 	CHIDX,
-	SCAN
+	DRVH,
+	DRVL,
+	HOPR,
+	LOPR
 }
  	
 	
@@ -19,7 +22,10 @@ pattern
 	"FCT0",
 	"0",
 	"0",
-	"1 second"
+	"1",
+	"-1",
+	"1",
+	"-1"
 }
 	
 }

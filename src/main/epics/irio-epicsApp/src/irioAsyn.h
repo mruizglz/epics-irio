@@ -250,7 +250,7 @@ public:
 //	virtual asynStatus readInt64(asynUser *pasynUser, epicsInt64 *value);
 //	virtual asynStatus writeInt64(asynUser *pasynUser, epicsInt64 value);
 	virtual asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
-//	virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
+	virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
 //	virtual asynStatus readInt8Array(asynUser *pasynUser, epicsInt8 *value,
 //							size_t nElements, size_t *nIn);
 //	virtual asynStatus writeInt8Array(asynUser *pasynUser, epicsInt8 *value,
