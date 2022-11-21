@@ -138,7 +138,7 @@
 #define DAQStartStopString "DAQStartStop"
 #define DFString "DF"
 #define DevQualityStatusString "DevQualityStatus"
-#define DMAOverflowString "DMAOverflow"
+#define DMAsOverflowString "DMAsOverflow"
 #define AOEnableString "AOEnable"
 #define SGFreqString "SGFreq"
 #define SGUpdateRateString "SGUpdateRate"
@@ -154,7 +154,7 @@
 
 #define AIString "AI"
 #define AOString "AO"
-
+#define SGAmpString "SGAmp"
 #define DeviceTempString "DeviceTemp"
 /**
  * Enum Type of RIO device platform-profiles
@@ -360,7 +360,7 @@ private:
 	int DAQStartStop;
 	int DF;
 	int DevQualityStatus;
-	int DMAOverflow;
+	int DMAsOverflow;
 	int AOEnable;
 	int SGFreq;
 	int SGUpdateRate;
@@ -375,6 +375,7 @@ private:
 
 	int AI;
 	int AO;
+	int SGAmp;
 
 
 };

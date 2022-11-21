@@ -1,4 +1,4 @@
-file "rio-ao.template" {
+file "rio-sg.template" {
 
 pattern
 {
@@ -8,10 +8,22 @@ pattern
 	CBS2,
 	MODULEIDX,
 	CHIDX,
-	DRVH,
-	DRVL,
-	HOPR,
-	LOPR
+	DRVH_SGUPDATERATE,
+	DRVL_SGUPDATERATE,
+	HOPR_SGUPDATERATE,
+	LOPR_SGUPDATERATE,
+	DRVH_SGAMP,
+	DRVL_SGAMP,
+	HOPR_SGAMP,
+	LOPR_SGAMP,
+	DRVH_SGPHASE,
+	DRVL_SGPHASE,
+	HOPR_SGPHASE,
+	LOPR_SGPHASE,
+	DRVH_SGFREQ,
+	DRVL_SGFREQ,
+	HOPR_SGFREQ,
+	LOPR_SGFREQ,
 }
  	
 	
@@ -22,10 +34,22 @@ pattern
 	"FCT0",
 	"0",
 	"0",
-	"1",
-	"-1",
-	"1",
-	"-1"
+	"10000",
+	"0",
+	"10000",
+	"0",
+	"10",
+	"-10",
+	"10",
+	"-10",
+	"360",
+	"0",
+	"360",
+	"0",
+	"10000",
+	"0",
+	"10000",
+	"0"
 }
 	
 }

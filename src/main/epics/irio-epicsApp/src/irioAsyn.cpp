@@ -158,6 +158,7 @@ int irio::createIRIOParams(void) {
 		status= createParam(DeviceTempString, asynParamFloat64, &DeviceTemp);
 		status = createParam(AIString, asynParamFloat64, &AI);
 		status = createParam(AOString, asynParamFloat64, &AO);
+		status = createParam(SGAmpString, asynParamFloat64, &SGAmp);
 
 		//asynInt32
 
@@ -175,7 +176,7 @@ int irio::createIRIOParams(void) {
 		status= createParam(DevQualityStatusString, asynParamInt32,
 				&DevQualityStatus);
 		setIntegerParam(DevQualityStatus, 255);
-		status= createParam(DMAOverflowString, asynParamInt32, &DMAOverflow);
+		status= createParam(DMAsOverflowString, asynParamInt32, &DMAsOverflow);
 
 		status = createParam(AOEnableString, asynParamInt32, &AOEnable);
 		status = createParam(SGFreqString, asynParamInt32, &SGFreq);
@@ -596,6 +597,8 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 		int st = irio_getDebugMode(&_iriodrv, value, &irio_status);
 
 	} else if (function == GroupEnable) {
+		int st = irio_getDMATtoHostEnable(&_iriodrv, addr, value, &irio_status);
+
 
 	} else if (function == FPGAStart) {
 
@@ -609,18 +612,63 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 
 	} else if (function == DevQualityStatus) {
 
-	} else if (function == DMAOverflow) {
+	} else if (function == DMAsOverflow) {
 
 	} else if (function == AOEnable) {
 		int st = irio_getAOEnable(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == SGFreq) {
+		if(_iriodrv.NoOfSG > addr){
+			if(sgData[addr].Freq != 0){
+				*value =sgData[addr].Freq;
+			}
+			else {
+				int st = irio_getSGFreq(&_iriodrv, addr, value, &irio_status);
+				if(st == IRIO_success){
+					if(sgData[addr].UpdateRate == 0){
+						int32_t aux=0;
+						st = irio_getSGUpdateRate(&_iriodrv, addr, &aux, &irio_status);
+						if (st == IRIO_success){
+							if(aux==0){
+								sgData[addr].UpdateRate = 0;
+							}
+							else{
+								sgData[addr].UpdateRate = _iriodrv.SGfref[addr]/aux;
+							}
+						}
+					}
+					*value=(*value)*(epicsInt32)(((int64_t)sgData[addr].UpdateRate)/4294967296);
+					sgData[addr].Freq=*value;
+				}
+			}
+		}
+		//else irio_mergestatus
 
 	} else if (function == SGUpdateRate) {
+		if(_iriodrv.NoOfSG > addr){
+			if(sgData[addr].UpdateRate != 0){
+				*value = sgData[addr].UpdateRate;
+			}
+			else{
+				int st = irio_getSGUpdateRate(&_iriodrv,addr, value, &irio_status);
+				if (st == IRIO_success){
+					if(*value == 0){
+						sgData[addr].UpdateRate = 0;
+					}
+					else{
+						*value = _iriodrv.SGfref[addr]/(*value);
+						sgData[addr].UpdateRate = *value;
+					}
+				}
+			}
+		}
+		//TODO: else irio_mergestatus
 
 	} else if (function == SGSignalType) {
+		int st=irio_getSGSignalType(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == SGPhase) {
+		int st=irio_getSGPhase(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == DI) {
 		int st = irio_getDI(&_iriodrv, addr, value, &irio_status);
@@ -666,9 +714,7 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 
 	//asynPrint(pasynUser, function, "%s", paramName);
 
-	if (function == riodevice_status) {
-
-	} else if (function == SamplingRate) {
+	if (function == SamplingRate) {
 
 	} else if (function == SR_AI_Intr) {
 
@@ -678,6 +724,7 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 		int st = irio_setDebugMode(&_iriodrv, value,&irio_status);
 
 	} else if (function == GroupEnable) {
+		int st = irio_setDMATtoHostEnable(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == FPGAStart) {
 		int st = irio_setFPGAStart(&_iriodrv, (int32_t) value, &irio_status);
@@ -695,19 +742,82 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 
 	} else if (function == DevQualityStatus) {
 
-	} else if (function == DMAOverflow) {
+	} else if (function == DMAsOverflow) {
 
 	} else if (function == AOEnable) {
 		int st = irio_setAOEnable(&_iriodrv, addr, value, &irio_status);
 
 
 	} else if (function == SGFreq) {
+		if(value > 0){
+			if(_iriodrv.NoOfSG > addr){
+				sgData[addr].Freq = value;
+
+				if(sgData[addr].UpdateRate == 0){
+					value = 0;
+				}
+				else{
+					value= sgData[addr].Freq *( 4294967296 / sgData[addr].UpdateRate);
+				}
+				int st = irio_setSGFreq(&_iriodrv, addr, value, &irio_status);
+				if(st == IRIO_success){
+					//errlogsevprintf SGfreq value+ error_oob_array
+				}
+				else{
+					//errlogsevprint SGfreq error in irio_setSGFreq
+				}
+			}
+			else{
+				//iriomergestatus resourcenotfound
+			}
+		}
+		else{
+			//iriomergestatus out of bounds + error_oob_array
+		}
 
 	} else if (function == SGUpdateRate) {
+		if(_iriodrv.NoOfSG > addr){
+			if(value <= 0){
+				/*irio_mergeStatus(&irio_status,Generic_Error,0,"[%s-%d][%s]SGUpdateRate (addr=%d) value : %d, out of bounds.\n",__func__,__LINE__,pdrvPvt->portName,addr,value);
+				if((pdrvPvt->error_oob_array[ERROR_OOB_SGUPDATERATE][addr/8]&(0x01u<<(uint8_t)(addr%8)))==0){
+					pdrvPvt->error_oob_array[ERROR_OOB_SGUPDATERATE][addr/8]|=(0x01u<<(uint8_t)(addr%8)); //Put bit to one
+					pdrvPvt->dyn_err_count++;
+				}*/
+			}else{
+				if(value > _iriodrv.SGfref[addr]){
+					//irio_mergeStatus(&irio_status,Generic_Error,0,"[%s-%d][%s]SGUpdateRate (addr=%d) value: %d truncated to %d\n",__func__,__LINE__,pdrvPvt->portName,addr,value,pdrvPvt->drvPvt.SGfref[addr]);
+					value = _iriodrv.SGfref[addr];
+				}
+				sgData[addr].UpdateRate = value;
+				//Value contains the frequency desired to update analog output
+				value = _iriodrv.SGfref[addr] / value;
+				int st = irio_setSGUpdateRate(&_iriodrv, addr, value, &irio_status);
+				if(st == IRIO_success){
+					//errlogSevPrintf(errlogInfo,"[%s-%d][%s]SGUpdateRate (addr=%d) value: %d \n",__func__,__LINE__,pdrvPvt->portName,addr,pdrvPvt->sgData[addr].UpdateRate);
+				}
+				//Update SGFreq to keep the relation between SGFreq y SGUpdateRate
+				int32_t aux = 0;
+
+				aux = sgData[addr].Freq * (4294967296/sgData[addr].UpdateRate);
+				st=irio_setSGFreq(&_iriodrv, addr, aux, &irio_status);
+				if(st == IRIO_success){
+					//errlogSevPrintf(errlogInfo,"[%s-%d][%s]SGFreq (addr=%d) value updated to: %d \n",__func__,__LINE__,pdrvPvt->portName,addr,aux);
+				}
+				/*if((pdrvPvt->error_oob_array[ERROR_OOB_SGUPDATERATE][addr/8]&(0x01u<<(uint8_t)(addr%8)))>0){
+					pdrvPvt->error_oob_array[ERROR_OOB_SGUPDATERATE][addr/8]&=(~(0x01u<<(uint8_t)(addr%8))); //Put bit to zero
+					pdrvPvt->dyn_err_count--;
+				}*/
+			}
+
+		}else{
+			//irio_mergeStatus(&irio_status,ResourceNotFound_Warning,0,"[%s-%d][%s]ResourceNotFound_Warning: SG (addr=%d) out of bounds. Number of Signal Generators in FPGA = %d\n",__func__,__LINE__,pdrvPvt->portName,addr,pdrvPvt->drvPvt.NoOfSG);
+		}
 
 	} else if (function == SGSignalType) {
+		int st=irio_setSGSignalType(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == SGPhase) {
+		int st=irio_setSGPhase(&_iriodrv, addr, (int32_t)value, &irio_status);
 
 	} else if (function == DO) {
 		int st = irio_setDO(&_iriodrv, addr, value, &irio_status);
@@ -767,6 +877,12 @@ asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
 			*value = (epicsFloat64) vaux / _iriodrv.CVDAC;
 		} else
 			*value = 0;
+	} else if (function == SGAmp) {
+		int st = irio_getSGAmp(&_iriodrv, addr, &vaux, &irio_status);
+		if(st ==  IRIO_success){
+			*value = (epicsFloat64)vaux/_iriodrv.CVDAC;
+			//errlogsevprintf
+		}
 	}
 	setDoubleParam(function, *value);
 	return status;
@@ -799,8 +915,17 @@ asynStatus irio::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
 		}
 		//else{
 		//}
+	} else if (function == SGAmp){
+		if(value > _iriodrv.minAnalogOut && value < _iriodrv.maxAnalogOut){
+			int st = irio_setSGAmp(&_iriodrv, addr, (int32_t) (value * _iriodrv.CVDAC), &irio_status);
 
-
+			if(st == IRIO_success){
+				//errlogsevprintf + error_oob_array
+			}
+		}
+		else{
+			//iriomergestatus oob + error_oob_array
+		}
 	}
 
 	return status;
