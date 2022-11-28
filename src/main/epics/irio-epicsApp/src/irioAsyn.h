@@ -156,6 +156,7 @@
 #define AOString "AO"
 #define SGAmpString "SGAmp"
 #define DeviceTempString "DeviceTemp"
+#define UserDefinedConversionFactorString "UserDefinedConversionFactor"
 /**
  * Enum Type of RIO device platform-profiles
  */
@@ -213,6 +214,7 @@ typedef struct SGData {
  * Class for managing DMA thread acquisition resources
  */
 class dmathread {
+	friend class irio;
 public:
 	dmathread(const std::string &device, uint8_t id);
 	~dmathread();
@@ -376,6 +378,7 @@ private:
 	int AI;
 	int AO;
 	int SGAmp;
+	int UsrDefinedConversionFactor;
 
 
 };

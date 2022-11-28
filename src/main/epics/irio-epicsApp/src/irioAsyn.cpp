@@ -159,6 +159,7 @@ int irio::createIRIOParams(void) {
 		status = createParam(AIString, asynParamFloat64, &AI);
 		status = createParam(AOString, asynParamFloat64, &AO);
 		status = createParam(SGAmpString, asynParamFloat64, &SGAmp);
+		status = createParam(UserDefinedConversionFactorString, asynParamFloat64, &UsrDefinedConversionFactor);
 
 		//asynInt32
 
@@ -585,9 +586,10 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 				if (*value == 0)
 					*value = 1;
 				*value = _iriodrv.Fref / (*value);
-				//TODO: iriodrv.ai_dma_thread[addr].SR=*value;
+				ai_dma_thread[addr]._SR = *value;
 			}
 		}
+		//if IRIO_success
 
 	} else if (function == SR_AI_Intr) {
 
@@ -609,10 +611,18 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 		}
 
 	} else if (function == DF) {
+		ai_dma_thread[addr]._DecimationFactor = 1;
+		*value = 1;
+		//errlog
 
 	} else if (function == DevQualityStatus) {
 
 	} else if (function == DMAsOverflow) {
+		int aux;
+		int st = irio_getDMATtoHostOverflow(&_iriodrv, &aux, &irio_status);
+		if(st == IRIO_success){
+			*value = ((uint32_t)aux>>(uint32_t)addr)&0x00000001u;
+		}
 
 	} else if (function == AOEnable) {
 		int st = irio_getAOEnable(&_iriodrv, addr, value, &irio_status);
@@ -715,6 +725,24 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 	//asynPrint(pasynUser, function, "%s", paramName);
 
 	if (function == SamplingRate) {
+		int st;
+		if(value >= _iriodrv.minSamplingRate && value <= _iriodrv.maxSamplingRate){
+			if(_iriodrv.platform == IRIO_cRIO && _iriodrv.devProfile == 1){ //CRIO IO
+				value = _iriodrv.Fref / value;
+				st = irio_setSamplingRate(&_iriodrv, addr, value, &irio_status);
+			}
+			else {
+				ai_dma_thread[addr]._SR = value;
+				value = _iriodrv.Fref / value;
+				st = irio_setDMATtoHostSamplingRate(&_iriodrv, addr, value, &irio_status);
+			}
+			if(st == IRIO_success){
+				// error_oob_array
+			}
+		}
+		else {
+			// irio_mergestatus + error_oob_array
+		}
 
 	} else if (function == SR_AI_Intr) {
 
@@ -739,6 +767,13 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 				}
 
 	} else if (function == DF) {
+		if(value >= 1){
+			ai_dma_thread[addr]._DecimationFactor = value;
+			//errlog + error oob array
+		}
+		else{
+			//merge status + error_oob_array
+		}
 
 	} else if (function == DevQualityStatus) {
 
@@ -883,6 +918,11 @@ asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
 			*value = (epicsFloat64)vaux/_iriodrv.CVDAC;
 			//errlogsevprintf
 		}
+	} else if (function == UsrDefinedConversionFactor) {
+		if(UserDefinedConversionFactor[addr] <= 0){
+			UserDefinedConversionFactor[addr] = 1;
+		}
+		*value = UserDefinedConversionFactor[addr];
 	}
 	setDoubleParam(function, *value);
 	return status;
@@ -925,6 +965,19 @@ asynStatus irio::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
 		}
 		else{
 			//iriomergestatus oob + error_oob_array
+		}
+	} else if (function == UsrDefinedConversionFactor) {
+		if(_iriodrv.DMATtoHOSTFrameType[addr] >= 128){
+			if(value > 0){
+				UserDefinedConversionFactor[addr] = value;
+				//error oob array
+			}
+			else{
+				//irio merge tatus oob + error_oob_array
+			}
+		}
+		else{
+			//errlogSev.... UserConversionFactor disabled
 		}
 	}
 
