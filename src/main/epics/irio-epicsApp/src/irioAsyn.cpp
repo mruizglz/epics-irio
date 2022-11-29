@@ -139,59 +139,54 @@ irio::~irio(void) {
 }
 //TODO: find a method to detect erros in the calls to CreateParam and accumulate to simplify the error checking
 int irio::createIRIOParams(void) {
-	asynStatus status=asynSuccess;
+	int status = asynSuccess;  // asynStatus
 
-		status=createParam(DeviceSerialNumberString, asynParamOctet,
-				&DeviceSerialNumber);
+	status |= createParam(DeviceSerialNumberString, asynParamOctet, &DeviceSerialNumber);
+	status |= createParam(EPICSVersionString, asynParamOctet, &EPICSVersionMessage);
+	setStringParam(EPICSVersionMessage, "Hola mundo");
+	status |= createParam(IRIOVersionString, asynParamOctet, &IRIOVersionMessage);
+	status |= createParam(DeviceNameString, asynParamOctet, &DeviceName);
+	status |= createParam(FPGAStatusString, asynParamOctet, &FPGAStatus);
+	status |= createParam(InfoStatusString, asynParamOctet, &InfoStatus);
+	status |= createParam(VIversionString, asynParamOctet, &VIversion);
 
-
-		status=createParam(EPICSVersionString, asynParamOctet,
-				&EPICSVersionMessage);
-		setStringParam(EPICSVersionMessage, "Hola mundo");
-		status= createParam(IRIOVersionString, asynParamOctet,
-				&IRIOVersionMessage);
-		status= createParam(DeviceNameString, asynParamOctet, &DeviceName);
-		status= createParam(FPGAStatusString, asynParamOctet, &FPGAStatus);
-		status= createParam(InfoStatusString, asynParamOctet, &InfoStatus);
-		status= createParam(VIversionString, asynParamOctet, &VIversion);
-
-		status= createParam(DeviceTempString, asynParamFloat64, &DeviceTemp);
-		status = createParam(AIString, asynParamFloat64, &AI);
-		status = createParam(AOString, asynParamFloat64, &AO);
-		status = createParam(SGAmpString, asynParamFloat64, &SGAmp);
-		status = createParam(UserDefinedConversionFactorString, asynParamFloat64, &UsrDefinedConversionFactor);
+	status |= createParam(DeviceTempString, asynParamFloat64, &DeviceTemp);
+	status |= createParam(AIString, asynParamFloat64, &AI);
+	status |= createParam(AOString, asynParamFloat64, &AO);
+	status |= createParam(SGAmpString, asynParamFloat64, &SGAmp);
+	status |= createParam(UserDefinedConversionFactorString, asynParamFloat64, &UsrDefinedConversionFactor);
 
 		//asynInt32
 
-		status= createParam(RIODeviceStatusString, asynParamInt32,
-				&riodevice_status);
-		status= createParam(SamplingRateString, asynParamInt32, &SamplingRate);
-		status= createParam(SR_AI_IntrString, asynParamInt32, &SR_AI_Intr);
-		status= createParam(SR_DI_IntrString, asynParamInt32, &SR_DI_Intr);
-		status= createParam(DebugString, asynParamInt32, &debug);
-		status= createParam(GroupEnableString, asynParamInt32, &GroupEnable);
-		status= createParam(FPGAStartString, asynParamInt32, &FPGAStart);
-		setIntegerParam(FPGAStart, 0);
-		status= createParam(DAQStartStopString, asynParamInt32, &DAQStartStop);
-		status= createParam(DFString, asynParamInt32, &DF);
-		status= createParam(DevQualityStatusString, asynParamInt32,
-				&DevQualityStatus);
-		setIntegerParam(DevQualityStatus, 255);
-		status= createParam(DMAsOverflowString, asynParamInt32, &DMAsOverflow);
+	status |= createParam(RIODeviceStatusString, asynParamInt32, &riodevice_status);
+	status |= createParam(SamplingRateString, asynParamInt32, &SamplingRate);
+	status |= createParam(SR_AI_IntrString, asynParamInt32, &SR_AI_Intr);
+	status |= createParam(SR_DI_IntrString, asynParamInt32, &SR_DI_Intr);
+	status |= createParam(DebugString, asynParamInt32, &debug);
+	status |= createParam(GroupEnableString, asynParamInt32, &GroupEnable);
+	status |= createParam(FPGAStartString, asynParamInt32, &FPGAStart);
+	setIntegerParam(FPGAStart, 0);
+	status |= createParam(DAQStartStopString, asynParamInt32, &DAQStartStop);
+	status |= createParam(DFString, asynParamInt32, &DF);
+	status |= createParam(DevQualityStatusString, asynParamInt32, &DevQualityStatus);
+	setIntegerParam(DevQualityStatus, 255);
+	status |= createParam(DMAsOverflowString, asynParamInt32, &DMAsOverflow);
+	status |= createParam(AOEnableString, asynParamInt32, &AOEnable);
+	status |= createParam(SGFreqString, asynParamInt32, &SGFreq);
+	status |= createParam(SGUpdateRateString, asynParamInt32, &SGUpdateRate);
+	status |= createParam(SGSignalTypeString, asynParamInt32, &SGSignalType);
+	status |= createParam(SGPhaseString, asynParamInt32, &SGPhase);
+	status |= createParam(DIString, asynParamInt32, &DI);
+	status |= createParam(DOString, asynParamInt32, &DO);
+	status |= createParam(auxAIString, asynParamInt32, &auxAI);
+	status |= createParam(auxAOString, asynParamInt32, &auxAO);
+	status |= createParam(auxDIString, asynParamInt32, &auxDI);
+	status |= createParam(auxDOString, asynParamInt32, &auxDO);
 
-		status = createParam(AOEnableString, asynParamInt32, &AOEnable);
-		status = createParam(SGFreqString, asynParamInt32, &SGFreq);
-		status = createParam(SGUpdateRateString, asynParamInt32, &SGUpdateRate);
+	if(status > 0)
+		return asynError;
 
-		status = createParam(SGSignalTypeString, asynParamInt32, &SGSignalType);
-		status = createParam(SGPhaseString, asynParamInt32, &SGPhase);
-		status = createParam(DIString, asynParamInt32, &DI);
-		status = createParam(DOString, asynParamInt32, &DO);
-		status = createParam(auxAIString, asynParamInt32, &auxAI);
-		status = createParam(auxAOString, asynParamInt32, &auxAO);
-		status = createParam(auxDIString, asynParamInt32, &auxDI);
-		status = createParam(auxDOString, asynParamInt32, &auxDO);
-		return 0; //Manage the error
+	return asynSuccess; //Manage the error
 }
 
 int irio::status_func(TStatus *status) {
@@ -474,12 +469,32 @@ int irio::resources(void) {
 }
 
 
-asynStatus irio::readOctet(asynUser *pasynUser, char *value, size_t maxChars,
-		size_t *nActual, int *eomReason) {
+asynStatus irio::readOctet(asynUser *pasynUser, char *value, size_t maxChars, size_t *nActual, int *eomReason) {
 	int function = pasynUser->reason;
 	asynStatus status = asynSuccess;
 	const char *paramName;
 	const char *functionName = "readOctet";
+
+
+	if(epicsExiting == 1){
+		if(flag_exit == 0){
+			flag_exit = 1;
+			//errlogSevPrintf
+		}
+		*nActual = 0;
+		return asynSuccess;
+	}
+
+	if(function != InfoStatus){
+		if(driverInitialized == 0){
+			if(flag_close == 0){
+				flag_close = 1;
+				//errlogSevprintf
+			}
+			*nActual = 0;
+			return asynSuccess;
+		}
+	}
 
 	/* Set the parameter in the parameter library. */
 
@@ -535,8 +550,7 @@ asynStatus irio::readOctet(asynUser *pasynUser, char *value, size_t maxChars,
 
 }
 
-asynStatus irio::writeOctet(asynUser *pasynUser, const char *value,
-		size_t maxChars, size_t *nActual) {
+asynStatus irio::writeOctet(asynUser *pasynUser, const char *value, size_t maxChars, size_t *nActual) {
 	int function = pasynUser->reason;
 	asynStatus status = asynSuccess;
 	const char *paramName;
@@ -564,6 +578,26 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 
 	//TODO: revisar el uso de la funcion de abajo
 	status = parseAsynUser(pasynUser, &function, &addr, &paramName);
+
+	if(epicsExiting == 1){
+		if(flag_exit == 0){
+			flag_exit = 1;
+			//errlogSevPrintf
+		}
+		*value = 0;
+		return asynSuccess;
+	}
+
+	if(function != riodevice_status){
+		if(driverInitialized == 0){
+			if(flag_close == 0){
+				flag_close = 1;
+				//errlogSevprintf
+			}
+			*value = 0;
+			return asynSuccess;
+		}
+	}
 
 	/* Set the parameter in the parameter library. */
 	status = (asynStatus) getIntegerParam(function, value);
@@ -727,6 +761,22 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 	irio_initStatus(&irio_status);
 
 	status = parseAsynUser(pasynUser, &function, &addr, &paramName);
+
+	if(epicsExiting == 1){
+		if(flag_exit == 0){
+			flag_exit = 1;
+			//errlogSevPrintf
+		}
+		return asynSuccess;
+	}
+
+	if(driverInitialized == 0){
+		if(flag_close == 0){
+			flag_close = 1;
+			//errlogSevprintf
+		}
+		return asynSuccess;
+	}
 
 	/* Set the parameter in the parameter library. */
 	status = (asynStatus) setIntegerParam(function, value);
@@ -896,6 +946,23 @@ asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
 	/* Set the parameter in the parameter library. */
 	status = (asynStatus) getDoubleParam(function, value);
 
+	if(epicsExiting == 1){
+		if(flag_exit == 0){
+			flag_exit = 1;
+			//errlogSevPrintf
+		}
+		*value = 0;
+		return asynSuccess;
+	}
+
+	if(driverInitialized == 0){
+		if(flag_close == 0){
+			flag_close = 1;
+			//errlogSevprintf
+		}
+		*value = 0;
+		return asynSuccess;
+	}
 	//asynPrint(pasynUser,function, "%s",paramName);
 
 	if (function == DeviceTemp) {
@@ -949,6 +1016,22 @@ asynStatus irio::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
 
 
 	status = parseAsynUser(pasynUser, &function, &addr, &paramName);
+
+	if(epicsExiting == 1){
+		if(flag_exit == 0){
+			flag_exit = 1;
+			//errlogSevPrintf
+		}
+		return asynSuccess;
+	}
+
+	if(driverInitialized == 0){
+		if(flag_close == 0){
+			flag_close = 1;
+			//errlogSevprintf
+		}
+		return asynSuccess;
+	}
 
 	/* Set the parameter in the parameter library. */
 	status = (asynStatus) setDoubleParam(function, value);
