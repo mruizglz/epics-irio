@@ -557,8 +557,10 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 	asynStatus status = asynSuccess;
 	const char *paramName;
 	const char *functionName = "readInt32";
-	int addr = 0;
+	int addr;
+	int st = IRIO_success;	//TIRIOStatusCode??
 	TStatus irio_status;
+	irio_initStatus(&irio_status);
 
 	//TODO: revisar el uso de la funcion de abajo
 	status = parseAsynUser(pasynUser, &function, &addr, &paramName);
@@ -568,11 +570,13 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 
 	//asynPrint(pasynUser, function, "%s", paramName);
 
+
 	if (function == riodevice_status) {
 		*value = _rio_device_status;
+
 	} else if (function == SamplingRate) {
 		if (_iriodrv.platform == IRIO_cRIO && _iriodrv.devProfile == 1) {
-			int st = irio_getSamplingRate(&_iriodrv, addr, value, &irio_status);
+			st = irio_getSamplingRate(&_iriodrv, addr, value, &irio_status);
 			if (st == IRIO_success) {
 				if (*value == 0)
 					*value = 1;
@@ -580,7 +584,7 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 			}
 
 		} else {
-			int st = irio_getDMATtoHostSamplingRate(&_iriodrv, addr, value,
+			st = irio_getDMATtoHostSamplingRate(&_iriodrv, addr, value,
 					&irio_status);
 			if (st == IRIO_success) {
 				if (*value == 0)
@@ -596,16 +600,17 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 	} else if (function == SR_DI_Intr) {
 
 	} else if (function == debug) {
-		int st = irio_getDebugMode(&_iriodrv, value, &irio_status);
+		st = irio_getDebugMode(&_iriodrv, value, &irio_status);
 
 	} else if (function == GroupEnable) {
-		int st = irio_getDMATtoHostEnable(&_iriodrv, addr, value, &irio_status);
+		st = irio_getDMATtoHostEnable(&_iriodrv, addr, value, &irio_status);
 
 
 	} else if (function == FPGAStart) {
+		st = irio_getFPGAStart(&_iriodrv, value, &irio_status);
 
 	} else if (function == DAQStartStop) {
-		int st = irio_getDAQStartStop(&_iriodrv, value, &irio_status);
+		st = irio_getDAQStartStop(&_iriodrv, value, &irio_status);
 		if(st==IRIO_success){
 			acq_status=*value;
 		}
@@ -616,16 +621,17 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 		//errlog
 
 	} else if (function == DevQualityStatus) {
+		st = irio_getDevQualityStatus(&_iriodrv, value, &irio_status);
 
 	} else if (function == DMAsOverflow) {
 		int aux;
-		int st = irio_getDMATtoHostOverflow(&_iriodrv, &aux, &irio_status);
+		st = irio_getDMATtoHostOverflow(&_iriodrv, &aux, &irio_status);
 		if(st == IRIO_success){
 			*value = ((uint32_t)aux>>(uint32_t)addr)&0x00000001u;
 		}
 
 	} else if (function == AOEnable) {
-		int st = irio_getAOEnable(&_iriodrv, addr, value, &irio_status);
+		st = irio_getAOEnable(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == SGFreq) {
 		if(_iriodrv.NoOfSG > addr){
@@ -633,7 +639,7 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 				*value =sgData[addr].Freq;
 			}
 			else {
-				int st = irio_getSGFreq(&_iriodrv, addr, value, &irio_status);
+				st = irio_getSGFreq(&_iriodrv, addr, value, &irio_status);
 				if(st == IRIO_success){
 					if(sgData[addr].UpdateRate == 0){
 						int32_t aux=0;
@@ -660,7 +666,7 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 				*value = sgData[addr].UpdateRate;
 			}
 			else{
-				int st = irio_getSGUpdateRate(&_iriodrv,addr, value, &irio_status);
+				st = irio_getSGUpdateRate(&_iriodrv,addr, value, &irio_status);
 				if (st == IRIO_success){
 					if(*value == 0){
 						sgData[addr].UpdateRate = 0;
@@ -675,35 +681,37 @@ asynStatus irio::readInt32(asynUser *pasynUser, epicsInt32 *value) {
 		//TODO: else irio_mergestatus
 
 	} else if (function == SGSignalType) {
-		int st=irio_getSGSignalType(&_iriodrv, addr, value, &irio_status);
+		st=irio_getSGSignalType(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == SGPhase) {
-		int st=irio_getSGPhase(&_iriodrv, addr, value, &irio_status);
+		st=irio_getSGPhase(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == DI) {
-		int st = irio_getDI(&_iriodrv, addr, value, &irio_status);
+		st = irio_getDI(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == DO) {
-		int st = irio_getDO(&_iriodrv, addr, value, &irio_status);
+		st = irio_getDO(&_iriodrv, addr, value, &irio_status);
 
 
 	} else if (function == auxAI) {
-		int st = irio_getAuxAI(&_iriodrv, addr, value, &irio_status);
+		st = irio_getAuxAI(&_iriodrv, addr, value, &irio_status);
 
 
 	} else if (function == auxAO) {
-		int st = irio_getAuxAO(&_iriodrv, addr, value, &irio_status);
+		st = irio_getAuxAO(&_iriodrv, addr, value, &irio_status);
 
 
 	} else if (function == auxDI) {
-		int st = irio_getAuxDI(&_iriodrv, addr, value, &irio_status);
+		st = irio_getAuxDI(&_iriodrv, addr, value, &irio_status);
 
 
 	} else if (function == auxDO) {
-		int st = irio_getAuxDO(&_iriodrv, addr, value, &irio_status);
+		st = irio_getAuxDO(&_iriodrv, addr, value, &irio_status);
 
 
 	}
+	//TODO: Camera Link and UART reasons
+
 	setIntegerParam(function, *value);
 	return status;
 }
@@ -714,7 +722,9 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 	asynStatus status = asynSuccess;
 	const char *paramName;
 	const char *functionName = "writeInt32";
+	int st = IRIO_success;	//TIRIOStatusCode??
 	TStatus irio_status;
+	irio_initStatus(&irio_status);
 
 	status = parseAsynUser(pasynUser, &function, &addr, &paramName);
 
@@ -725,7 +735,6 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 	//asynPrint(pasynUser, function, "%s", paramName);
 
 	if (function == SamplingRate) {
-		int st;
 		if(value >= _iriodrv.minSamplingRate && value <= _iriodrv.maxSamplingRate){
 			if(_iriodrv.platform == IRIO_cRIO && _iriodrv.devProfile == 1){ //CRIO IO
 				value = _iriodrv.Fref / value;
@@ -749,19 +758,19 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 	} else if (function == SR_DI_Intr) {
 
 	} else if (function == debug) {
-		int st = irio_setDebugMode(&_iriodrv, value,&irio_status);
+		st = irio_setDebugMode(&_iriodrv, value,&irio_status);
 
 	} else if (function == GroupEnable) {
-		int st = irio_setDMATtoHostEnable(&_iriodrv, addr, value, &irio_status);
+		st = irio_setDMATtoHostEnable(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == FPGAStart) {
-		int st = irio_setFPGAStart(&_iriodrv, (int32_t) value, &irio_status);
+		st = irio_setFPGAStart(&_iriodrv, (int32_t) value, &irio_status);
 		if (st == IRIO_success) {
 			FPGAstarted = 1;
 			//errlogSevPrintf(errlogInfo,"[%s-%d][%s]FPGAStart (addr=%d) value: %d \n",__func__,__LINE__,pdrvPvt->portName,addr,value);
 		}
 	} else if (function == DAQStartStop) {
-		int st = irio_setDAQStartStop(&_iriodrv,value,&irio_status);
+		st = irio_setDAQStartStop(&_iriodrv,value,&irio_status);
 				if (st==IRIO_success){
 					acq_status = value;
 				}
@@ -775,12 +784,8 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 			//merge status + error_oob_array
 		}
 
-	} else if (function == DevQualityStatus) {
-
-	} else if (function == DMAsOverflow) {
-
 	} else if (function == AOEnable) {
-		int st = irio_setAOEnable(&_iriodrv, addr, value, &irio_status);
+		st = irio_setAOEnable(&_iriodrv, addr, value, &irio_status);
 
 
 	} else if (function == SGFreq) {
@@ -794,7 +799,7 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 				else{
 					value= sgData[addr].Freq *( 4294967296 / sgData[addr].UpdateRate);
 				}
-				int st = irio_setSGFreq(&_iriodrv, addr, value, &irio_status);
+				st = irio_setSGFreq(&_iriodrv, addr, value, &irio_status);
 				if(st == IRIO_success){
 					//errlogsevprintf SGfreq value+ error_oob_array
 				}
@@ -826,7 +831,7 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 				sgData[addr].UpdateRate = value;
 				//Value contains the frequency desired to update analog output
 				value = _iriodrv.SGfref[addr] / value;
-				int st = irio_setSGUpdateRate(&_iriodrv, addr, value, &irio_status);
+				st = irio_setSGUpdateRate(&_iriodrv, addr, value, &irio_status);
 				if(st == IRIO_success){
 					//errlogSevPrintf(errlogInfo,"[%s-%d][%s]SGUpdateRate (addr=%d) value: %d \n",__func__,__LINE__,pdrvPvt->portName,addr,pdrvPvt->sgData[addr].UpdateRate);
 				}
@@ -849,21 +854,23 @@ asynStatus irio::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 		}
 
 	} else if (function == SGSignalType) {
-		int st=irio_setSGSignalType(&_iriodrv, addr, value, &irio_status);
+		st=irio_setSGSignalType(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == SGPhase) {
-		int st=irio_setSGPhase(&_iriodrv, addr, (int32_t)value, &irio_status);
+		st=irio_setSGPhase(&_iriodrv, addr, (int32_t)value, &irio_status);
 
 	} else if (function == DO) {
-		int st = irio_setDO(&_iriodrv, addr, value, &irio_status);
+		st = irio_setDO(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == auxAO) {
-		int st = irio_setAuxAO(&_iriodrv, addr, value, &irio_status);
+		st = irio_setAuxAO(&_iriodrv, addr, value, &irio_status);
 
 	} else if (function == auxDO) {
-		int st = irio_setAuxDO(&_iriodrv, addr, value, &irio_status);
+		st = irio_setAuxDO(&_iriodrv, addr, value, &irio_status);
 
 	}
+
+	//TODO: Camera Link and UART reasons
 	return status;
 }
 //
@@ -879,9 +886,9 @@ asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
 	const char *paramName;
 	const char *functionName = "readFloat64";
 	int addr = 0;
-	TStatus irio_status;
 	int32_t vaux;
-
+	int st = IRIO_success;	//TIRIOStatusCode??
+	TStatus irio_status;
 	irio_initStatus(&irio_status);
 
 	status = parseAsynUser(pasynUser, &function, &addr, &paramName);
@@ -892,7 +899,7 @@ asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
 	//asynPrint(pasynUser,function, "%s",paramName);
 
 	if (function == DeviceTemp) {
-		int st = irio_getDevTemp(&_iriodrv, &vaux, &irio_status);
+		st = irio_getDevTemp(&_iriodrv, &vaux, &irio_status);
 		if (st == IRIO_success) {
 			*value = (epicsFloat64) vaux * 0.25;
 			//errlogSevPrintf(errlogInfo,"[%s-%d][%s]DeviceTemp (addr=%d) value: %f \n",__func__,__LINE__,pdrvPvt->portName,addr,*value);
@@ -900,20 +907,20 @@ asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
 			*value = 0;
 
 	} else if (function == AI) {
-		int st = irio_getAI(&_iriodrv,addr,&vaux,&irio_status);
+		st = irio_getAI(&_iriodrv,addr,&vaux,&irio_status);
 		if (st == IRIO_success) {
 			*value = (epicsFloat64) vaux * _iriodrv.CVADC;
 		} else
 			*value = 0;
 
 	} else if (function == AO) {
-		int st = irio_getAO(&_iriodrv,addr,&vaux,&irio_status);
+		st = irio_getAO(&_iriodrv,addr,&vaux,&irio_status);
 		if (st == IRIO_success) {
 			*value = (epicsFloat64) vaux / _iriodrv.CVDAC;
 		} else
 			*value = 0;
 	} else if (function == SGAmp) {
-		int st = irio_getSGAmp(&_iriodrv, addr, &vaux, &irio_status);
+		st = irio_getSGAmp(&_iriodrv, addr, &vaux, &irio_status);
 		if(st ==  IRIO_success){
 			*value = (epicsFloat64)vaux/_iriodrv.CVDAC;
 			//errlogsevprintf
@@ -931,15 +938,15 @@ asynStatus irio::readFloat64(asynUser *pasynUser, epicsFloat64 *value) {
 
 asynStatus irio::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
 	int function;
-	int st;
 	asynStatus status = asynSuccess;
 	const char *paramName;
 	const char *functionName = "writeFloat64";
 	int addr = 0;
-	TStatus irio_status;
 	int32_t vaux;
-
+	int st = IRIO_success;	//TIRIOStatusCode??
+	TStatus irio_status;
 	irio_initStatus(&irio_status);
+
 
 	status = parseAsynUser(pasynUser, &function, &addr, &paramName);
 
@@ -950,7 +957,7 @@ asynStatus irio::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
 
 	if (function == AO) {
 		if (value > _iriodrv.minAnalogOut && value < _iriodrv.maxAnalogOut){
-			st=irio_setAO(&_iriodrv,addr, (int32_t)(value * _iriodrv.CVDAC),&irio_status);
+			st = irio_setAO(&_iriodrv, addr, (int32_t)(value * _iriodrv.CVDAC), &irio_status);
 			//TODO: Error Out of bounds
 		}
 		//else{
