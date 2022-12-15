@@ -420,7 +420,7 @@ int irio::resources(void) {
 		//initializing every object with the number
 		// we need to fill the vector with the elements (iterator cannot be used)
 		for (uint8_t j = 0; j < _iriodrv.DMATtoHOSTNo.value; j++) {
-			ai_dma_thread.push_back(dmathread(_portName, j));
+			ai_dma_thread.push_back(dmathread(_portName, j, this));
 		}
 		for (std::vector<dmathread>::iterator it = ai_dma_thread.begin();
 				it != ai_dma_thread.end(); ++it) {
@@ -442,7 +442,7 @@ int irio::resources(void) {
 			//initializing every object with the number
 			// we need to fill the vector with the elements (iterator cannot be used)
 			for (uint8_t j = 0; j < _iriodrv.DMATtoHOSTNo.value; j++) {
-				ai_dma_thread.push_back(dmathread(_portName, j));
+				ai_dma_thread.push_back(dmathread(_portName, j, this));
 			}
 			for (std::vector<dmathread>::iterator it = ai_dma_thread.begin();
 					it != ai_dma_thread.end(); ++it) {
@@ -505,11 +505,7 @@ asynStatus irio::readOctet(asynUser *pasynUser, char *value, size_t maxChars, si
 	getParamName(function, &paramName);
 	asynPrint(pasynUser, function, "%s", paramName);
 
-	//Hay que introducir cierta lógica que impida acceder a la fpga sino esta inicializada
-	if (driverInitialized == 0) {
-		*nActual = 0;
-		return asynSuccess;
-	}
+
 	//Nose puede usar switch porque funtion es una variable
 	if (function == DeviceSerialNumber) {
 		std::string tmp(this->_iriodrv.DeviceSerialNumber);
@@ -1130,13 +1126,230 @@ void irio::nirio_shutdown() {
 }
 
 void dmathread::aiDMA_thread(void *p) {
-	//auto pt = (dmathread*) p;
+
+	int status = IRIO_success;
+	TStatus irio_status;
+	irio_initStatus(&irio_status);
+	std::vector<uint64_t> dataBuffer;
+	std::vector<uint64_t> cleanbuffer;
+	float **aux = NULL;
+	size_t buffersize; //in u64
+	int found = 0;
+	uint16_t samples_per_channel = 0;
+	int chIndex;
+	double *ConversionFactor=NULL;
+
 	auto pt =static_cast<dmathread*>(p);
-	do {
-		usleep(1000);
-	} while (pt->_threadends == 0);
+	auto irioPvt = static_cast<irio*>(pt->_asynPvt);
+
+	int imgProfile = irioPvt->_iriodrv.platform==IRIO_FlexRIO && (irioPvt->_iriodrv.devProfile == 1
+			|| irioPvt->_iriodrv.devProfile == 3);
+
+	if(imgProfile == 1){
+		chIndex = pt->_id;
+	}
+	else{
+		chIndex = irioPvt->_iriodrv.DMATtoHOSTChIndex[pt->_id];
+	}
+
+	//Set data conversion factor.
+	if(irioPvt->_iriodrv.DMATtoHOSTFrameType[pt->_id]<128){
+		//I/O Module conversion factor to Volts
+		ConversionFactor = &irioPvt->_iriodrv.CVADC;
+	}
+	else{
+		//User defined conversion factor. At IOC init its value is 1 by default.
+		ConversionFactor = &irioPvt->UserDefinedConversionFactor[pt->_id];
+
+	}
+
+	//Thread initialization
+	if(imgProfile==1){
+	}else{
+
+		samples_per_channel = irioPvt->_iriodrv.DMATtoHOSTBlockNWords[pt->_id]*8; //Bytes per block
+		samples_per_channel = samples_per_channel/irioPvt->_iriodrv.DMATtoHOSTSampleSize[pt->_id]; //Samples per block
+		samples_per_channel = samples_per_channel/irioPvt->_iriodrv.DMATtoHOSTNCh[pt->_id];//Samples per channel per block
+
+		// Ring Buffers for Waveforms PVs
+		pt->_IdRing = (epicsRingBytesId *) malloc( sizeof(epicsRingBytesId) *irioPvt->_iriodrv.DMATtoHOSTNCh[pt->_id]);
+
+		aux = (float **) malloc(sizeof(float*)*irioPvt->_iriodrv.DMATtoHOSTNCh[pt->_id]);
+		for(int i=0;i<irioPvt->_iriodrv.DMATtoHOSTNCh[pt->_id];i++){
+			aux[i] = (float *) malloc(sizeof(float)*samples_per_channel);
+			pt->_IdRing[i]=epicsRingBytesCreate(samples_per_channel * irioPvt->_iriodrv.DMATtoHOSTSampleSize[pt->_id]*4096);//!<Ring buffer to store manage the waveforms.
+		}
+		//If irioasyn driver is used iriolib:
+		//From DMATtoHOSTFrameType=0 to DMATtoHOSTFrameType=127 data conversion factor used is: I/O Module conversion factor.
+		//From DMATtoHOSTFrameType=128 to DMATtoHOSTFrameType=255 data conversion factor used is: user defined conversion factor.
+		switch(irioPvt->_iriodrv.DMATtoHOSTFrameType[pt->_id]){
+		case 0:
+			buffersize = irioPvt->_iriodrv.DMATtoHOSTBlockNWords[pt->_id];
+			break;
+		case 1:
+			buffersize = irioPvt->_iriodrv.DMATtoHOSTBlockNWords[pt->_id]+2; //each DMA data block includes two extra U64 words to include timestamp
+			break;
+		case 128:
+			buffersize = irioPvt->_iriodrv.DMATtoHOSTBlockNWords[pt->_id];
+			break;
+		case 129:
+			buffersize = irioPvt->_iriodrv.DMATtoHOSTBlockNWords[pt->_id]+2; //each DMA data block includes two extra U64 words to include timestamp
+			break;
+		default:
+			buffersize = irioPvt->_iriodrv.DMATtoHOSTBlockNWords[pt->_id];
+			break;
+		}
+	}
+
+    // Data acquisition from DMA main loop
+	dataBuffer.resize(buffersize);
+	cleanbuffer.resize(buffersize);
+
+
+	int timeout=0,acqInProgress=0,timeoutLimit=100;
+
+	int count=0;
+	int DFcount=1;
+	float twaitus=0.0;
+	do{
+		if(irioPvt->acq_status == 0 && pt->_threadends == 0){
+			timeout = 0;
+			DFcount = 1;
+			do{
+				usleep(1000);
+			}while(irioPvt->acq_status== 0 && pt->_threadends == 0);
+			if(imgProfile == 1){
+				//currImgSize = irioPvt->sizeX*irioPvt->sizeY;
+				/*if(currImgSize>imgBufferSize){
+					printf("[%s-%d] ERROR Current Image Size bigger than PV Container\n",__func__,__LINE__);
+					ai_dma_thread->asynPvt->acq_status=0;
+				}
+				continue;*/
+			}
+		}
+		//Not data received yet
+		if(imgProfile==1){
+			//status=irio_getDMATtoHostImage(irioPvt, currImgSize, ai_dma_thread->id, dataBuffer, &count, &irio_status);
+		}else{
+			status = irio_getDMATtoHostData(&irioPvt->_iriodrv,1,pt->_id,dataBuffer.data(),&count,&irio_status);
+		}
+		if(status ==IRIO_success){
+			if(acqInProgress == 0){
+				if(count != 0){//Now acquiring data
+					printf("ACQ Started. Reading data from DMA%d\n",pt->_id);
+					acqInProgress = 1;
+					timeout = 0;
+				}
+			}else{
+				//No data received
+				if(count == 0){
+					//ACQ finished?
+					if(timeout > timeoutLimit){
+						irio_cleanDMATtoHost(&irioPvt->_iriodrv,pt->_id,cleanbuffer.data(),buffersize,&irio_status);
+						acqInProgress = 0;
+						printf("ACQ Stopped in DMA%d\n",pt->_id);
+					}else{
+						timeout++;
+					}
+				}else{
+					timeout=0;
+				}
+			}
+			if(count!=0){
+				//Data Read. Decimate blocks read
+				if(DFcount >= pt->_DecimationFactor){
+					//Send block
+					DFcount = 1;
+
+					if(imgProfile == 1){
+						//CallAIInsInt8Array(asynPvt,CH,ai_dma_thread->id,(epicsInt8*)dataBuffer,currImgSize);
+					}else{
+						switch(irioPvt->_iriodrv.DMATtoHOSTSampleSize[pt->_id]){
+						case(1):
+							pt->getChannelDataU8(irioPvt->_iriodrv.DMATtoHOSTNCh[pt->_id],samples_per_channel,dataBuffer.data(),aux,*ConversionFactor);
+							break;
+						case(2):
+							pt->getChannelDataU16(irioPvt->_iriodrv.DMATtoHOSTNCh[pt->_id],samples_per_channel,dataBuffer.data(),aux,*ConversionFactor);
+							break;
+						case(4):
+							pt->getChannelDataU32(irioPvt->_iriodrv.DMATtoHOSTNCh[pt->_id],samples_per_channel,dataBuffer.data(),aux,*ConversionFactor);
+							break;
+						case(8):
+							pt->getChannelDataU64(irioPvt->_iriodrv.DMATtoHOSTNCh[pt->_id],samples_per_channel,dataBuffer.data(),aux,*ConversionFactor);
+							break;
+						default:
+							//irio_mergeStatus(&irio_status,ResourceNotFound_Error,0,"[%s,%d]-(%s) ERROR Getting channel data from DMA. Sample size %d not allowed.\n",__func__,__LINE__,irioPvt->_iriodrv.appCallID,irioPvt->_iriodrv.DMATtoHOSTSampleSize[pt->_id]);
+							break;
+
+						}
+						//Copy data to ring buffer
+						for(int i = 0; i < irioPvt->_iriodrv.DMATtoHOSTNCh[pt->_id]; i++){
+							//if(globalData[asynPvt->portNumber].ch_nelm[chIndex+i]!=0){
+								if((sizeof(float)*samples_per_channel)!=(epicsRingBytesPut(pt->_IdRing[i],(char*)aux[i],sizeof(float)*samples_per_channel))){
+									//errlogSevPrintf(errlogFatal,"[%s-%d][%s]Error putting to ringBuffer%d\n",__func__,__LINE__,asynPvt->portName,i);
+								}
+							//}
+						}
+					}
+
+				}else{
+					//Ignore block
+					DFcount++;
+				}
+			}
+			///This twaitus have to be done only if data is not available
+			else {
+				if(imgProfile==1){
+					//TODO Review this
+					usleep(1000);
+				}else{
+					twaitus=500000*(float)samples_per_channel/(pt->_SR);
+					usleep(twaitus);
+				}
+			}
+
+		}
+	}while(pt->_threadends == 0);
+
+	if (irio_status.code==IRIO_error){
+			irioPvt->status_func(&irio_status);
+		}
+		//errlogSevPrintf(errlogInfo,"[%s-%d][%s]Exiting Thread: %s\n",__func__,__LINE__,asynPvt->portName,ai_dma_thread->dma_thread_name);
+		if(!imgProfile){
+			for(int i = 0; i < irioPvt->_iriodrv.DMATtoHOSTNCh[pt->_id]; i++){
+				/*if(globalData[asynPvt->portNumber].ch_nelm[chIndex+i]!=0){
+					ai_pv_publish[i].threadends=1; //finishing thread publishing PV
+					while((ai_pv_publish[i].endAck!=1)&&(timeout==0)){
+						usleep(1000);
+						count++;
+						if(count==WAIT_MS){
+							timeout=1;
+							errlogSevPrintf(errlogInfo,"[%s-%d][%s]Thread %s timeout at exit.\n",__func__,__LINE__,asynPvt->portName,ai_dma_thread->dma_thread_name);
+						}
+					}
+					timeout=0;
+					count=0;
+					epicsRingBytesDelete(ai_dma_thread->IdRing[i]);//!<Ring buffer destroy.
+				}*/
+				free(aux[i]);
+			}
+			free(aux);
+		}
+		//free(ai_pv_publish);
+		//free(imgBuffer);
+		//free(dataBuffer);
+		//free(cleanbuffer);
+		//errlogSevPrintf(errlogInfo,"[%s-%d][%s]Thread %s Terminated.\n",__func__,__LINE__,asynPvt->portName,ai_dma_thread->dma_thread_name);
+
+		if(irio_status.code != IRIO_success){
+			//errlogSevPrintf(errlogFatal,"[%s-%d][%s]FPGA ERROR in acquisition thread:%s\n",__func__,__LINE__,asynPvt->portName,ai_dma_thread->dma_thread_name);
+		}
+		//globalData[asynPvt->portNumber].dma_thread_run[ai_dma_thread->id]=0;
+
+		irio_resetStatus(&irio_status);
+		pt->_endAck = 1;
 }
-dmathread::dmathread(const std::string &device, uint8_t id) {
+dmathread::dmathread(const std::string &device, uint8_t id, irio *irio_pvt) {
 	_thread_id = NULL;
 	_name = device + "-DMA_" + std::to_string(id);
 	_id = id;
@@ -1146,16 +1359,85 @@ dmathread::dmathread(const std::string &device, uint8_t id) {
 	_SR = 1;
 	_blockSize = 1;
 	_IdRing = NULL;
+	_asynPvt = irio_pvt;
 	_dmanumber = id;
 }
 dmathread::~dmathread() {
 
 }
 void dmathread::runthread(void) {
-
 	_thread_id = (epicsThreadId*) epicsThreadCreate(_name.c_str(),
 			epicsThreadPriorityHigh,
 			epicsThreadGetStackSize(epicsThreadStackBig), /*(EPICSTHREADFUNC)*/
 			(this->aiDMA_thread), (void*) this);
+}
+
+
+void dmathread::getChannelDataU8 (int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC){
+	int u64word=0;
+	int channel=0;
+	int sample=0;
+	int8_t* auxBuffer= (int8_t*) inBuffer;
+	int offset=0;
+	for(sample=0;sample<nSamples;sample++){
+		for(channel=0;channel<nChannels;channel++){
+			outBuffer[channel][sample] = (float)(auxBuffer[(u64word*8)+offset])*CVADC;
+			if(offset==7){
+				offset=0;
+				u64word++;
+			}else{
+				offset++;
+			}
+		}
+	}
+}
+
+void dmathread::getChannelDataU16(int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC){
+	int u64word=0;
+	int channel=0;
+	int sample=0;
+	int16_t* auxBuffer= (int16_t*) inBuffer;
+	int offset=0;
+	for(sample=0;sample<nSamples;sample++){
+		for(channel=0;channel<nChannels;channel++){
+			outBuffer[channel][sample] = (float)(auxBuffer[(u64word*4)+offset])*CVADC;
+			if(offset==3){
+				offset=0;
+				u64word++;
+			}else{
+				offset++;
+			}
+		}
+	}
+}
+void dmathread::getChannelDataU32(int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC){
+	int u64word=0;
+	int channel=0;
+	int sample=0;
+	int32_t* auxBuffer= (int32_t*) inBuffer;
+	int offset=0;
+	for(sample=0;sample<nSamples;sample++){
+		for(channel=0;channel<nChannels;channel++){
+			outBuffer[channel][sample] = (float)(auxBuffer[(u64word*2)+offset])*CVADC;
+			if(offset==1){
+				offset=0;
+				u64word++;
+			}else{
+				offset++;
+			}
+		}
+	}
+}
+void dmathread::getChannelDataU64(int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC){
+	int u64word=0;
+	int channel=0;
+	int sample=0;
+	int64_t* auxBuffer= (int64_t*) inBuffer;
+	for(sample=0;sample<nSamples;sample++){
+		for(channel=0;channel<nChannels;channel++){
+			outBuffer[channel][sample] = (float)(auxBuffer[u64word])*CVADC; //TODO: Review this casting
+			u64word++;
+		}
+	}
 }
 

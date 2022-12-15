@@ -22,6 +22,10 @@
 cd $(TOP)/iocBoot/$(IOC)
 dbLoadTemplate("PCF0-rio-module.substitution")
 dbLoadTemplate("PCF0-rio-module2.substitution")
-dbLoadTemplate("prueba.substitution")
+dbLoadTemplate("PCF0-rio-AO-0.substitution")
+dbLoadTemplate("PCF0-rio-AO-1.substitution")
+dbLoadTemplate("PCF0-rio-data-acq.substitution")
+dbLoadTemplate("PCF0-rio-sg0.substitution")
+dbLoadTemplate("PCF0-rio-sg1.substitution")
 
 #- End-of-file marker - do not delete or add lines below!

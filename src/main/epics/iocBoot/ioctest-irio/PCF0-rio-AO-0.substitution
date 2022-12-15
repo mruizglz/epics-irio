@@ -1,0 +1,31 @@
+file "rio-ao.template" {
+
+pattern
+{
+	BOARDTYPE,
+	BOARDTYPEIDX,
+	CBS1,
+	CBS2,
+	MODULEIDX,
+	CHIDX,
+	DRVH,
+	DRVL,
+	HOPR,
+	LOPR
+}
+ 	
+	
+{
+	"5761",
+	"0",
+	"TEST",
+	"FCT0",
+	"0",
+	"0",
+	"1",
+	"-1",
+	"1",
+	"-1"
+}
+	
+}

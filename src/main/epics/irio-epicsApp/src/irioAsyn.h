@@ -169,6 +169,7 @@ typedef enum {
 	cRIO_IO,			//!< cRIO input/output data acquisition profile
 } platform_profile_enumt;
 
+
 /**
  * Struct to store RIO device platform-profiles enum and strings.
  */
@@ -209,17 +210,24 @@ typedef struct SGData {
 	int32_t UpdateRate;
 } SGData_t;
 
+
 //void aiDMA_thread(void *p);
+
+class irio;
 /**
  * Class for managing DMA thread acquisition resources
  */
 class dmathread {
 	friend class irio;
 public:
-	dmathread(const std::string &device, uint8_t id);
+	dmathread(const std::string &device, uint8_t id, irio *irio_pvt);
 	~dmathread();
 	void runthread(void);
 	static void aiDMA_thread(void *p);
+	void getChannelDataU8 (int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC);
+	void getChannelDataU16(int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC);
+	void getChannelDataU32(int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC);
+	void getChannelDataU64(int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC);
 private:
 	epicsThreadId *_thread_id;	//!< Pointer to DMA acquisition thread ID
 	std::string _name; //!< Pointer to DMA acquisition thread name
@@ -229,15 +237,16 @@ private:
 	int _DecimationFactor; 			//!< Decimation Factor
 	int _SR;							//!< Sampling Rate
 	int _blockSize; //!< Size of acquisition block (in terms of DMA NwordU64)
-//	struct irioPvt* asynPvt;		//!< Pointer to data structure of RIO device resources
-	epicsRingBytesId *_IdRing;		//!< Pointer to RingBuffer ID
+	irio* _asynPvt;		//!< Pointer to data structure of RIO device resources
+	epicsRingBytesId *_IdRing;	//!< Pointer to RingBuffer ID
 	uint8_t _dmanumber;					//!< DMA number
 };
 
 
 ///@}
 class irio: asynPortDriver {
-	friend class ai_dma_thread;
+	//friend class ai_dma_thread
+	friend class dmathread;
 public:
 	irio(const char *namePort, const char *DevSerial, const char *PXInirioModel,
 			const char *projectName, const char *FPGAversion, int verbosity);
@@ -321,7 +330,6 @@ private:
 	int flag_close, flag_exit, closeDriver, driverInitialized, epicsExiting;//!< Flags to close FPGA and exit IOC safely
 	std::vector<epicsFloat64> UserDefinedConversionFactor;//!< Conversion factor to be applied to data read from DMA if appropiate FrameType is selected.
 	//
-
 	//
 	//        /*IMAQ Profile*/
 	CLConfigData_t CLConfig; 	//!< Camera Link configuration resources struct
