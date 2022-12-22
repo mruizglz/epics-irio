@@ -59,7 +59,7 @@ EPICSIRIO_DIR = $(TOP)/lib
 IRIOCORE_DIR = /opt/codac/lib
 EPICSIRIO_LIB=irio-epics
 USR_SYS_LIBS += irioCore
-test-irio_DBD  += $(CODAC_DBD) irioAsyn.dbd asyn.dbd
+test-irio_DBD  += $(CODAC_DBD)  irioAsyn.dbd asyn.dbd #regIrioAsyn.dbd
 test-irio_LIBS += $(EPICSIRIO_LIB) $(CODAC_LIBS)  asyn
 
 #=============================

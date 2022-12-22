@@ -46,15 +46,15 @@
 #include <epicsString.h>
 #include "epicsExit.h"
 #include "epicsRingBytes.h"
-//#include <errlog.h>
+#include <errlog.h>
 #include <epicsTime.h>
 #include <registryFunction.h>
 #include <epicsExport.h>
 //
 //#include "alarm.h"
 //#include "cvtTable.h"
-//#include "dbDefs.h"
-//#include "dbAccess.h"
+#include "dbDefs.h"
+#include "dbAccess.h"
 //#include "recGbl.h"
 //#include "recSup.h"
 //#include "devSup.h"
@@ -157,6 +157,39 @@
 #define SGAmpString "SGAmp"
 #define DeviceTempString "DeviceTemp"
 #define UserDefinedConversionFactorString "UserDefinedConversionFactor"
+
+/**
+ * Struct to store I/O Intr records
+ */
+typedef struct {
+	char *type;
+	char *name;
+	char *input;
+	int addr;
+	char *portName;
+	char *reason;
+	char *scan;
+	int nelm;
+	int timestamp_source;
+}intr_records_t;
+
+
+typedef struct GlobalData
+{
+	int *ch_nelm;
+	intr_records_t *intr_records;
+	int init_success;
+	int io_number;
+	int ai_poll_thread_created;
+	int ai_poll_thread_run;
+	int di_poll_thread_created;
+	int di_poll_thread_run;
+	int *dma_thread_created;
+	int *dma_thread_run;
+	int number_of_DMAs;
+}globalData_t;
+
+
 /**
  * Enum Type of RIO device platform-profiles
  */
@@ -212,6 +245,7 @@ typedef struct SGData {
 
 
 //void aiDMA_thread(void *p);
+static void gettingDBInfo(initHookState state);
 
 class irio;
 /**
@@ -238,7 +272,7 @@ private:
 	int _SR;							//!< Sampling Rate
 	int _blockSize; //!< Size of acquisition block (in terms of DMA NwordU64)
 	irio* _asynPvt;		//!< Pointer to data structure of RIO device resources
-	epicsRingBytesId *_IdRing;	//!< Pointer to RingBuffer ID
+	std::vector<epicsRingBytesId> _IdRing;	//!< Pointer to RingBuffer ID
 	uint8_t _dmanumber;					//!< DMA number
 };
 
@@ -315,7 +349,7 @@ private:
 	//		char irio_version[10];						//!< IRIO Library version used
 	//		char linux_driver_version[10];				//!< NI_RIO Linux driver version used
 	std::string _portName;								//!< portName
-	//        int portNumber;
+	int _portNumber;
 	std::string _sInfoStatus;		//!< Additional info of RIO device status
 	std::string _sFPGAStatus;							//!< FPGA info status
 	irioDrv_t _iriodrv;	//!< Main struct of irioCore. Stores all ports, the current session and the status
