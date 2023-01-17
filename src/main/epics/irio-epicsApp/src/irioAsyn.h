@@ -157,6 +157,7 @@
 #define SGAmpString "SGAmp"
 #define DeviceTempString "DeviceTemp"
 #define UserDefinedConversionFactorString "UserDefinedConversionFactor"
+#define CHString "CH"
 
 /**
  * Struct to store I/O Intr records
@@ -422,6 +423,7 @@ private:
 	int SGAmp;
 	int UsrDefinedConversionFactor;
 
+	int CH;
 
 };
 
