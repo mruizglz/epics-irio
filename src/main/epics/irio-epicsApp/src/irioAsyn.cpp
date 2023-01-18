@@ -79,19 +79,19 @@ static void gettingDBInfo(initHookState state)
 											recScan = recInpString;
 											if(!dbFindField(pdbentry, "INP")){
 												recInpString = dbGetString(pdbentry);
-												recInpString = recInpString.substr(recInpString.find("@asyn"));
+												recInpString = strstr(recInpString.c_str(),"@asyn");
 												if(!recInpString.empty()){							//Current record is asyndriver based on.
 													recInp = recInpString;
-													recInpString = recInpString.substr(recInpString.find("RIO_"));
+													recInpString = strstr(recInpString.c_str(),"RIO_");
 													if(!recInpString.empty()){						//Current record is IRIOdriver based on.
 														auxrecInpString = recInpString;
-														recPortName = auxrecInpString.substr(auxrecInpString.find(","));///store IRIO portName(RIO_#)
+														recPortName = strtok((char*)auxrecInpString.c_str(), ",");
 														portname = "RIO_" + std::to_string(j);
 														if(!recPortName.compare(portname)){
 															int recChNumber = 0;
-															recChString = recInpString.substr(recInpString.find(","));///this is the separator for the channel
+															recChString = strstr(recInpString.c_str(),",");///this is the separator for the channel
 															recChString = recChString.substr(1);
-															recReason = recChString.substr(2);			//this is the separator for the reason
+															recReason = recChString.substr(1);			//this is the separator for the reason
 															recChNumber = stoi(recChString);
 															int reason_AI = recReason.compare("AI");
 															int reason_DI = recReason.compare("DI");
@@ -162,6 +162,7 @@ static void gettingDBInfo(initHookState state)
 	}
 }
 
+
 irio::irio(const char *namePort, const char *DevSerial,
 		const char *PXInirioModel, const char *projectName,
 		const char *FPGAversion, int verbosity) :
@@ -179,7 +180,7 @@ irio::irio(const char *namePort, const char *DevSerial,
 	if (createIRIOParams()) throw std::logic_error("Problem creating the asynPort driver params"); //create all asynPort needed parameters
 	epicsAtExit(nirio_epicsExit, this);
 
-	//initHookRegister(gettingDBInfo);  //for database analisys
+	initHookRegister(gettingDBInfo);  //for database analisys
 //
 
 	_portName = namePort;
