@@ -1,0 +1,80 @@
+file "rio-sg.template" {
+
+pattern
+{
+	BOARDTYPE,
+	BOARDTYPEIDX,
+	CBS1,
+	CBS2,
+	CHIDX,
+	DRVH_SGAMP,
+	DRVH_SGFREQ,
+	DRVH_SGPHASE,
+	DRVH_SGUPDATERATE,
+	DRVL_SGAMP,
+	DRVL_SGFREQ,
+	DRVL_SGPHASE,
+	DRVL_SGUPDATERATE,
+	HOPR_SGAMP,
+	HOPR_SGFREQ,
+	HOPR_SGPHASE,
+	HOPR_SGUPDATERATE,
+	LOPR_SGAMP,
+	LOPR_SGFREQ,
+	LOPR_SGPHASE,
+	LOPR_SGUPDATERATE,
+	MODULEIDX
+}
+ 	
+	
+{
+	"5761",
+	"0",
+	"TEST",
+	"FCT0",
+	"0",
+	"1",
+	"10000000",
+	"360",
+	"100000000",
+	"-1",
+	"0",
+	"0",
+	"0",
+	"10",
+	"10",
+	"360",
+	"10000",
+	"-10",
+	"0",
+	"0",
+	"0",
+	"0"
+}
+	
+{
+	"5761",
+	"0",
+	"TEST",
+	"FCT0",
+	"1",
+	"1",
+	"10000000",
+	"360",
+	"100000000",
+	"-1",
+	"0",
+	"0",
+	"0",
+	"1",
+	"10000000",
+	"360",
+	"100000000",
+	"-1",
+	"0",
+	"0",
+	"0",
+	"0"
+}
+	
+}

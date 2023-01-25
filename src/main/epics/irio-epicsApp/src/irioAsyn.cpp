@@ -91,7 +91,7 @@ static void gettingDBInfo(initHookState state)
 															int recChNumber = 0;
 															recChString = strstr(recInpString.c_str(),",");///this is the separator for the channel
 															recChString = recChString.substr(1);
-															recReason = recChString.substr(1);			//this is the separator for the reason
+															recReason = recChString.substr(2);			//this is the separator for the reason
 															recChNumber = stoi(recChString);
 															int reason_AI = recReason.compare("AI");
 															int reason_DI = recReason.compare("DI");
@@ -1359,6 +1359,7 @@ void dmathread::aiDMA_thread(void *p) {
 			}
 
 		}
+
 		//If irioasyn driver is used iriolib:
 		//From DMATtoHOSTFrameType=0 to DMATtoHOSTFrameType=127 data conversion factor used is: I/O Module conversion factor.
 		//From DMATtoHOSTFrameType=128 to DMATtoHOSTFrameType=255 data conversion factor used is: user defined conversion factor.
@@ -1552,6 +1553,7 @@ void dmathread::runthread(void) {
 			epicsThreadGetStackSize(epicsThreadStackBig), /*(EPICSTHREADFUNC)*/
 			(this->aiDMA_thread), (void*) this);
 }
+
 
 
 void dmathread::getChannelDataU8 (int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC){
