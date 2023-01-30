@@ -111,7 +111,7 @@
 /** @name IRIO Asyn driver version
  */
 ///@{
-#define EPICS_DRIVER_VERSION "1.1.2"
+#define EPICS_DRIVER_VERSION "1.2.0"
 ///@}
 
 /** @name Max UARTSIZE
@@ -256,9 +256,12 @@ class dmathread {
 	friend class irio;
 public:
 	dmathread(const std::string &device, uint8_t id, irio *irio_pvt);
+	dmathread(const std::string &device, uint8_t id, irio *irio_pvt, uint8_t dma_id, epicsRingBytesId IdRing, int SR);
 	~dmathread();
 	void runthread(void);
+	void runpvthread(void);
 	static void aiDMA_thread(void *p);
+    static void aiPV_thread(void *p);
 	void getChannelDataU8 (int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC);
 	void getChannelDataU16(int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC);
 	void getChannelDataU32(int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC);
@@ -317,8 +320,8 @@ public:
 //	virtual asynStatus writeInt64Array(asynUser *pasynUser, epicsInt64 *value,
 //							size_t nElements);
 //
-//	virtual asynStatus readFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
-//							size_t nElements, size_t *nIn);
+	virtual asynStatus readFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
+							size_t nElements, size_t *nIn);
 //	virtual asynStatus writeFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
 //							size_t nElements);
 //

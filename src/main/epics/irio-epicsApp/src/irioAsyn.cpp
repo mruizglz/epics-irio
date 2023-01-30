@@ -166,13 +166,13 @@ static void gettingDBInfo(initHookState state)
 irio::irio(const char *namePort, const char *DevSerial,
 		const char *PXInirioModel, const char *projectName,
 		const char *FPGAversion, int verbosity) :
-		asynPortDriver(namePort, 1,
+		asynPortDriver(namePort, 16,
 				asynOctetMask | asynInt32Mask | asynInt32ArrayMask
 						| asynFloat64Mask | asynFloat32ArrayMask | asynEnumMask
 						| asynDrvUserMask, // interface mask,
 				asynOctetMask | asynInt32Mask | asynInt32ArrayMask
 						| asynFloat64Mask | asynFloat32ArrayMask | asynEnumMask, // interrupt mask,
-				0, 1, 0, 0), driverInitialized(0), flag_close(0), flag_exit(0), epicsExiting(
+				ASYN_MULTIDEVICE, 1, 0, 0), driverInitialized(0), flag_close(0), flag_exit(0), epicsExiting(
 				0), closeDriver(0), _rio_device_status(STATUS_INITIALIZING) {
 
 	const char *functionName = "irio constructor";
@@ -1232,7 +1232,27 @@ asynStatus irio::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
 	return status;
 }
 
+asynStatus irio::readFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
+             size_t nElements, size_t *nIn) {
 
+       int function ;
+       asynStatus status = asynSuccess;
+       const char *paramName;
+       const char *functionName = "readFloat64";
+       int addr = 0;
+       int32_t vaux;
+       int st = IRIO_success;  //TIRIOStatusCode??
+       TStatus irio_status;
+       irio_initStatus(&irio_status);
+
+       status = parseAsynUser(pasynUser, &function, &addr, &paramName);
+
+       if(function == CH){
+
+       }
+       return status;
+
+}
 
 //asynStatus irio::readInt8Array(asynUser *pasynUser, epicsInt8 *value,
 //		size_t nElements, size_t *nIn) {
@@ -1293,6 +1313,7 @@ void dmathread::aiDMA_thread(void *p) {
 	irio_initStatus(&irio_status);
 	std::vector<uint64_t> dataBuffer;
 	std::vector<uint64_t> cleanbuffer;
+	std::vector<dmathread> ai_pv_publish;
 	float **aux = NULL;
 	int i = 0;
 	size_t buffersize; //in u64
@@ -1343,21 +1364,26 @@ void dmathread::aiDMA_thread(void *p) {
 	if(imgProfile == 1){
 	}else{
 
+		ai_pv_publish.reserve(irioPvt->_iriodrv.DMATtoHOSTNCh[dma_pt->_id]);
 		samples_per_channel = irioPvt->_iriodrv.DMATtoHOSTBlockNWords[dma_pt->_id]*8; //Bytes per block
 		samples_per_channel = samples_per_channel/irioPvt->_iriodrv.DMATtoHOSTSampleSize[dma_pt->_id]; //Samples per block
 		samples_per_channel = samples_per_channel/irioPvt->_iriodrv.DMATtoHOSTNCh[dma_pt->_id];//Samples per channel per block
 
 		// Ring Buffers for Waveforms PVs
-		dma_pt->_IdRing.resize(irioPvt->_iriodrv.DMATtoHOSTNCh[dma_pt->_id]);
+		dma_pt->_IdRing.reserve(irioPvt->_iriodrv.DMATtoHOSTNCh[dma_pt->_id]);
 		aux = (float **) malloc(sizeof(float*)*irioPvt->_iriodrv.DMATtoHOSTNCh[dma_pt->_id]);
 		for(int i = 0; i < irioPvt->_iriodrv.DMATtoHOSTNCh[dma_pt->_id]; i++){
 			aux[i] = (float *) malloc(sizeof(float)*samples_per_channel);
 			//ai_pv_publish_thread initializing
 			if(globalData[irioPvt->_portNumber].ch_nelm[chIndex + i] != 0){
-				dma_pt->_IdRing[i] = epicsRingBytesCreate(samples_per_channel * irioPvt->_iriodrv.DMATtoHOSTSampleSize[dma_pt->_id]*4096);//!<Ring buffer to store manage the waveforms.
-				//ai_pv_publish thread creation
+				dma_pt->_IdRing.push_back(epicsRingBytesCreate(samples_per_channel * irioPvt->_iriodrv.DMATtoHOSTSampleSize[dma_pt->_id]*4096));//!<Ring buffer to store manage the waveforms.
+				ai_pv_publish.push_back(dmathread(irioPvt->_portName, i, irioPvt, dma_pt->_id, dma_pt->_IdRing[i], dma_pt->_SR));
 			}
 
+		}
+		for (std::vector<dmathread>::iterator it = ai_pv_publish.begin();
+				it != ai_pv_publish.end(); ++it) {
+			it->runpvthread();
 		}
 
 		//If irioasyn driver is used iriolib:
@@ -1468,7 +1494,7 @@ void dmathread::aiDMA_thread(void *p) {
 						for(int i = 0; i < irioPvt->_iriodrv.DMATtoHOSTNCh[dma_pt->_id]; i++){
 							if(globalData[irioPvt->_portNumber].ch_nelm[chIndex + i] != 0){
 								if((sizeof(float)*samples_per_channel)!=(epicsRingBytesPut(dma_pt->_IdRing[i],(char*)aux[i],sizeof(float)*samples_per_channel))){
-									//errlogSevPrintf(errlogFatal,"[%s-%d][%s]Error putting to ringBuffer%d\n",__func__,__LINE__,asynPvt->portName,i);
+									//errlogSevPrintf(errlogFatal,"[%s-%d][%s]Error putting to ringBuffer%d\n",__func__,__LINE__,asynPvt->_portName,i);
 								}
 							}
 						}
@@ -1531,6 +1557,52 @@ void dmathread::aiDMA_thread(void *p) {
 		irio_resetStatus(&irio_status);
 		dma_pt->_endAck = 1;
 }
+
+void dmathread::aiPV_thread(void *p) {
+       //There is one thread per ringbuffer (per DMA channel)
+
+       auto pv_pt =static_cast<dmathread*>(p);
+       auto irioPvt = static_cast<irio*>(pv_pt->_asynPvt);
+       float* pv_data;
+       int pv_nelem=4096,aux;
+       while (globalData[irioPvt->_portNumber].dma_thread_run[pv_pt->_dmanumber]==0) {usleep(10000);}
+       aux=irioPvt->_iriodrv.DMATtoHOSTChIndex[pv_pt->_dmanumber]+pv_pt->_id;
+       pv_nelem=globalData[irioPvt->_portNumber].ch_nelm[aux];
+       pv_data = (float*) malloc(sizeof(float)*pv_nelem);
+       //errlogSevPrintf(errlogInfo,"[%s-%d][%s]ch%d_nelm:%d \n",__func__,__LINE__,pv_thread->asynPvt->portName,aux,globalData[pv_thread->asynPvt->portNumber].ch_nelm[aux]);
+       float twaitus=0.0;
+
+       do{
+               int NbytesDecimated;
+               NbytesDecimated=epicsRingBytesUsedBytes(pv_pt->_IdRing[0]);
+               if(NbytesDecimated>=(sizeof(float)*pv_nelem)){
+                       if(epicsRingBytesIsFull(pv_pt->_IdRing[0])==1){
+                               errlogSevPrintf(errlogFatal,"\nRING BYTES Channel %d FULL\n",pv_pt->_id);
+                       }
+                       int aux2=0;
+                    aux2=epicsRingBytesGet(pv_pt->_IdRing[0],(char*)pv_data,sizeof(float)*pv_nelem);
+                       if(aux2!=pv_nelem*sizeof(float)){
+                               errlogSevPrintf(errlogFatal,"Requested %lu elems, get %d",pv_nelem*sizeof(float),aux2);
+                               usleep(1000);
+                               continue;
+                      }
+                       /*for(int i = 0; i < pv_nelem; i++){
+                    	   printf("%f\n",pv_data[i]);
+                       }*/
+                       irioPvt->doCallbacksFloat32Array(pv_data, pv_nelem, irioPvt->CH, pv_pt->_id);
+                       //CallAIInsFloat32Array(pv_thread->asynPvt,CH,irioPvt->DMATtoHOSTChIndex[pv_thread->dmanumber]+pv_thread->id,pv_data,pv_nelem);
+               }else{
+                       twaitus=500000*(float)pv_nelem/(pv_pt->_SR);
+                       usleep(twaitus);
+               }
+       }while (pv_pt->_threadends==0);
+       //errlogSevPrintf(errlogInfo,"[%s-%d][%s]Thread %s Terminated \n",__func__,__LINE__,pv_thread->asynPvt->portName,pv_thread->dma_thread_name);
+       free(pv_data);
+       usleep(1000);
+       pv_pt->_endAck=1;
+
+}
+
 dmathread::dmathread(const std::string &device, uint8_t id, irio *irio_pvt) {
 	_thread_id = NULL;
 	_name = device + "-DMA_" + std::to_string(id);
@@ -1544,6 +1616,19 @@ dmathread::dmathread(const std::string &device, uint8_t id, irio *irio_pvt) {
 	_asynPvt = irio_pvt;
 	_dmanumber = id;
 }
+dmathread::dmathread(const std::string &device, uint8_t id, irio *irio_pvt, uint8_t dma_id, epicsRingBytesId IdRing, int SR) {
+       _thread_id = NULL;
+       _name = device + "-CH_" + std::to_string(id) + "-DMA_" + std::to_string(dma_id);
+       _id = id;
+       _threadends = 0;
+       _endAck = 0;
+       _DecimationFactor = 1;
+       _SR = SR;
+       _blockSize = 1;
+       _IdRing.push_back(IdRing);
+       _asynPvt = irio_pvt;
+       _dmanumber = dma_id;
+}
 dmathread::~dmathread() {
 
 }
@@ -1554,7 +1639,12 @@ void dmathread::runthread(void) {
 			(this->aiDMA_thread), (void*) this);
 }
 
-
+void dmathread::runpvthread(void) {
+       _thread_id = (epicsThreadId*) epicsThreadCreate(_name.c_str(),
+                       epicsThreadPriorityHigh,
+                       epicsThreadGetStackSize(epicsThreadStackBig), /*(EPICSTHREADFUNC)*/
+                       (this->aiPV_thread), (void*) this);
+}
 
 void dmathread::getChannelDataU8 (int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC){
 	int u64word=0;
