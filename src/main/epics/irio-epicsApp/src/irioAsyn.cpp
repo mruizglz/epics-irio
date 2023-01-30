@@ -49,8 +49,8 @@ static void gettingDBInfo(initHookState state)
 	switch (state){
 	case initHookAfterInitDatabase:
 		if (call_gettingDBInfo==0){
-			for(j=0;j<MAX_NUMBER_OF_CARDS;j++){
-				if(globalData[j].init_success==1){
+			for(j = 0; j < MAX_NUMBER_OF_CARDS; j++){
+				if(globalData[j].init_success == 1){
 					std::string recInpString;
 					std::string auxrecInpString;
 					std::string recScan;
@@ -63,15 +63,17 @@ static void gettingDBInfo(initHookState state)
 					printf("##################################################################################################\n");
 					printf("##       Reading record database for RIO device with portName:RIO_%d at initHookBeginning       ##\n",j);
 					printf("##################################################################################################\n");
-					dbInitEntry(pdbbase,&dbentry); //pdbase is an EPICS global variable
+
+					dbInitEntry(pdbbase, &dbentry); //pdbase is an EPICS global variable
 					pdbRecordType = (dbRecordType *)ellFirst(&pdbbase->recordTypeList);
-					while (pdbRecordType!=NULL){
-						int recordType_ai= strcmp(pdbRecordType->name, "ai");
+
+					while (pdbRecordType != NULL){
+						int recordType_ai = strcmp(pdbRecordType->name, "ai");
 						int recordType_bi = strcmp(pdbRecordType->name, "bi");
 						int recordType_waveform = strcmp(pdbRecordType->name, "waveform");
 						if((recordType_ai==0)||(recordType_bi==0)||(recordType_waveform==0)){
 							pdbRecordNode = (dbRecordNode *)ellFirst(&pdbRecordType->recList);
-							while(pdbRecordNode!=NULL){
+							while(pdbRecordNode != NULL){
 								if (!dbFindRecord(&dbentry,pdbRecordNode->recordname)){
 									if(!dbFindField(pdbentry, "SCAN")){
 										recInpString = dbGetString(pdbentry);
@@ -96,31 +98,31 @@ static void gettingDBInfo(initHookState state)
 															int reason_AI = recReason.compare("AI");
 															int reason_DI = recReason.compare("DI");
 															int reason_CH = recReason.compare("CH");
-															if((reason_AI==0)||(reason_DI==0)||(reason_CH==0)){    //only AI,DI and waveform PVs belonging to IRIO devices using asynDriver with SCAN=I/O Intr are considered.
+															if((reason_AI == 0)||(reason_DI == 0)||(reason_CH == 0)){    //only AI,DI and waveform PVs belonging to IRIO devices using asynDriver with SCAN=I/O Intr are considered.
 																int aux=0;
-																asprintf(&globalData[j].intr_records[i].scan,recScan.c_str());
-																asprintf(&globalData[j].intr_records[i].type,pdbRecordType->name);
-																asprintf(&globalData[j].intr_records[i].name,pdbRecordNode->recordname);
-																asprintf(&globalData[j].intr_records[i].input,recInp.c_str());
+																asprintf(&globalData[j].intr_records[i].scan, recScan.c_str());
+																asprintf(&globalData[j].intr_records[i].type, pdbRecordType->name);
+																asprintf(&globalData[j].intr_records[i].name, pdbRecordNode->recordname);
+																asprintf(&globalData[j].intr_records[i].input, recInp.c_str());
 																globalData[j].intr_records[i].addr = recChNumber;
-																asprintf(&globalData[j].intr_records[i].reason,recReason.c_str());
-																asprintf(&globalData[j].intr_records[i].portName,recPortName.c_str());
+																asprintf(&globalData[j].intr_records[i].reason, recReason.c_str());
+																asprintf(&globalData[j].intr_records[i].portName, recPortName.c_str());
 																if(!recReason.compare("CH")){
 																	if(!dbFindField(pdbentry, "NELM")){
 																		recInpString = dbGetString(pdbentry);
 																		if(!recInpString.empty()){
 																			aux = stoi(recInpString);
-																			globalData[j].intr_records[i].nelm=aux;
-																			globalData[j].ch_nelm[recChNumber]=aux;
+																			globalData[j].intr_records[i].nelm = aux;
+																			globalData[j].ch_nelm[recChNumber] = aux;
 																		}
 																	}
 																}else{
-																	globalData[j].intr_records[i].nelm=1;
+																	globalData[j].intr_records[i].nelm = 1;
 																}
 																dbFindField(pdbentry, "TSE");
 																recInpString = dbGetString(pdbentry);
 																aux=stoi(recInpString);
-																globalData[j].intr_records[i].timestamp_source=aux;
+																globalData[j].intr_records[i].timestamp_source = aux;
 																errlogSevPrintf(errlogInfo,"[%s-%d][RIO_%d]globalData[%d].intr_records[%d]=Type:%s;Name:%s;INP:%s;PortName:%s;Addr:%d;Reason:%s;SCAN:%s;NELM:%d;TSE:%d\n",__func__,__LINE__,j,j,i,globalData[j].intr_records[i].type,globalData[j].intr_records[i].name,globalData[j].intr_records[i].input,globalData[j].intr_records[i].portName,globalData[j].intr_records[i].addr,globalData[j].intr_records[i].reason,globalData[j].intr_records[i].scan,globalData[j].intr_records[i].nelm,globalData[j].intr_records[i].timestamp_source);
 																i++;
 															}
@@ -137,26 +139,28 @@ static void gettingDBInfo(initHookState state)
 						}
 						pdbRecordType = (dbRecordType *)ellNext(&pdbRecordType->node);
 					}
-					globalData[j].io_number=i;
-					i=0;
+					globalData[j].io_number = i;
+					i = 0;
 					errlogSevPrintf(errlogInfo,"[%s-%d][RIO_%d]Number of AI,DI or CH records belonging to IRIO device with port:RIO_%d using asynDriver with SCAN=I/O Intr is: %d\n",__func__,__LINE__,j,j,globalData[j].io_number);
 				}
 			}
 		}
-		call_gettingDBInfo=1;
+		call_gettingDBInfo = 1;
 		break;
+
 	case initHookAfterIocRunning:
-		if(call_gettingDBInfo==1){
-			for(i=0;i<MAX_NUMBER_OF_CARDS;++i){
-				for(j=0;j<globalData[i].number_of_DMAs;++j){
-					if(globalData[i].dma_thread_created[j]==1){
-						globalData[i].dma_thread_run[j]=1;
+		if(call_gettingDBInfo == 1){
+			for(i = 0; i < MAX_NUMBER_OF_CARDS; ++i){
+				for(j = 0; j < globalData[i].number_of_DMAs; ++j){
+					if(globalData[i].dma_thread_created[j] == 1){
+						globalData[i].dma_thread_run[j] = 1;
 					}
 				}
 			}
-			call_gettingDBInfo=0;
+			call_gettingDBInfo = 0;
 		}
 		break;
+
 	default:
 		break;
 	}
@@ -200,17 +204,17 @@ irio::irio(const char *namePort, const char *DevSerial,
 
 
 	/* Initialize global data for each port Number */
-	globalData[_portNumber].ch_nelm=NULL;
-	globalData[_portNumber].intr_records=NULL;
-	globalData[_portNumber].init_success=0;
-	globalData[_portNumber].io_number=0;
-	globalData[_portNumber].ai_poll_thread_created=0;
-	globalData[_portNumber].ai_poll_thread_run=0;
-	globalData[_portNumber].di_poll_thread_created=0;
-	globalData[_portNumber].di_poll_thread_run=0;
-	globalData[_portNumber].dma_thread_created=NULL;
-	globalData[_portNumber].dma_thread_run=NULL;
-	globalData[_portNumber].number_of_DMAs=0;
+	globalData[_portNumber].ch_nelm = NULL;
+	globalData[_portNumber].intr_records = NULL;
+	globalData[_portNumber].init_success = 0;
+	globalData[_portNumber].io_number = 0;
+	globalData[_portNumber].ai_poll_thread_created = 0;
+	globalData[_portNumber].ai_poll_thread_run = 0;
+	globalData[_portNumber].di_poll_thread_created = 0;
+	globalData[_portNumber].di_poll_thread_run = 0;
+	globalData[_portNumber].dma_thread_created = NULL;
+	globalData[_portNumber].dma_thread_run = NULL;
+	globalData[_portNumber].number_of_DMAs = 0;
 
 	std::string appCallID;
 	std::string currentdir;
@@ -254,6 +258,7 @@ irio::irio(const char *namePort, const char *DevSerial,
 	if (irio_status.code ==IRIO_error) throw std::logic_error("");
 
 //resizing vectors
+	//TODO
 	sgData.resize(_iriodrv.NoOfSG);
 	UserDefinedConversionFactor.resize(_iriodrv.DMATtoHOSTNo.value);
 
@@ -295,7 +300,7 @@ int irio::createIRIOParams(void) {
 
 	status |= createParam(DeviceSerialNumberString, asynParamOctet, &DeviceSerialNumber);
 	status |= createParam(EPICSVersionString, asynParamOctet, &EPICSVersionMessage);
-	setStringParam(EPICSVersionMessage, "Hola mundo");
+	status |= setStringParam(EPICSVersionMessage, "Hola mundo");
 	status |= createParam(IRIOVersionString, asynParamOctet, &IRIOVersionMessage);
 	status |= createParam(DeviceNameString, asynParamOctet, &DeviceName);
 	status |= createParam(FPGAStatusString, asynParamOctet, &FPGAStatus);
@@ -318,11 +323,11 @@ int irio::createIRIOParams(void) {
 	status |= createParam(DebugString, asynParamInt32, &debug);
 	status |= createParam(GroupEnableString, asynParamInt32, &GroupEnable);
 	status |= createParam(FPGAStartString, asynParamInt32, &FPGAStart);
-	setIntegerParam(FPGAStart, 0);
+	status |=setIntegerParam(FPGAStart, 0);
 	status |= createParam(DAQStartStopString, asynParamInt32, &DAQStartStop);
 	status |= createParam(DFString, asynParamInt32, &DF);
 	status |= createParam(DevQualityStatusString, asynParamInt32, &DevQualityStatus);
-	setIntegerParam(DevQualityStatus, 255);
+	status |= setIntegerParam(DevQualityStatus, 255);
 	status |= createParam(DMAsOverflowString, asynParamInt32, &DMAsOverflow);
 	status |= createParam(AOEnableString, asynParamInt32, &AOEnable);
 	status |= createParam(SGFreqString, asynParamInt32, &SGFreq);
@@ -1322,13 +1327,13 @@ void dmathread::aiDMA_thread(void *p) {
 	int chIndex;
 	double *ConversionFactor=NULL;
 
-	auto dma_pt =static_cast<dmathread*>(p);
-	auto irioPvt = static_cast<irio*>(dma_pt->_asynPvt);
+	auto dma_pt = static_cast <dmathread*>(p);
+	auto irioPvt = static_cast <irio*>(dma_pt->_asynPvt);
 
 	int imgProfile = irioPvt->_iriodrv.platform == IRIO_FlexRIO && (irioPvt->_iriodrv.devProfile == 1
 			|| irioPvt->_iriodrv.devProfile == 3);
 
-	while (globalData[irioPvt->_portNumber].dma_thread_run[dma_pt->_id]==0) {usleep(10000);}
+	while (globalData[irioPvt->_portNumber].dma_thread_run[dma_pt->_id] == 0) {usleep(10000);}
 
 	if(imgProfile == 1){
 		chIndex = dma_pt->_id;
@@ -1338,15 +1343,15 @@ void dmathread::aiDMA_thread(void *p) {
 	}
 
 	while(!found && i<irioPvt->_iriodrv.DMATtoHOSTNCh[dma_pt->_id]){
-		if(globalData[irioPvt->_portNumber].ch_nelm[chIndex + i]!=0){
-			found=1;
+		if(globalData[irioPvt->_portNumber].ch_nelm[chIndex + i] != 0){
+			found = 1;
 		}
 		++i;
 	}
 
 	if(!found){ //No channels to publish -> End thread
-		globalData[irioPvt->_portNumber].dma_thread_run[dma_pt->_id]=0;
-		dma_pt->_endAck=1;
+		globalData[irioPvt->_portNumber].dma_thread_run[dma_pt->_id] = 0;
+		dma_pt->_endAck = 1;
 		return;
 	}
 	//Set data conversion factor.
@@ -1381,8 +1386,7 @@ void dmathread::aiDMA_thread(void *p) {
 			}
 
 		}
-		for (std::vector<dmathread>::iterator it = ai_pv_publish.begin();
-				it != ai_pv_publish.end(); ++it) {
+		for (std::vector<dmathread>::iterator it = ai_pv_publish.begin(); it != ai_pv_publish.end(); ++it) {
 			it->runpvthread();
 		}
 
@@ -1412,12 +1416,11 @@ void dmathread::aiDMA_thread(void *p) {
 	dataBuffer.resize(buffersize);
 	cleanbuffer.resize(buffersize);
 
-
 	int timeout=0,acqInProgress=0,timeoutLimit=100;
 
-	int count=0;
-	int DFcount=1;
-	float twaitus=0.0;
+	int count = 0;
+	int DFcount = 1;
+	float twaitus = 0.0;
 	do{
 		if(irioPvt->acq_status == 0 && dma_pt->_threadends == 0){
 			timeout = 0;
@@ -1493,7 +1496,7 @@ void dmathread::aiDMA_thread(void *p) {
 						//Copy data to ring buffer
 						for(int i = 0; i < irioPvt->_iriodrv.DMATtoHOSTNCh[dma_pt->_id]; i++){
 							if(globalData[irioPvt->_portNumber].ch_nelm[chIndex + i] != 0){
-								if((sizeof(float)*samples_per_channel)!=(epicsRingBytesPut(dma_pt->_IdRing[i],(char*)aux[i],sizeof(float)*samples_per_channel))){
+								if((sizeof(float)*samples_per_channel) != (epicsRingBytesPut(dma_pt->_IdRing[i], (char*)aux[i], sizeof(float)*samples_per_channel))){
 									//errlogSevPrintf(errlogFatal,"[%s-%d][%s]Error putting to ringBuffer%d\n",__func__,__LINE__,asynPvt->_portName,i);
 								}
 							}
@@ -1519,7 +1522,7 @@ void dmathread::aiDMA_thread(void *p) {
 		}
 	}while(dma_pt->_threadends == 0);
 
-	if (irio_status.code==IRIO_error){
+	if (irio_status.code == IRIO_error){
 			irioPvt->status_func(&irio_status);
 		}
 		//errlogSevPrintf(errlogInfo,"[%s-%d][%s]Exiting Thread: %s\n",__func__,__LINE__,asynPvt->portName,ai_dma_thread->dma_thread_name);
@@ -1559,47 +1562,42 @@ void dmathread::aiDMA_thread(void *p) {
 }
 
 void dmathread::aiPV_thread(void *p) {
-       //There is one thread per ringbuffer (per DMA channel)
+	//There is one thread per ringbuffer (per DMA channel)
+	auto pv_pt = static_cast <dmathread*>(p);
+    auto irioPvt = static_cast <irio*>(pv_pt->_asynPvt);
+    float* pv_data;
+    int pv_nelem = 4096,aux;
 
-       auto pv_pt =static_cast<dmathread*>(p);
-       auto irioPvt = static_cast<irio*>(pv_pt->_asynPvt);
-       float* pv_data;
-       int pv_nelem=4096,aux;
-       while (globalData[irioPvt->_portNumber].dma_thread_run[pv_pt->_dmanumber]==0) {usleep(10000);}
-       aux=irioPvt->_iriodrv.DMATtoHOSTChIndex[pv_pt->_dmanumber]+pv_pt->_id;
-       pv_nelem=globalData[irioPvt->_portNumber].ch_nelm[aux];
-       pv_data = (float*) malloc(sizeof(float)*pv_nelem);
-       //errlogSevPrintf(errlogInfo,"[%s-%d][%s]ch%d_nelm:%d \n",__func__,__LINE__,pv_thread->asynPvt->portName,aux,globalData[pv_thread->asynPvt->portNumber].ch_nelm[aux]);
-       float twaitus=0.0;
+    while (globalData[irioPvt->_portNumber].dma_thread_run[pv_pt->_dmanumber] == 0) {usleep(10000);}
+    aux = irioPvt->_iriodrv.DMATtoHOSTChIndex[pv_pt->_dmanumber] + pv_pt->_id;
+    pv_nelem = globalData[irioPvt->_portNumber].ch_nelm[aux];
+    pv_data = (float*) malloc(sizeof(float)*pv_nelem);
+    float twaitus = 0.0;
 
-       do{
-               int NbytesDecimated;
-               NbytesDecimated=epicsRingBytesUsedBytes(pv_pt->_IdRing[0]);
-               if(NbytesDecimated>=(sizeof(float)*pv_nelem)){
-                       if(epicsRingBytesIsFull(pv_pt->_IdRing[0])==1){
-                               errlogSevPrintf(errlogFatal,"\nRING BYTES Channel %d FULL\n",pv_pt->_id);
-                       }
-                       int aux2=0;
-                    aux2=epicsRingBytesGet(pv_pt->_IdRing[0],(char*)pv_data,sizeof(float)*pv_nelem);
-                       if(aux2!=pv_nelem*sizeof(float)){
-                               errlogSevPrintf(errlogFatal,"Requested %lu elems, get %d",pv_nelem*sizeof(float),aux2);
-                               usleep(1000);
-                               continue;
-                      }
-                       /*for(int i = 0; i < pv_nelem; i++){
-                    	   printf("%f\n",pv_data[i]);
-                       }*/
-                       irioPvt->doCallbacksFloat32Array(pv_data, pv_nelem, irioPvt->CH, pv_pt->_id);
-                       //CallAIInsFloat32Array(pv_thread->asynPvt,CH,irioPvt->DMATtoHOSTChIndex[pv_thread->dmanumber]+pv_thread->id,pv_data,pv_nelem);
-               }else{
-                       twaitus=500000*(float)pv_nelem/(pv_pt->_SR);
-                       usleep(twaitus);
-               }
-       }while (pv_pt->_threadends==0);
-       //errlogSevPrintf(errlogInfo,"[%s-%d][%s]Thread %s Terminated \n",__func__,__LINE__,pv_thread->asynPvt->portName,pv_thread->dma_thread_name);
-       free(pv_data);
-       usleep(1000);
-       pv_pt->_endAck=1;
+    do{
+    	int NbytesDecimated;
+        NbytesDecimated = epicsRingBytesUsedBytes(pv_pt->_IdRing[0]);
+        if(NbytesDecimated >= (sizeof(float)*pv_nelem)){
+            if(epicsRingBytesIsFull(pv_pt->_IdRing[0]) == 1){
+            	errlogSevPrintf(errlogFatal, "\nRING BYTES Channel %d FULL\n", pv_pt->_id);
+            }
+            int aux2 = 0;
+            aux2 = epicsRingBytesGet(pv_pt->_IdRing[0], (char*)pv_data, sizeof(float)*pv_nelem);
+            if(aux2 != pv_nelem * sizeof(float)){
+            	errlogSevPrintf(errlogFatal, "Requested %lu elems, get %d", pv_nelem * sizeof(float), aux2);
+                usleep(1000);
+                continue;
+            }
+            irioPvt->doCallbacksFloat32Array(pv_data, pv_nelem, irioPvt->CH, pv_pt->_id);
+
+         }else{
+        	 twaitus = 500000*(float)pv_nelem/(pv_pt->_SR);
+             usleep(twaitus);
+         }
+    }while (pv_pt->_threadends == 0);
+    free(pv_data);
+    usleep(1000);
+    pv_pt->_endAck = 1;
 
 }
 
@@ -1612,7 +1610,6 @@ dmathread::dmathread(const std::string &device, uint8_t id, irio *irio_pvt) {
 	_DecimationFactor = 1;
 	_SR = 1;
 	_blockSize = 1;
-	//_IdRing = NULL;
 	_asynPvt = irio_pvt;
 	_dmanumber = id;
 }
@@ -1647,16 +1644,16 @@ void dmathread::runpvthread(void) {
 }
 
 void dmathread::getChannelDataU8 (int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC){
-	int u64word=0;
-	int channel=0;
-	int sample=0;
-	int8_t* auxBuffer= (int8_t*) inBuffer;
-	int offset=0;
-	for(sample=0;sample<nSamples;sample++){
-		for(channel=0;channel<nChannels;channel++){
+	int u64word = 0;
+	int channel = 0;
+	int sample = 0;
+	int8_t* auxBuffer = (int8_t*) inBuffer;
+	int offset = 0;
+	for(sample = 0; sample < nSamples; sample++){
+		for(channel = 0; channel < nChannels; channel++){
 			outBuffer[channel][sample] = (float)(auxBuffer[(u64word*8)+offset])*CVADC;
-			if(offset==7){
-				offset=0;
+			if(offset == 7){
+				offset = 0;
 				u64word++;
 			}else{
 				offset++;
@@ -1666,16 +1663,16 @@ void dmathread::getChannelDataU8 (int nChannels,int nSamples,uint64_t* inBuffer,
 }
 
 void dmathread::getChannelDataU16(int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC){
-	int u64word=0;
-	int channel=0;
-	int sample=0;
-	int16_t* auxBuffer= (int16_t*) inBuffer;
-	int offset=0;
-	for(sample=0;sample<nSamples;sample++){
-		for(channel=0;channel<nChannels;channel++){
+	int u64word = 0;
+	int channel = 0;
+	int sample = 0;
+	int16_t* auxBuffer = (int16_t*) inBuffer;
+	int offset = 0;
+	for(sample = 0; sample < nSamples; sample++){
+		for(channel = 0; channel < nChannels; channel++){
 			outBuffer[channel][sample] = (float)(auxBuffer[(u64word*4)+offset])*CVADC;
-			if(offset==3){
-				offset=0;
+			if(offset == 3){
+				offset = 0;
 				u64word++;
 			}else{
 				offset++;
@@ -1684,16 +1681,16 @@ void dmathread::getChannelDataU16(int nChannels,int nSamples,uint64_t* inBuffer,
 	}
 }
 void dmathread::getChannelDataU32(int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC){
-	int u64word=0;
-	int channel=0;
-	int sample=0;
-	int32_t* auxBuffer= (int32_t*) inBuffer;
-	int offset=0;
-	for(sample=0;sample<nSamples;sample++){
-		for(channel=0;channel<nChannels;channel++){
+	int u64word = 0;
+	int channel = 0;
+	int sample = 0;
+	int32_t* auxBuffer = (int32_t*) inBuffer;
+	int offset = 0;
+	for(sample = 0; sample < nSamples; sample++){
+		for(channel = 0; channel < nChannels; channel++){
 			outBuffer[channel][sample] = (float)(auxBuffer[(u64word*2)+offset])*CVADC;
-			if(offset==1){
-				offset=0;
+			if(offset == 1){
+				offset = 0;
 				u64word++;
 			}else{
 				offset++;
@@ -1702,12 +1699,12 @@ void dmathread::getChannelDataU32(int nChannels,int nSamples,uint64_t* inBuffer,
 	}
 }
 void dmathread::getChannelDataU64(int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC){
-	int u64word=0;
-	int channel=0;
-	int sample=0;
-	int64_t* auxBuffer= (int64_t*) inBuffer;
-	for(sample=0;sample<nSamples;sample++){
-		for(channel=0;channel<nChannels;channel++){
+	int u64word = 0;
+	int channel = 0;
+	int sample = 0;
+	int64_t* auxBuffer = (int64_t*) inBuffer;
+	for(sample = 0; sample < nSamples; sample++){
+		for(channel = 0; channel < nChannels; channel++){
 			outBuffer[channel][sample] = (float)(auxBuffer[u64word])*CVADC; //TODO: Review this casting
 			u64word++;
 		}
