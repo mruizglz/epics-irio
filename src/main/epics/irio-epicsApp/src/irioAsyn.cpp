@@ -1318,7 +1318,7 @@ void dmathread::aiDMA_thread(void *p) {
 	irio_initStatus(&irio_status);
 	std::vector<uint64_t> dataBuffer;
 	std::vector<uint64_t> cleanbuffer;
-	std::vector<dmathread> ai_pv_publish;
+	std::vector<pvthread> ai_pv_publish;
 	float **aux = NULL;
 	int i = 0;
 	size_t buffersize; //in u64
@@ -1382,11 +1382,11 @@ void dmathread::aiDMA_thread(void *p) {
 			//ai_pv_publish_thread initializing
 			if(globalData[irioPvt->_portNumber].ch_nelm[chIndex + i] != 0){
 				dma_pt->_IdRing.push_back(epicsRingBytesCreate(samples_per_channel * irioPvt->_iriodrv.DMATtoHOSTSampleSize[dma_pt->_id]*4096));//!<Ring buffer to store manage the waveforms.
-				ai_pv_publish.push_back(dmathread(irioPvt->_portName, i, irioPvt, dma_pt->_id, dma_pt->_IdRing[i], dma_pt->_SR));
+				ai_pv_publish.push_back(pvthread(irioPvt->_portName, i, irioPvt, dma_pt->_id, dma_pt->_IdRing[i], dma_pt->_SR));
 			}
 
 		}
-		for (std::vector<dmathread>::iterator it = ai_pv_publish.begin(); it != ai_pv_publish.end(); ++it) {
+		for (std::vector<pvthread>::iterator it = ai_pv_publish.begin(); it != ai_pv_publish.end(); ++it) {
 			it->runpvthread();
 		}
 
@@ -1561,9 +1561,9 @@ void dmathread::aiDMA_thread(void *p) {
 		dma_pt->_endAck = 1;
 }
 
-void dmathread::aiPV_thread(void *p) {
+void pvthread::aiPV_thread(void *p) {
 	//There is one thread per ringbuffer (per DMA channel)
-	auto pv_pt = static_cast <dmathread*>(p);
+	auto pv_pt = static_cast <pvthread*>(p);
     auto irioPvt = static_cast <irio*>(pv_pt->_asynPvt);
     float* pv_data;
     int pv_nelem = 4096,aux;
@@ -1576,13 +1576,13 @@ void dmathread::aiPV_thread(void *p) {
 
     do{
     	int NbytesDecimated;
-        NbytesDecimated = epicsRingBytesUsedBytes(pv_pt->_IdRing[0]);
+        NbytesDecimated = epicsRingBytesUsedBytes(pv_pt->_IdRing);
         if(NbytesDecimated >= (sizeof(float)*pv_nelem)){
-            if(epicsRingBytesIsFull(pv_pt->_IdRing[0]) == 1){
+            if(epicsRingBytesIsFull(pv_pt->_IdRing) == 1){
             	errlogSevPrintf(errlogFatal, "\nRING BYTES Channel %d FULL\n", pv_pt->_id);
             }
             int aux2 = 0;
-            aux2 = epicsRingBytesGet(pv_pt->_IdRing[0], (char*)pv_data, sizeof(float)*pv_nelem);
+            aux2 = epicsRingBytesGet(pv_pt->_IdRing, (char*)pv_data, sizeof(float)*pv_nelem);
             if(aux2 != pv_nelem * sizeof(float)){
             	errlogSevPrintf(errlogFatal, "Requested %lu elems, get %d", pv_nelem * sizeof(float), aux2);
                 usleep(1000);
@@ -1613,20 +1613,23 @@ dmathread::dmathread(const std::string &device, uint8_t id, irio *irio_pvt) {
 	_asynPvt = irio_pvt;
 	_dmanumber = id;
 }
-dmathread::dmathread(const std::string &device, uint8_t id, irio *irio_pvt, uint8_t dma_id, epicsRingBytesId IdRing, int SR) {
+pvthread::pvthread(const std::string &device, uint8_t id, irio *irio_pvt, uint8_t dma_id, epicsRingBytesId IdRing, int SR) {
        _thread_id = NULL;
-       _name = device + "-CH_" + std::to_string(id) + "-DMA_" + std::to_string(dma_id);
+       _name = device + "-DMA_" + std::to_string(dma_id) + "-CH" + std::to_string(id);
        _id = id;
        _threadends = 0;
        _endAck = 0;
        _DecimationFactor = 1;
        _SR = SR;
        _blockSize = 1;
-       _IdRing.push_back(IdRing);
+       _IdRing = IdRing;
        _asynPvt = irio_pvt;
        _dmanumber = dma_id;
 }
 dmathread::~dmathread() {
+
+}
+pvthread::~pvthread() {
 
 }
 void dmathread::runthread(void) {
@@ -1636,7 +1639,7 @@ void dmathread::runthread(void) {
 			(this->aiDMA_thread), (void*) this);
 }
 
-void dmathread::runpvthread(void) {
+void pvthread::runpvthread(void) {
        _thread_id = (epicsThreadId*) epicsThreadCreate(_name.c_str(),
                        epicsThreadPriorityHigh,
                        epicsThreadGetStackSize(epicsThreadStackBig), /*(EPICSTHREADFUNC)*/

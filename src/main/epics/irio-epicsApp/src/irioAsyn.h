@@ -256,13 +256,10 @@ class dmathread {
 	friend class irio;
 public:
 	dmathread(const std::string &device, uint8_t id, irio *irio_pvt);
-	dmathread(const std::string &device, uint8_t id, irio *irio_pvt, uint8_t dma_id, epicsRingBytesId IdRing, int SR);
 	~dmathread();
 	void runthread(void);
-	void runpvthread(void);
 	static void aiDMA_thread(void *p);
-    static void aiPV_thread(void *p);
-	void getChannelDataU8 (int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC);
+    void getChannelDataU8 (int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC);
 	void getChannelDataU16(int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC);
 	void getChannelDataU32(int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC);
 	void getChannelDataU64(int nChannels,int nSamples,uint64_t* inBuffer,float** outBuffer, double CVADC);
@@ -280,10 +277,33 @@ private:
 	uint8_t _dmanumber;					//!< DMA number
 };
 
+/**
+ * Class for managing DMA PV publishing
+ */
+class pvthread {
+public:
+	pvthread(const std::string &device, uint8_t id, irio *irio_pvt, uint8_t dma_id, epicsRingBytesId IdRing, int SR);
+	~pvthread();
+	void runpvthread(void);
+	static void aiPV_thread(void *p);
+private:
+	epicsThreadId *_thread_id;	//!< Pointer to PV publish thread ID
+	std::string _name; //!< PV Publish thread name
+	int _id;							//!< ID
+	int _threadends; //!< This field will be used to terminate the thread when change to 1
+	int _endAck;//!< This field will be used to notify thread termination when change to 1
+	int _DecimationFactor; 			//!< Decimation Factor
+	int _SR;							//!< Sampling Rate
+	int _blockSize; //!< Size of acquisition block (in terms of DMA NwordU64)
+	irio* _asynPvt;		//!< Pointer to data structure of RIO device resources
+	epicsRingBytesId _IdRing;	//!< RingBuffer ID
+	uint8_t _dmanumber;					//!< DMA number
+};
+
 
 ///@}
 class irio: asynPortDriver {
-	//friend class ai_dma_thread
+	friend class pvthread;
 	friend class dmathread;
 public:
 	irio(const char *namePort, const char *DevSerial, const char *PXInirioModel,
